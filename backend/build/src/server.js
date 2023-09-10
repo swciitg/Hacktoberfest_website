@@ -18,6 +18,12 @@ import mongoose from 'mongoose';
 const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js";
+import UserTokenInfo from "../models/tokenModel.js";
+import getPRCountsForMultipleRepos from './repoInfo.js';
+import getUserInfo from './userInfo.js';
+import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
+import HacktoberRepo from '../models/repo_model.js';
+let accessToken = '';
 const app = express();
 dotenv.config();
 // app.use(cors());
@@ -45,19 +51,54 @@ passport.use(new GitHubStrategy({
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URI
 }, function (accessToken, refreshToken, profile, done) {
-    console.log('accessToken:', accessToken);
-    console.log('refreshToken:', refreshToken);
-    // console.log('profile:', profile);
-    return done(null, profile);
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('accessToken:', accessToken);
+        console.log('refreshToken:', refreshToken);
+        console.log('profile:', profile);
+        let tokenInfo = yield UserTokenInfo.findOne({
+            user_id: profile.id
+        });
+        console.log(tokenInfo);
+        if (tokenInfo) {
+            console.log("already had token saved");
+            tokenInfo.accessToken = accessToken;
+        }
+        else {
+            console.log("new token");
+            tokenInfo = new UserTokenInfo({
+                user_id: profile.id,
+                accessToken: accessToken
+            });
+        }
+        yield tokenInfo.save();
+        return done(null, profile);
+    });
 }));
 console.log("http://localhost:3000" + process.env.BASE_URL + '/auth/github');
-app.get(process.env.BASE_URL + '/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
-app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.user);
-    let user = yield User.findOne({ github_username: res.username });
-    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY);
+app.get(process.env.BASE_URL + '/auth/github', passport.authenticate('github', {
+    scope: ['user:email']
+}));
+app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('github', {
+    failureRedirect: '/'
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(req.user);
+    // console.log("at res");
+    // console.log(res)
+    // console.log(req.query);
+    // console.log(req);
+    console.log(req.user.id);
+    let tokenInfo = yield UserTokenInfo.findOne({
+        github_username: res.username
+    });
+    const token = jwt.sign(tokenInfo.accessToken, process.env.SECRET_KEY);
+    console.log("Hello", token);
+    let user = yield User.findOne({
+        username: req.user.username
+    });
     console.log(user);
-    res.cookie('accessToken', token, { maxAge: 172800000 });
+    res.cookie('accessToken', token, {
+        maxAge: 172800000
+    });
     if (user !== null) {
         res.redirect("/");
     }
@@ -68,16 +109,28 @@ app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('g
     return;
 }));
 app.use((req, res, next) => {
-    console.log('Cookies: ', req.cookies);
-    next();
+    try {
+        console.log('Cookies: ', req.cookies);
+        if (req.cookies.accessToken) {
+            var decoded = jwt.verify(req.cookies.accessToken, process.env.SECRET_KEY);
+            console.log(decoded);
+            req.accessToken = decoded;
+            next();
+        }
+        else {
+            throw new Error("no token found");
+        }
+    }
+    catch (err) {
+        res.status(400).json({
+            "error": err.toString()
+        });
+    }
 });
 app.get("/abc", (req, res) => {
     console.log(req.user);
-    console.log("here");
-    res.send("fjsdilfhgjsio");
-});
-app.get("/def", (req, res) => {
-    console.log(req.user);
+    accessToken = req.accessToken;
+    console.log(req.accessToken);
     console.log("here");
     res.send("fjsdilfhgjsio");
 });
@@ -85,7 +138,9 @@ passport.serializeUser(function (user, done) {
     done(null, user);
 });
 passport.deserializeUser(function (id, done) {
-    done(null, { id });
+    done(null, {
+        id
+    });
 });
 mongoose.connect(process.env.MONGO_URL, {}).then(() => {
     console.log("mongodb connected");
@@ -96,4 +151,60 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
-// app.use('/auth',authRoute);
+const leaderboard_data = [];
+function updateLeaderboard(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tokens = yield UserTokenInfo.find({}).exec();
+        const repos = yield HacktoberRepo.find({}).exec();
+        const repoArray = repos.map(repo => repo.repo_name);
+        const tokenArray = tokens.map(token => token.accessToken);
+        for (const accessToken of tokenArray) {
+            const userData = yield getUserInfo(accessToken);
+            const avatar_url = userData.avatar_url;
+            const username = userData.login;
+            let total_pr_merged = 0;
+            for (const repo of repoArray) {
+                const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, accessToken);
+                total_pr_merged += merged_pr_Data.total_count;
+            }
+            leaderboard_data.push({ username, avatar_url, total_pr_merged });
+        }
+    });
+}
+app.get('/landing_page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    accessToken = req.accessToken;
+    const repos = yield HacktoberRepo.find({}).exec();
+    const repoArray = repos.map(repo => repo.repo_name);
+    const repoData = yield getPRCountsForMultipleRepos(repoArray, accessToken);
+    res.send(repoData);
+    console.log(repoData);
+}));
+app.get('/user_profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    accessToken = req.accessToken;
+    const userData = yield getUserInfo(accessToken);
+    res.send(userData);
+    console.log(userData);
+}));
+app.put("/update_profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    let user = yield User.findOne({ github_username: req.body.github_username });
+    if (user !== null) {
+        user.github_profile_name = req.body.github_profile_name;
+        user.roll_no = req.body.roll_no;
+        user.outlook_email = req.body.outlook_email;
+        user.programme = req.body.programme;
+        user.hostel = req.body.hostel;
+        user.department = req.body.department;
+        user.year_of_study = req.body.year_of_study;
+        yield user.save();
+        res.send("Updated");
+    }
+    else {
+        res.send("User not found");
+    }
+}));
+app.get('/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    accessToken = req.accessToken;
+    yield updateLeaderboard(req, res);
+    res.send(leaderboard_data);
+}));
