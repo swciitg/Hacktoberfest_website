@@ -13,6 +13,7 @@ import cors from 'cors';
 import passport from 'passport';
 import expressSession from 'express-session';
 import { Strategy } from 'passport-github2';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
@@ -20,6 +21,7 @@ import User from "../models/userModel.js";
 const app = express();
 dotenv.config();
 // app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(expressSession({
     secret: process.env.SESSION_SECRET,
@@ -53,7 +55,7 @@ app.get(process.env.BASE_URL + '/auth/github', passport.authenticate('github', {
 app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.user);
     let user = yield User.findOne({ github_username: res.username });
-    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY, { expiresIn: "2d" });
+    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY);
     console.log(user);
     res.cookie('accessToken', token, { maxAge: 172800000 });
     if (user !== null) {
@@ -70,6 +72,12 @@ app.use((req, res, next) => {
     next();
 });
 app.get("/abc", (req, res) => {
+    console.log(req.user);
+    console.log("here");
+    res.send("fjsdilfhgjsio");
+});
+app.get("/def", (req, res) => {
+    console.log(req.user);
     console.log("here");
     res.send("fjsdilfhgjsio");
 });
