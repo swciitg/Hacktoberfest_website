@@ -1,6 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
 import LeaderPage from './Views/LeaderPage';
+import LandingPage from './components/LandingPage/LandingPage';
+import RegistrationForm from './components/RegistrationForm/RegistrationForm';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
 
@@ -20,12 +23,14 @@ function App() {
 ]
 
   return (
-    // <Router>
-    //   <Routes>
-    //     <Route path='/' element = {/LeaderPage}></Route>
-    //   </Routes>
-    // </Router>
-    <LeaderPage/>
+    <BrowserRouter >
+          <Routes>
+        <Route path='/' Component={LandingPage}></Route>
+        <Route path='/register' Component = {RegistrationForm}></Route>
+      </Routes>
+    </BrowserRouter>
+
+
   );
 }
 

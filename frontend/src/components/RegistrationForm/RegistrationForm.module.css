@@ -1,0 +1,165 @@
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
+.landingPage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(23, 15, 30);
+    padding: 25px;
+    box-sizing: border-box;
+
+}
+
+.FormSection {
+    width: 60vw;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.HacktoberLogo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40vw;
+}
+
+.HacktoberLogo img {
+    width: 85%;
+}
+
+.SwcLogo {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
+.SwcLogo img {
+    width: 75px;
+}
+
+.UserName {
+    font-size: 2rem;
+    font-family: Montserrat, sans-serif;
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 0.3vh;
+}
+
+.FormInput label {
+    color: rgb(23, 15, 30);
+    font-size: 1.2rem;
+    font-family: Montserrat, sans-serif;
+}
+
+.FormInput {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh;
+}
+
+.FormInput input {
+    height: 40px;
+    width: 65%;
+    font-size: 1.5rem;
+    color: rgb(96, 94, 94);
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 500;
+    box-sizing: border-box;
+    border: 1px solid grey;
+}
+
+.FormInput select {
+    width: 65%;
+    height: 40px;
+    font-size: 1.2rem;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.FormInput select option {
+    width: 65%;
+    height: 40px;
+    font-size: 1.2rem;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.FormInput input:focus {
+    border-color: rgb(23, 15, 30);
+    /* border-color: #dedede;
+    border-style: solid; */
+
+}
+
+.FormSectionButton {
+    margin: 20px 0px 0px;
+    letter-spacing: 0.02rem;
+    background: rgb(23, 15, 30);
+    color: rgb(255, 255, 255);
+    padding: 0px 25px;
+    height: 40px;
+
+    border-radius: 5px;
+    display: flex;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    align-items: center;
+    transition: all 0.2s ease 0s;
+    font-size: 1.1rem;
+}
+
+@media screen and (max-width :650px) {
+    .landingPage {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .FormSection {
+        width: 100%;
+        height: 80%;
+    }
+
+    .HacktoberLogo {
+
+        align-items: center;
+        width: 100%;
+        padding: 3vh 0%;
+        height: 15%;
+        background-color: rgb(23, 15, 30);
+    }
+
+    .FormSectionButton {
+        margin-bottom: 20px;
+
+    }
+
+    .UserName {
+        margin-top: 70px;
+    }
+
+    .FormInput input {
+        width: 100%;
+    }
+
+    .FormInput select {
+        width: 100%;
+    }
+}
