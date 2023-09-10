@@ -5,7 +5,7 @@ const Leaderboard = (props) =>
     return(
         <div className='shadow-md'>
             <div className='p-4 rounded-t-3xl bg-white shadow-md'>
-                <div className="grid grid-cols-4 gap-4 font-bold text-sm text-center">
+                <div className="grid grid-cols-4 gap-4 font-bold text-md text-center">
                     <div className="">
                         <span>Rank</span>
                     </div>

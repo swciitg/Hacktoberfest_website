@@ -27,6 +27,8 @@ function App() {
           <Routes>
         <Route path='/' Component={LandingPage}></Route>
         <Route path='/register' Component = {RegistrationForm}></Route>
+        <Route path='/leaderboard' Component = {LeaderPage}></Route>
+
       </Routes>
     </BrowserRouter>
 
