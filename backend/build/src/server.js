@@ -22,7 +22,7 @@ import UserTokenInfo from "../models/tokenModel.js";
 import getPRCountsForMultipleRepos from './repoInfo.js';
 import getUserInfo from './userInfo.js';
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
-import HacktoberRepo from '../models/repo_model.js';
+import HacktoberRepo from '../models/repoModel.js';
 let accessToken = '';
 const app = express();
 dotenv.config();
@@ -156,8 +156,12 @@ function updateLeaderboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const tokens = yield UserTokenInfo.find({}).exec();
         const repos = yield HacktoberRepo.find({}).exec();
-        const repoArray = repos.map(repo => repo.repo_name);
+        const repoArray = repos.map(repo => ({
+            name: repo.repo_name,
+            owner: repo.repo_owner,
+        }));
         const tokenArray = tokens.map(token => token.accessToken);
+        leaderboard_data.length = 0;
         for (const accessToken of tokenArray) {
             const userData = yield getUserInfo(accessToken);
             const avatar_url = userData.avatar_url;
@@ -201,6 +205,30 @@ app.put("/update_profile", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     else {
         res.send("User not found");
+    }
+}));
+app.post('/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.body.secret_key === process.env.SECRET_KEY) {
+        const { repo_owner, repo_name } = req.body;
+        if (!repo_owner || !repo_name) {
+            return res.status(400).json({ error: 'Both repo_owner and repo_name are required.' });
+        }
+        try {
+            const existingRepo = yield HacktoberRepo.findOne({ repo_owner, repo_name });
+            if (existingRepo) {
+                return res.status(409).json({ error: 'Repository already exists in the database.' });
+            }
+            const newRepo = new HacktoberRepo({ repo_owner, repo_name });
+            yield newRepo.save();
+            return res.status(200).json({ message: 'Repo added successfully.' });
+        }
+        catch (error) {
+            console.error('Error saving the repo:', error);
+            return res.status(500).json({ error: 'Internal server error.' });
+        }
+    }
+    else {
+        return res.status(403).json({ error: 'Invalid secret key.' });
     }
 }));
 app.get('/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -9,10 +9,6 @@ const userSchema : mongoose.Schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    github_access_token: {
-        type: String,
-        required: true
-    },
     roll_no: {
         type: String,
         required: true
