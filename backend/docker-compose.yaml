@@ -1,0 +1,13 @@
+version: "3.3"
+
+services:
+        onestopnode:
+                build:
+                        context: .
+                        dockerfile: Dockerfile
+                extra_hosts:
+                        - "host.docker.internal:host-gateway"
+                ports:
+                        - "9045:9010"
+                env_file:
+                        - .env
