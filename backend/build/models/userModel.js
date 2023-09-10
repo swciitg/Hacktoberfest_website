@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    github_avatar_url: {
+    github_access_token: {
         type: String,
         required: true
     },
