@@ -18,6 +18,7 @@ import mongoose from 'mongoose';
 const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js";
+import UserTokenInfo from "../models/tokenModel.js";
 const app = express();
 dotenv.config();
 // app.use(cors());
@@ -45,17 +46,37 @@ passport.use(new GitHubStrategy({
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URI
 }, function (accessToken, refreshToken, profile, done) {
-    console.log('accessToken:', accessToken);
-    console.log('refreshToken:', refreshToken);
-    // console.log('profile:', profile);
-    return done(null, profile);
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('accessToken:', accessToken);
+        console.log('refreshToken:', refreshToken);
+        console.log('profile:', profile);
+        let tokenInfo = yield UserTokenInfo.findOne({ user_id: profile.id });
+        console.log(tokenInfo);
+        if (tokenInfo) {
+            console.log("already had token saved");
+            tokenInfo.accessToken = accessToken;
+        }
+        else {
+            console.log("new token");
+            tokenInfo = new UserTokenInfo({ user_id: profile.id, accessToken: accessToken });
+        }
+        yield tokenInfo.save();
+        return done(null, profile);
+    });
 }));
 console.log("http://localhost:3000" + process.env.BASE_URL + '/auth/github');
 app.get(process.env.BASE_URL + '/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.user);
-    let user = yield User.findOne({ github_username: res.username });
-    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY);
+    // console.log(req.user);
+    // console.log("at res");
+    // console.log(res)
+    // console.log(req.query);
+    // console.log(req);
+    console.log(req.user.id);
+    let tokenInfo = yield UserTokenInfo.findOne({ github_username: res.username });
+    const token = jwt.sign(tokenInfo.accessToken, process.env.SECRET_KEY);
+    console.log(token);
+    let user = yield User.findOne({ username: req.user.username });
     console.log(user);
     res.cookie('accessToken', token, { maxAge: 172800000 });
     if (user !== null) {
@@ -68,16 +89,25 @@ app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('g
     return;
 }));
 app.use((req, res, next) => {
-    console.log('Cookies: ', req.cookies);
-    next();
+    try {
+        console.log('Cookies: ', req.cookies);
+        if (req.cookies.accessToken) {
+            var decoded = jwt.verify(req.cookies.accessToken, process.env.SECRET_KEY);
+            console.log(decoded);
+            req.accessToken = decoded;
+            next();
+        }
+        else {
+            throw new Error("no token found");
+        }
+    }
+    catch (err) {
+        res.status(400).json({ "error": err.toString() });
+    }
 });
 app.get("/abc", (req, res) => {
     console.log(req.user);
-    console.log("here");
-    res.send("fjsdilfhgjsio");
-});
-app.get("/def", (req, res) => {
-    console.log(req.user);
+    console.log(req.accessToken);
     console.log("here");
     res.send("fjsdilfhgjsio");
 });

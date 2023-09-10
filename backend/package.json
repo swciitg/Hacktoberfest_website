@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
     "nodemon": "^2.0.22",
+    "octokit": "^3.1.0",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "typescript": "^5.0.4"
