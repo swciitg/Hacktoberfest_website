@@ -13,10 +13,10 @@ const Leaderboard = (props) =>
                         <span>Contributor</span>
                     </div>
                     <div className="">
-                        <span>Total PRs</span>
+                        <span>Name</span>
                     </div>
                     <div className="">
-                        <span>Merged Prs</span>
+                        <span>Total PRs Merged</span>
                     </div>
                 </div>
             </div>

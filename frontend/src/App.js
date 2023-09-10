@@ -4,6 +4,7 @@ import LeaderPage from './Views/LeaderPage';
 import LandingPage from './components/LandingPage/LandingPage';
 import RegistrationForm from './components/RegistrationForm/RegistrationForm';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AllRepos from './Views/AllRepos'
 
 function App() {
 
@@ -28,7 +29,7 @@ function App() {
         <Route path='/' Component={LandingPage}></Route>
         <Route path='/register' Component = {RegistrationForm}></Route>
         <Route path='/leaderboard' Component = {LeaderPage}></Route>
-
+        <Route path='/AllRepos' Component={AllRepos}></Route>
       </Routes>
     </BrowserRouter>
 
