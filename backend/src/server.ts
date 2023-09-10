@@ -7,6 +7,7 @@ import { Strategy } from 'passport-github2';
 import mongoose from 'mongoose'
 const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
+import User from "../models/userModel.js"
 
 const app = express();
 dotenv.config();
@@ -43,7 +44,7 @@ passport.use(new GitHubStrategy({
   function (accessToken: any, refreshToken: any, profile: any, done: any) {
     console.log('accessToken:', accessToken);
     console.log('refreshToken:', refreshToken);
-    console.log('profile:', profile);
+    // console.log('profile:', profile);
     return done(null, profile);
   }
 ));
@@ -55,11 +56,31 @@ app.get(process.env.BASE_URL + '/auth/github',
 
 app.get(process.env.BASE_URL + '/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
-  (req : any, res : any) => {
-    console.log(res);
-    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY, { expiresIn: "5d" });
-    res.redirect('/');
-  });
+  async (req : any, res : any) => {
+    console.log(req.user);
+    let user = await User.findOne({github_username : res.username});
+    const token = jwt.sign({ username: res.username }, process.env.SECRET_KEY, { expiresIn: "2d" });
+    console.log(user);
+    res.cookie('accessToken', token, { maxAge: 172800000 });
+    if(user!==null){
+      res.redirect("/");
+    }
+    else{
+      res.redirect("/abc");
+    }
+    console.log("here")
+    return;
+});
+
+app.use((req : any, res : any, next : any) => {
+  console.log('Cookies: ', req.cookies);
+  next();
+});
+
+app.get("/abc",(req : any, res : any) => {
+  console.log("here");
+  res.send("fjsdilfhgjsio")
+});
 
 passport.serializeUser(function (user, done) {
   done(null, user);
