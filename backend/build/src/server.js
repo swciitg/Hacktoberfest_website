@@ -23,6 +23,8 @@ import getPRCountsForMultipleRepos from './repoInfo.js';
 import getUserInfo from './userInfo.js';
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
 import HacktoberRepo from '../models/repoModel.js';
+import UserLeaderboard from '../models/leaderboardModel.js';
+import cron from 'node-cron';
 let accessToken = '';
 const app = express();
 dotenv.config();
@@ -151,8 +153,7 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
-const leaderboard_data = [];
-function updateLeaderboard(req, res) {
+function updateLeaderboard() {
     return __awaiter(this, void 0, void 0, function* () {
         const tokens = yield UserTokenInfo.find({}).exec();
         const repos = yield HacktoberRepo.find({}).exec();
@@ -161,24 +162,47 @@ function updateLeaderboard(req, res) {
             owner: repo.repo_owner,
         }));
         const tokenArray = tokens.map(token => token.accessToken);
-        leaderboard_data.length = 0;
         for (const accessToken of tokenArray) {
+            const user = yield UserTokenInfo.findOne({ accessToken: accessToken });
             const userData = yield getUserInfo(accessToken);
-            const avatar_url = userData.avatar_url;
             const username = userData.login;
             let total_pr_merged = 0;
             for (const repo of repoArray) {
                 const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, accessToken);
                 total_pr_merged += merged_pr_Data.total_count;
             }
-            leaderboard_data.push({ username, avatar_url, total_pr_merged });
+            UserLeaderboard.findOne({ user_id: user._id })
+                .exec()
+                .then((existingLeaderboardData) => {
+                if (existingLeaderboardData) {
+                    existingLeaderboardData.pull_requests_merged = total_pr_merged;
+                    return existingLeaderboardData.save();
+                }
+                else {
+                    const leaderboardData = new UserLeaderboard({
+                        user_id: user._id,
+                        pull_requests_merged: total_pr_merged,
+                    });
+                    return leaderboardData.save();
+                }
+            })
+                .then(() => {
+                console.log("Leaderboard data saved successfully");
+            })
+                .catch((error) => {
+                console.error("Error while saving leaderboard data:", error);
+            });
         }
     });
 }
 app.get('/landing_page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     accessToken = req.accessToken;
     const repos = yield HacktoberRepo.find({}).exec();
-    const repoArray = repos.map(repo => repo.repo_name);
+    const repoArray = repos.map(repo => ({
+        name: repo.repo_name,
+        owner: repo.repo_owner,
+    }));
+    console.log(repoArray);
     const repoData = yield getPRCountsForMultipleRepos(repoArray, accessToken);
     res.send(repoData);
     console.log(repoData);
@@ -191,7 +215,9 @@ app.get('/user_profile', (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 app.put("/update_profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
-    let user = yield User.findOne({ github_username: req.body.github_username });
+    let user = yield User.findOne({
+        github_username: req.body.github_username
+    });
     if (user !== null) {
         user.github_profile_name = req.body.github_profile_name;
         user.roll_no = req.body.roll_no;
@@ -211,28 +237,71 @@ app.post('/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.body.secret_key === process.env.SECRET_KEY) {
         const { repo_owner, repo_name } = req.body;
         if (!repo_owner || !repo_name) {
-            return res.status(400).json({ error: 'Both repo_owner and repo_name are required.' });
+            return res.status(400).json({
+                error: 'Both repo_owner and repo_name are required.'
+            });
         }
         try {
-            const existingRepo = yield HacktoberRepo.findOne({ repo_owner, repo_name });
+            const existingRepo = yield HacktoberRepo.findOne({
+                repo_owner,
+                repo_name
+            });
             if (existingRepo) {
-                return res.status(409).json({ error: 'Repository already exists in the database.' });
+                return res.status(409).json({
+                    error: 'Repository already exists in the database.'
+                });
             }
-            const newRepo = new HacktoberRepo({ repo_owner, repo_name });
+            const newRepo = new HacktoberRepo({
+                repo_owner,
+                repo_name
+            });
             yield newRepo.save();
-            return res.status(200).json({ message: 'Repo added successfully.' });
+            return res.status(200).json({
+                message: 'Repo added successfully.'
+            });
         }
         catch (error) {
             console.error('Error saving the repo:', error);
-            return res.status(500).json({ error: 'Internal server error.' });
+            return res.status(500).json({
+                error: 'Internal server error.'
+            });
         }
     }
     else {
-        return res.status(403).json({ error: 'Invalid secret key.' });
+        return res.status(403).json({
+            error: 'Invalid secret key.'
+        });
     }
 }));
+cron.schedule('0 * * * *', () => {
+    console.log("Updating leaderboard");
+    updateLeaderboard();
+});
 app.get('/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    accessToken = req.accessToken;
-    yield updateLeaderboard(req, res);
-    res.send(leaderboard_data);
+    try {
+        const leaderboardEntries = yield UserLeaderboard.find({}).exec();
+        console.log(leaderboardEntries);
+        const leaderboardData = [];
+        for (const entry of leaderboardEntries) {
+            const userId = entry.user_id;
+            const token = yield UserTokenInfo.findOne({ _id: userId }).exec();
+            if (token) {
+                const userData = yield getUserInfo(token.accessToken);
+                const avatar_url = userData.avatar_url;
+                const username = userData.login;
+                const total_pr_merged = entry.pull_requests_merged;
+                leaderboardData.push({
+                    username,
+                    avatar_url,
+                    total_pr_merged
+                });
+            }
+        }
+        console.log(leaderboardData);
+        res.send(leaderboardData);
+    }
+    catch (error) {
+        console.error("Error fetching leaderboard data:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 }));

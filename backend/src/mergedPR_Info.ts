@@ -1,4 +1,4 @@
-const hacktoberfestStartDate = new Date('2023-01-01T00:00:00Z');
+const hacktoberfestStartDate = new Date('2023-10-01T00:00:00Z');
 const hacktoberfestEndDate = new Date('2023-10-31T23:59:59Z');
 import axios from 'axios';
 
