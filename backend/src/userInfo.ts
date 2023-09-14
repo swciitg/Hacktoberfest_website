@@ -1,5 +1,6 @@
 import axios from 'axios';
 async function getUserInfo(accessToken) {
+  console.log("ACCESS TOKEN ", accessToken);
   try {
     const response = await axios.get('https://api.github.com/user', {
       headers: {

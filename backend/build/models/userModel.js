@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
-    github_profile_name: {
-        type: String,
-        required: true
-    },
-    github_username: {
+    github_id: {
         type: String,
         required: true
     },

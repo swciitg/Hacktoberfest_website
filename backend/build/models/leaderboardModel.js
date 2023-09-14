@@ -1,12 +1,12 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 const leaderboardSchema = new mongoose.Schema({
-    user_id: {
-        type: Schema.Types.ObjectId,
+    github_id: {
+        type: String,
         required: true
     },
     pull_requests_merged: {
         type: Number,
-        required: true
+        default: 0
     }
 });
 const UserLeaderboard = mongoose.model("LeaderboardData", leaderboardSchema);

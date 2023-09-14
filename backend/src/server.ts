@@ -48,16 +48,16 @@ app.use(passport.session());
 const port = process.env.PORT || 8000;
 
 passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URI
-  },
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URI
+},
   async function (accessToken: any, refreshToken: any, profile: any, done: any) {
     console.log('accessToken:', accessToken);
     console.log('refreshToken:', refreshToken);
     console.log('profile:', profile);
     let tokenInfo = await UserTokenInfo.findOne({
-      user_id: profile.id
+      github_id: profile.id
     });
     console.log(tokenInfo);
     if (tokenInfo) {
@@ -66,7 +66,7 @@ passport.use(new GitHubStrategy({
     } else {
       console.log("new token");
       tokenInfo = new UserTokenInfo({
-        user_id: profile.id,
+        github_id: profile.id,
         accessToken: accessToken
       });
     }
@@ -92,14 +92,14 @@ app.get(process.env.BASE_URL + '/auth/github/callback',
     // console.log(res)
     // console.log(req.query);
     // console.log(req);
-    console.log(req.user.id)
+    console.log(req.user)
     let tokenInfo = await UserTokenInfo.findOne({
-      github_username: res.username
+      github_id: res.req.user.id
     });
     const token = jwt.sign(tokenInfo.accessToken, process.env.SECRET_KEY);
     console.log("Hello", token);
     let user = await User.findOne({
-      username: req.user.username
+      github_id: req.user.id
     });
     console.log(user);
     res.cookie('accessToken', token, {
@@ -171,7 +171,7 @@ async function updateLeaderboard() {
   }));
   const tokenArray = tokens.map(token => token.accessToken);
   for (const accessToken of tokenArray) {
-    const user=await UserTokenInfo.findOne({accessToken:accessToken});
+    const userInfo = await UserTokenInfo.findOne({ accessToken: accessToken });
     const userData = await getUserInfo(accessToken);
     const username = userData.login;
     let total_pr_merged = 0;
@@ -179,31 +179,31 @@ async function updateLeaderboard() {
       const [pr_Data, merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, accessToken);
       total_pr_merged += merged_pr_Data.total_count;
     }
-    UserLeaderboard.findOne({ user_id: user._id })
-  .exec()
-  .then((existingLeaderboardData) => {
-    if (existingLeaderboardData) {
-      existingLeaderboardData.pull_requests_merged = total_pr_merged;
-      return existingLeaderboardData.save();
-    } else {
-      const leaderboardData = new UserLeaderboard({
-        user_id: user._id,
-        pull_requests_merged: total_pr_merged,
+    UserLeaderboard.findOne({ github_id : userInfo.github_id })
+      .exec()
+      .then((existingLeaderboardData) => {
+        if (existingLeaderboardData) {
+          existingLeaderboardData.pull_requests_merged = total_pr_merged;
+          return existingLeaderboardData.save();
+        } else {
+          const leaderboardData = new UserLeaderboard({
+            github_id: userInfo.github_id,
+            pull_requests_merged: total_pr_merged,
+          });
+          return leaderboardData.save();
+        }
+      })
+      .then(() => {
+        console.log("Leaderboard data saved successfully");
+      })
+      .catch((error) => {
+        console.error("Error while saving leaderboard data:", error);
       });
-      return leaderboardData.save();
-    }
-  })
-  .then(() => {
-    console.log("Leaderboard data saved successfully");
-  })
-  .catch((error) => {
-    console.error("Error while saving leaderboard data:", error);
-  });
 
   }
 }
 
-app.get('/landing_page', async (req: any, res: any) => {
+app.get(process.env.BASE_URL + '/repos', async (req: any, res: any) => {
   accessToken = req.accessToken;
   const repos = await HacktoberRepo.find({}).exec();
   const repoArray = repos.map(repo => ({
@@ -214,22 +214,47 @@ app.get('/landing_page', async (req: any, res: any) => {
   const repoData = await getPRCountsForMultipleRepos(repoArray, accessToken);
   res.send(repoData);
   console.log(repoData);
-})
+});
 
-app.get('/user_profile', async (req: any, res: any) => {
+app.get(process.env.BASE_URL + '/profile', async (req: any, res: any) => {
+  console.log("HERE");
   accessToken = req.accessToken;
   const userData = await getUserInfo(accessToken);
-  res.send(userData);
-  console.log(userData);
+  res.json({ userData });
 })
 
-app.put("/update_profile", async (req, res) => {
+
+async function createOrUpdateTokenInfo(github_id,accessToken){
+  let tokenInfo = await UserTokenInfo.findOne({github_id});
+  if(tokenInfo){
+    tokenInfo.accessToken=accessToken;
+  }
+  else tokenInfo = new UserTokenInfo({github_id,accessToken});
+  await tokenInfo.save();
+}
+
+async function createLeaderboardEntry(github_id){
+  let leaderboardEntry = await UserLeaderboard.findOne({github_id});
+  console.log(leaderboardEntry);
+  if(!leaderboardEntry){
+    leaderboardEntry = new UserLeaderboard({github_id});
+    await leaderboardEntry.save();
+  }
+}
+
+app.put(process.env.BASE_URL + "/profile", async (req : any, res) => {
   console.log(req.body);
+  let body = req.body;
+  let userInfo = await getUserInfo(req.accessToken);
+  console.log(userInfo);
+  if ( !body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
+    return res.status(400).json({ success: false });
+  }
   let user = await User.findOne({
-    github_username: req.body.github_username
+    github_id: userInfo.id
   });
   if (user !== null) {
-    user.github_profile_name = req.body.github_profile_name;
+    user.github_id = userInfo.id;
     user.roll_no = req.body.roll_no;
     user.outlook_email = req.body.outlook_email;
     user.programme = req.body.programme;
@@ -237,16 +262,22 @@ app.put("/update_profile", async (req, res) => {
     user.department = req.body.department;
     user.year_of_study = req.body.year_of_study;
     await user.save();
-    res.send("Updated");
   } else {
-    res.send("User not found");
+    console.log("USER NOT FOUND");
+    user = new User({github_id : userInfo.id,...body});
+    console.log(user);
+    await user.save();
   }
+  await createOrUpdateTokenInfo(user.github_id,req.accessToken);
+  await createLeaderboardEntry(user.github_id);
+  console.log("UPDATED PROFILE");
+  res.json({ success: true });
 });
 
 
-app.post('/repo', async (req: any, res: any) => {
+app.post(process.env.BASE_URL + '/repo', async (req: any, res: any) => {
 
-  if (req.body.secret_key === process.env.SECRET_KEY) {
+  if (req.body.secret_key === process.env.MODERATOR_KEY) {
     const {
       repo_owner,
       repo_name
@@ -291,33 +322,29 @@ app.post('/repo', async (req: any, res: any) => {
   }
 });
 
- cron.schedule('0 * * * *',()=>{
+cron.schedule('0 * * * *', () => {
   console.log("Updating leaderboard");
   updateLeaderboard();
- })
+})
 
- app.get('/leaderboard', async (req: any, res: any) => {
+app.get(process.env.BASE_URL + '/leaderboard', async (req: any, res: any) => {
   try {
     const leaderboardEntries = await UserLeaderboard.find({}).exec();
     console.log(leaderboardEntries);
     const leaderboardData = [];
-
     for (const entry of leaderboardEntries) {
-      const userId = entry.user_id;
-      const token = await UserTokenInfo.findOne({ _id: userId }).exec();
-     
-      if (token) {
-        const userData = await getUserInfo(token.accessToken);
-        const avatar_url = userData.avatar_url;
-        const username = userData.login;
-        const total_pr_merged = entry.pull_requests_merged;
+      const github_id = entry.github_id;
+      const tokenInfo = await UserTokenInfo.findOne({ github_id: github_id }).exec();
+      const userData = await getUserInfo(tokenInfo.accessToken);
+      const avatar_url = userData.avatar_url;
+      const username = userData.login;
+      const total_pr_merged = entry.pull_requests_merged;
 
-        leaderboardData.push({
-          username,
-          avatar_url,
-          total_pr_merged
-        });
-      }
+      leaderboardData.push({
+        username,
+        avatar_url,
+        total_pr_merged
+      });
     }
     console.log(leaderboardData);
     res.send(leaderboardData);

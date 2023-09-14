@@ -5,7 +5,7 @@ const tokenSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    user_id: {
+    github_id: {
         type: String,
         required: true
     }
