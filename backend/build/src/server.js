@@ -76,14 +76,16 @@ passport.use(new GitHubStrategy({
         return done(null, profile);
     });
 }));
-console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
-app.get(process.env.BASE_API_PATH + '/auth/github', passport.authenticate('github', {
+app.get(process.env.BASE_API_PATH, (req, res) => {
+    res.send("API HOME");
+});
+app.get(process.env.HOME_PATH + '/auth/github', passport.authenticate('github', {
     scope: ['user:email']
 }));
-app.get(process.env.BASE_API_PATH + '/auth/github/callback', passport.authenticate('github', {
+app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('github', {
     failureRedirect: '/'
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(req.user);
+    console.log(req.user);
     // console.log("at res");
     // console.log(res)
     // console.log(req.query);
@@ -101,12 +103,7 @@ app.get(process.env.BASE_API_PATH + '/auth/github/callback', passport.authentica
     res.cookie('accessToken', token, {
         maxAge: 172800000
     });
-    if (user !== null) {
-        res.redirect("/");
-    }
-    else {
-        res.redirect("/abc");
-    }
+    res.redirect(process.env.BASE_API_PATH);
     console.log("here");
     return;
 }));
@@ -124,17 +121,8 @@ app.use((req, res, next) => {
         }
     }
     catch (err) {
-        res.status(400).json({
-            "error": err.toString()
-        });
+        res.redirect(process.env.HOME_PATH + '/auth/github');
     }
-});
-app.get("/abc", (req, res) => {
-    console.log(req.user);
-    accessToken = req.accessToken;
-    console.log(req.accessToken);
-    console.log("here");
-    res.send("fjsdilfhgjsio");
 });
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -149,9 +137,6 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
-});
-app.get('/', (req, res) => {
-    res.send('Hello World');
 });
 function updateLeaderboard() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -195,7 +180,7 @@ function updateLeaderboard() {
         }
     });
 }
-app.get(process.env.BASE_API_PATH + '/landing_page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(process.env.BASE_API_PATH + '/repos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     accessToken = req.accessToken;
     const repos = yield HacktoberRepo.find({}).exec();
     const repoArray = repos.map(repo => ({

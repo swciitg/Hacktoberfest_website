@@ -75,7 +75,9 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
+app.get(process.env.BASE_API_PATH,(req,res) => {
+  res.send("API HOME");
+});
 
 app.get(process.env.HOME_PATH + '/auth/github',
   passport.authenticate('github', {
@@ -87,7 +89,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
     failureRedirect: '/'
   }),
   async (req: any, res: any) => {
-    // console.log(req.user);
+    console.log(req.user);
     // console.log("at res");
     // console.log(res)
     // console.log(req.query);
@@ -105,7 +107,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
     res.cookie('accessToken', token, {
       maxAge: 172800000
     });
-    res.redirect("/");
+    res.redirect(process.env.BASE_API_PATH);
     console.log("here")
     return;
   });
