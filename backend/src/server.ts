@@ -75,14 +75,14 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-console.log("http://localhost:3000" + process.env.BASE_URL + '/auth/github');
+console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
 
-app.get(process.env.BASE_URL + '/auth/github',
+app.get(process.env.HOME_PATH + '/auth/github',
   passport.authenticate('github', {
     scope: ['user:email']
   }));
 
-app.get(process.env.BASE_URL + '/auth/github/callback',
+app.get(process.env.HOME_PATH + '/auth/github/callback',
   passport.authenticate('github', {
     failureRedirect: '/'
   }),
@@ -105,11 +105,7 @@ app.get(process.env.BASE_URL + '/auth/github/callback',
     res.cookie('accessToken', token, {
       maxAge: 172800000
     });
-    if (user !== null) {
-      res.redirect("/");
-    } else {
-      res.redirect("/abc");
-    }
+    res.redirect("/");
     console.log("here")
     return;
   });
@@ -126,18 +122,8 @@ app.use((req: any, res: any, next: any) => {
       throw new Error("no token found")
     }
   } catch (err) {
-    res.status(400).json({
-      "error": err.toString()
-    })
+    res.redirect(process.env.HOME_PATH + '/auth/github');
   }
-});
-
-app.get("/abc", (req: any, res: any) => {
-  console.log(req.user);
-  accessToken = req.accessToken;
-  console.log(req.accessToken)
-  console.log("here");
-  res.send("fjsdilfhgjsio")
 });
 
 passport.serializeUser(function (user, done) {
@@ -156,10 +142,6 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
     console.log(`Server is running on port ${port}`)
   });
 })
-
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
 
 
 async function updateLeaderboard() {
@@ -203,7 +185,7 @@ async function updateLeaderboard() {
   }
 }
 
-app.get(process.env.BASE_URL + '/repos', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/repos', async (req: any, res: any) => {
   accessToken = req.accessToken;
   const repos = await HacktoberRepo.find({}).exec();
   const repoArray = repos.map(repo => ({
@@ -216,7 +198,7 @@ app.get(process.env.BASE_URL + '/repos', async (req: any, res: any) => {
   console.log(repoData);
 });
 
-app.get(process.env.BASE_URL + '/profile', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/profile', async (req: any, res: any) => {
   console.log("HERE");
   accessToken = req.accessToken;
   const userData = await getUserInfo(accessToken);
@@ -242,7 +224,7 @@ async function createLeaderboardEntry(github_id){
   }
 }
 
-app.put(process.env.BASE_URL + "/profile", async (req : any, res) => {
+app.put(process.env.BASE_API_PATH + "/profile", async (req : any, res) => {
   console.log(req.body);
   let body = req.body;
   let userInfo = await getUserInfo(req.accessToken);
@@ -275,7 +257,7 @@ app.put(process.env.BASE_URL + "/profile", async (req : any, res) => {
 });
 
 
-app.post(process.env.BASE_URL + '/repo', async (req: any, res: any) => {
+app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
 
   if (req.body.secret_key === process.env.MODERATOR_KEY) {
     const {
@@ -327,7 +309,7 @@ cron.schedule('0 * * * *', () => {
   updateLeaderboard();
 })
 
-app.get(process.env.BASE_URL + '/leaderboard', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/leaderboard', async (req: any, res: any) => {
   try {
     const leaderboardEntries = await UserLeaderboard.find({}).exec();
     console.log(leaderboardEntries);

@@ -76,11 +76,11 @@ passport.use(new GitHubStrategy({
         return done(null, profile);
     });
 }));
-console.log("http://localhost:3000" + process.env.BASE_URL + '/auth/github');
-app.get(process.env.BASE_URL + '/auth/github', passport.authenticate('github', {
+console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
+app.get(process.env.BASE_API_PATH + '/auth/github', passport.authenticate('github', {
     scope: ['user:email']
 }));
-app.get(process.env.BASE_URL + '/auth/github/callback', passport.authenticate('github', {
+app.get(process.env.BASE_API_PATH + '/auth/github/callback', passport.authenticate('github', {
     failureRedirect: '/'
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(req.user);
@@ -195,7 +195,7 @@ function updateLeaderboard() {
         }
     });
 }
-app.get(process.env.BASE_URL + '/landing_page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(process.env.BASE_API_PATH + '/landing_page', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     accessToken = req.accessToken;
     const repos = yield HacktoberRepo.find({}).exec();
     const repoArray = repos.map(repo => ({
@@ -207,7 +207,7 @@ app.get(process.env.BASE_URL + '/landing_page', (req, res) => __awaiter(void 0, 
     res.send(repoData);
     console.log(repoData);
 }));
-app.get(process.env.BASE_URL + '/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(process.env.BASE_API_PATH + '/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("HERE");
     accessToken = req.accessToken;
     const userData = yield getUserInfo(accessToken);
@@ -234,7 +234,7 @@ function createLeaderboardEntry(github_id) {
         }
     });
 }
-app.put(process.env.BASE_URL + "/profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     let body = req.body;
     let userInfo = yield getUserInfo(req.accessToken);
@@ -266,7 +266,7 @@ app.put(process.env.BASE_URL + "/profile", (req, res) => __awaiter(void 0, void 
     console.log("UPDATED PROFILE");
     res.json({ success: true });
 }));
-app.post(process.env.BASE_URL + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.body.secret_key === process.env.MODERATOR_KEY) {
         const { repo_owner, repo_name } = req.body;
         if (!repo_owner || !repo_name) {
@@ -310,7 +310,7 @@ cron.schedule('0 * * * *', () => {
     console.log("Updating leaderboard");
     updateLeaderboard();
 });
-app.get(process.env.BASE_URL + '/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(process.env.BASE_API_PATH + '/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const leaderboardEntries = yield UserLeaderboard.find({}).exec();
         console.log(leaderboardEntries);
