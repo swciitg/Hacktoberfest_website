@@ -12,7 +12,7 @@ const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js"
 import UserTokenInfo from "../models/tokenModel.js";
-import getPRCountsForMultipleRepos from './repoInfo.js'
+import getRepo from './repoInfo.js'
 import getUserInfo from './userInfo.js'
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js'
 import HacktoberRepo from '../models/repoModel.js'
@@ -148,11 +148,17 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
 
 async function updateLeaderboard() {
   const tokens = await UserTokenInfo.find({}).exec();
+  const repoArray = [];
   const repos = await HacktoberRepo.find({}).exec();
-  const repoArray = repos.map(repo => ({
-    name: repo.repo_name,
-    owner: repo.repo_owner,
-  }));
+  for (const repo of repos) {
+    const repo_data = await getRepo.getRepo_owner_name(repo.repo_id, accessToken);
+    const repoObject = {
+      name: repo_data.data.name,
+      owner: repo_data.data.owner.login,
+    };
+  
+    repoArray.push(repoObject);
+  }
   const tokenArray = tokens.map(token => token.accessToken);
   for (const accessToken of tokenArray) {
     const userInfo = await UserTokenInfo.findOne({ accessToken: accessToken });
@@ -188,14 +194,20 @@ async function updateLeaderboard() {
 }
 
 app.get(process.env.BASE_API_PATH + '/repos', async (req: any, res: any) => {
-  accessToken = req.accessToken;
-  const repos = await HacktoberRepo.find({}).exec();
-  const repoArray = repos.map(repo => ({
-    name: repo.repo_name,
-    owner: repo.repo_owner,
-  }));
+  const accessToken = req.accessToken;
+const repoArray = [];
+const repos = await HacktoberRepo.find({}).exec();
+for (const repo of repos) {
+  const repo_data = await getRepo.getRepo_owner_name(repo.repo_id, accessToken);
+  const repoObject = {
+    name: repo_data.data.name,
+    owner: repo_data.data.owner.login,
+  };
+
+  repoArray.push(repoObject);
+}
   console.log(repoArray);
-  const repoData = await getPRCountsForMultipleRepos(repoArray, accessToken);
+  const repoData = await getRepo.getPRCountsForMultipleRepos(repoArray, accessToken);
   res.send(repoData);
   console.log(repoData);
 });
@@ -272,11 +284,11 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
         error: 'Both repo_owner and repo_name are required.'
       });
     }
-
+     const repo_info=await getRepo.getRepoInfo(repo_owner,repo_name,req.accessToken);
+     const repo_id=repo_info.id;
     try {
       const existingRepo = await HacktoberRepo.findOne({
-        repo_owner,
-        repo_name
+        repo_id
       });
 
       if (existingRepo) {
@@ -285,8 +297,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
         });
       }
       const newRepo = new HacktoberRepo({
-        repo_owner,
-        repo_name
+        repo_id
       });
       await newRepo.save();
 

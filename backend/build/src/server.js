@@ -19,7 +19,7 @@ const GitHubStrategy = Strategy;
 import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js";
 import UserTokenInfo from "../models/tokenModel.js";
-import getPRCountsForMultipleRepos from './repoInfo.js';
+import getRepo from './repoInfo.js';
 import getUserInfo from './userInfo.js';
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
 import HacktoberRepo from '../models/repoModel.js';
@@ -76,9 +76,13 @@ passport.use(new GitHubStrategy({
         return done(null, profile);
     });
 }));
+<<<<<<< HEAD
 app.get(process.env.BASE_API_PATH, (req, res) => {
     res.send("API HOME");
 });
+=======
+console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
+>>>>>>> a20b97d5f1f90016e416df79c16ba85d8b91d03a
 app.get(process.env.HOME_PATH + '/auth/github', passport.authenticate('github', {
     scope: ['user:email']
 }));
@@ -103,7 +107,11 @@ app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('
     res.cookie('accessToken', token, {
         maxAge: 172800000
     });
+<<<<<<< HEAD
     res.redirect(process.env.BASE_API_PATH);
+=======
+    res.redirect("/");
+>>>>>>> a20b97d5f1f90016e416df79c16ba85d8b91d03a
     console.log("here");
     return;
 }));
@@ -141,11 +149,16 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
 function updateLeaderboard() {
     return __awaiter(this, void 0, void 0, function* () {
         const tokens = yield UserTokenInfo.find({}).exec();
+        const repoArray = [];
         const repos = yield HacktoberRepo.find({}).exec();
-        const repoArray = repos.map(repo => ({
-            name: repo.repo_name,
-            owner: repo.repo_owner,
-        }));
+        for (const repo of repos) {
+            const repo_data = yield getRepo.getRepo_owner_name(repo.repo_id, accessToken);
+            const repoObject = {
+                name: repo_data.data.name,
+                owner: repo_data.data.owner.login,
+            };
+            repoArray.push(repoObject);
+        }
         const tokenArray = tokens.map(token => token.accessToken);
         for (const accessToken of tokenArray) {
             const userInfo = yield UserTokenInfo.findOne({ accessToken: accessToken });
@@ -181,14 +194,19 @@ function updateLeaderboard() {
     });
 }
 app.get(process.env.BASE_API_PATH + '/repos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    accessToken = req.accessToken;
+    const accessToken = req.accessToken;
+    const repoArray = [];
     const repos = yield HacktoberRepo.find({}).exec();
-    const repoArray = repos.map(repo => ({
-        name: repo.repo_name,
-        owner: repo.repo_owner,
-    }));
+    for (const repo of repos) {
+        const repo_data = yield getRepo.getRepo_owner_name(repo.repo_id, accessToken);
+        const repoObject = {
+            name: repo_data.data.name,
+            owner: repo_data.data.owner.login,
+        };
+        repoArray.push(repoObject);
+    }
     console.log(repoArray);
-    const repoData = yield getPRCountsForMultipleRepos(repoArray, accessToken);
+    const repoData = yield getRepo.getPRCountsForMultipleRepos(repoArray, accessToken);
     res.send(repoData);
     console.log(repoData);
 }));
@@ -259,10 +277,11 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
                 error: 'Both repo_owner and repo_name are required.'
             });
         }
+        const repo_info = yield getRepo.getRepoInfo(repo_owner, repo_name, req.accessToken);
+        const repo_id = repo_info.id;
         try {
             const existingRepo = yield HacktoberRepo.findOne({
-                repo_owner,
-                repo_name
+                repo_id
             });
             if (existingRepo) {
                 return res.status(409).json({
@@ -270,8 +289,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
                 });
             }
             const newRepo = new HacktoberRepo({
-                repo_owner,
-                repo_name
+                repo_id
             });
             yield newRepo.save();
             return res.status(200).json({

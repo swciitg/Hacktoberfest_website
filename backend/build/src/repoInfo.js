@@ -19,6 +19,17 @@ function getRepoTech(owner, repo, accessToken) {
         return languagesResponse.data;
     });
 }
+function getRepo_owner_name(repo_id, accessToken) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const repo_data = yield axios.get(`https://api.github.com/repositories/${repo_id}`, {
+            headers: {
+                'Authorization': `token ${accessToken}`,
+                'User-Agent': 'GitHub-Repo-Data-Requester'
+            }
+        });
+        return repo_data;
+    });
+}
 function getRepoInfo(owner, repo, accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -66,6 +77,7 @@ function getPRCountsForMultipleRepos(repositories, accessToken) {
             try {
                 const techStacks = Object.keys(yield getRepoTech(owner, name, accessToken));
                 const repoInfo = yield getRepoInfo(owner, name, accessToken);
+                console.log(repoInfo);
                 const pullRequestCounts = yield getRepositoryPullRequestCounts(owner, name, accessToken);
                 pullRequestCountsArray.push({
                     owner,
@@ -84,4 +96,4 @@ function getPRCountsForMultipleRepos(repositories, accessToken) {
         return pullRequestCountsArray;
     });
 }
-export default getPRCountsForMultipleRepos;
+export default { getPRCountsForMultipleRepos, getRepoInfo, getRepo_owner_name };

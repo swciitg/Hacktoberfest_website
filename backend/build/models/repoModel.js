@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 const repoSchema = new mongoose.Schema({
-    repo_name: {
-        type: String,
-        required: true
-    },
-    repo_owner: {
-        type: String,
+    repo_id: {
+        type: Number,
         required: true
     }
 });

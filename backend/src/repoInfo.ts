@@ -10,6 +10,17 @@ async function getRepoTech(owner, repo, accessToken) {
   return languagesResponse.data;
 }
 
+async function getRepo_owner_name(repo_id,accessToken){
+const repo_data=await axios.get(`https://api.github.com/repositories/${repo_id}`, {
+  headers: {
+    'Authorization': `token ${accessToken}`,
+    'User-Agent': 'GitHub-Repo-Data-Requester'
+  }
+});
+return repo_data;
+
+}
+
 async function getRepoInfo(owner, repo, accessToken) {
   try {
     const repoInfoResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}`, {
@@ -57,7 +68,7 @@ async function getPRCountsForMultipleRepos(repositories, accessToken) {
     try {
       const techStacks = Object.keys(await getRepoTech(owner, name, accessToken));
       const repoInfo = await getRepoInfo(owner, name, accessToken);
-
+        console.log(repoInfo);
       const pullRequestCounts = await getRepositoryPullRequestCounts(owner, name, accessToken);
       pullRequestCountsArray.push({
         owner,
@@ -76,4 +87,4 @@ async function getPRCountsForMultipleRepos(repositories, accessToken) {
   return pullRequestCountsArray;
 }
 
-export default getPRCountsForMultipleRepos;
+export default {getPRCountsForMultipleRepos,getRepoInfo,getRepo_owner_name};
