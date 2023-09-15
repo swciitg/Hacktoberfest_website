@@ -1,19 +1,16 @@
 import Entry from './Entry.js'
 
-const Leaderboard = (props) =>
+const Leaderboard = ({data, name}) =>
 {
     return(
         <div className='shadow-md'>
             <div className='p-4 rounded-t-3xl bg-white shadow-md'>
-                <div className="grid grid-cols-4 gap-4 font-bold text-md text-center">
+                <div className="grid grid-cols-3 gap-4 font-bold text-md text-center">
                     <div className="">
-                        <span>Rank</span>
+                        <span>Sr. No</span>
                     </div>
                     <div className="">
                         <span>Contributor</span>
-                    </div>
-                    <div className="">
-                        <span>Name</span>
                     </div>
                     <div className="">
                         <span>Total PRs Merged</span>
@@ -21,8 +18,8 @@ const Leaderboard = (props) =>
                 </div>
             </div>
             <div className='bg-white'>
-            {props.data.map(row => (
-                <Entry row={row} key={row.userID} />
+            {data?.map(row => (
+                <Entry row={row} key={row.index} name={name} />
                 ))}
             </div>
         </div>

@@ -1,14 +1,21 @@
 
 const Entry = (props) => {
+    let style;
+    if (props.name == props.row.username) {
+        style = "p-4 grid grid-cols-3 gap-4 text-lg text-center transition-all hover:scale-105 bg-blue-100"
+    }
+    else{
+        style = "p-4 grid grid-cols-3 gap-4 text-lg text-center transition-all hover:scale-105 bg-white"
+    }
     return (
-        <div className="p-4 grid grid-cols-4 gap-4 text-lg text-center transition-all hover:scale-105">
-            <span className="">{props.row.userID}</span>
+        
+        <div className={style}>
+            <span className="">{props.row.index}</span>
             <div className="flex space-x-5">
-                <img src="https://avatars.githubusercontent.com/u/93438420?s=96&v=4" className="rounded-full" width={40}></img>
-                <span>{props.row.Name}</span>
+                <img src={props.row.avatar_url} className="rounded-full" width={40}></img>
+                <span>{props.row.username}</span>
             </div>
-            <span className="">{props.row.git_hub_id}</span>
-            <span className="">{props.row.score}</span>
+            <span className="">{props.row.total_pr_merged}</span>
       </div>
     );
 }

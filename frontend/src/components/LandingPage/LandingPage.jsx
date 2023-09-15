@@ -1,7 +1,9 @@
+import { BACKEND_API } from '../../api';
 import styles from './LandingPage.module.css';
 import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';
-const LandingPage = (props) => {
+
+const LandingPage = () => {
     return (
         <div className={styles.landingPage}>
         <div className={styles.SwcLogo}>
@@ -13,7 +15,7 @@ const LandingPage = (props) => {
                     <span  style={{color: `rgba(110,208,255,1)`}}>Hacktoberfest</span> leaderboard <br/>for your team 🎉
                 </div>
                 <div>
-                    <a href="https://hfapi.repobot.io/auth/connect" className={styles.GithubSectionButton}><svg
+                    <a href={`${BACKEND_API}/auth/github`} className={styles.GithubSectionButton} ><svg
                             className={styles.GithubSectionLogo} viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <title>GitHub icon</title>

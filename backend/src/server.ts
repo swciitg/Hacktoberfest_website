@@ -22,7 +22,14 @@ import cron from 'node-cron';
 let accessToken = '';
 const app = express();
 dotenv.config();
-// app.use(cors());
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
+//Add request parsers
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -86,7 +93,7 @@ app.get(process.env.HOME_PATH + '/auth/github',
 
 app.get(process.env.HOME_PATH + '/auth/github/callback',
   passport.authenticate('github', {
-    failureRedirect: '/'
+    failureRedirect: process.env.REACT_APP_URL
   }),
   async (req: any, res: any) => {
     console.log(req.user);
@@ -107,8 +114,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
     res.cookie('accessToken', token, {
       maxAge: 172800000
     });
-    res.redirect(process.env.BASE_API_PATH);
-    console.log("here")
+    res.redirect(process.env.REACT_APP_URL+"/register");
     return;
   });
 

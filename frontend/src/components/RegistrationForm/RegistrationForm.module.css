@@ -46,6 +46,9 @@ body {
 }
 
 .UserName {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 2rem;
     font-family: Montserrat, sans-serif;
     width: 80%;
@@ -74,11 +77,10 @@ body {
 .FormInput input {
     height: 40px;
     width: 65%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: rgb(96, 94, 94);
     border-radius: 5px;
     padding: 10px;
-    font-weight: 500;
     box-sizing: border-box;
     border: 1px solid grey;
 }

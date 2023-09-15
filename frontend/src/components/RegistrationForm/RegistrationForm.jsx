@@ -1,67 +1,152 @@
+import { useSelector } from 'react-redux';
 import styles from './RegistrationForm.module.css';
 import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';
-const RegistrationForm = (props) => {
-    return (
+import { BACKEND_API } from '../../api';
+import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import InputField from '../input/CustomInput';
+import { Navigate, redirect, useNavigate } from 'react-router-dom';
+const RegistrationForm = (props) => {    
+    const [profile, setProfile] = useState();
+
+  
+    useEffect(() => { 
+        axios
+          .get(`${BACKEND_API}/api/profile`, {
+            withCredentials: true,
+          })
+          .then((response) => {
+            const data = response.data;
+              setProfile(data.userData);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    
+      }, []);
+
+      const name_ref = useRef();
+      const roll_ref = useRef();
+      const mail_ref =useRef();
+      const year_ref = useRef();
+      const department_ref = useRef();
+      const programme_ref = useRef();
+      const hostel_ref = useRef();
+      const navigate = useNavigate();
+
+      const handleSubmit = (e) => {
+
+        e.preventDefault();
+        const updatedData = {
+            hostel: hostel_ref.current.value,
+            roll_no: roll_ref.current.value,
+            year_of_study: year_ref.current.value,
+            name: name_ref.current.value,
+            outlook_email: mail_ref.current.value,
+            department: department_ref.current.value,
+            programme: programme_ref.current.value
+          }
+          console.log(updatedData);
+        axios
+        .put(`${BACKEND_API}/api/profile`, updatedData,{
+            headers: {  
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          })
+        .then((response) => {
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        navigate("/leaderboard");
+      }
+
+      return (
         <div className={styles.landingPage}>
         <div className={styles.SwcLogo}>
             <img src={swclogo} alt=""/>
         </div>
         <div className={styles.FormSection}>
             <div className={styles.UserName}>
-               Hello  xyz
+               Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> {profile?.login}
             </div>
             <form action="" className='flex flex-col items-center w-full' >
                 <div className={styles.Form}>
                     <div className={styles.FormInput}>
-                        <div><label for="Roll">Name</label></div>
-                        <div><input type="text" name="Name"/></div>
+                        <InputField
+                inputRef={name_ref}
+                type={"text"}
+                label={"Name"}
+                // placeholder={"Enter name"}
+              />
                     </div>
                     <div className={styles.FormInput}>
-                        <div><label for="Roll">Roll Number</label></div>
-                        <div><input type="number" name="Roll"/></div>
+                    <InputField
+                inputRef={roll_ref}
+                type={"text"}
+                label={"Roll Number"}
+                // placeholder={"Enter roll number"}
+              />
                     </div>
 
                     <div className={styles.FormInput}>
-                        <div><label for="Outlook">Outlook</label></div>
-                        <div><input type="email" name="Outlook"/></div>
+                    <InputField
+                inputRef={mail_ref}
+                type={"text"}
+                label={"Outlook ID"}
+                // placeholder={"Enter name"}
+              />
                     </div>
 
                     <div className={styles.FormInput}>
                         <div><label for="Year">Year</label></div>
-                        <div>  <select name="Year" >
+                        <div>  <select name="Year"  value={profile?.year_of_study} ref={year_ref}>
                             <option value="0" selected hidden></option>
-                            <option value="1">First</option>
-                            <option value="2">Second</option>
-                            <option value="3">Third</option>
-                            <option value="4">Fourth</option>
+                            <option value="Freshman">Freshman</option>
+                            <option value="Sophomore">Sophomore</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Senior">Senior</option>
                           </select></div>
                     </div>
                     <div className={styles.FormInput}>
                         <div><label for="Programme">Programme</label></div>
-                        <div>  <select name="Programme">
+                        <div>  <select name="Programme" value= {profile?.programme} ref={programme_ref}>
                             <option value="none" selected hidden></option>
-                            <option value="Btech">Btech</option>
-                            <option value="Mtech">Mtech</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="M.Tech">M.Tech</option>
+                            <option value="Ph.D">Ph.D</option>
+                            <option value="M.Sc">M.Sc</option>
+                            <option value="B.Des">B.Des</option>
+                            <option value="M.Des">M.Des</option>
+                            <option value="M.S.(R)">M.S.(R)</option>
+                            <option value="M.A.">M.A.</option>
+                            <option value="MBA">MBA</option>
+                            <option value="MTech+PhD">MTech+PhD</option>
+                            <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
                           </select></div>
                     </div>
                  
                     <div className={styles.FormInput}>
-                        <div><label for="Department">Department</label></div>
-                        <div><input type="text" name="Department"/></div>
-                    </div>
+                    <InputField
+                inputRef={department_ref}
+                type={"text"}
+                label={"Department"}
+                // placeholder={"Enter name"}
+              /> </div>
                     <div className={styles.FormInput}>
-                        <div><label for="Hostel">Hostel</label></div>
-                        <div>  <select name="Hostel">
-                            <option value="none" selected hidden></option>
-                            <option value="Lohit">Lohit</option>
-                            <option value="Disang">Disang</option>
-                          </select></div>
+                    <InputField
+                inputRef={hostel_ref}
+                type={"text"}
+                label={"Hostel"}
+                // placeholder={"Enter name"}
+              />
                     </div>
 
                 </div>
                 <div className='w-4/5'>
-                    <button className={styles.FormSectionButton}>
+                    <button type="submit" className={styles.FormSectionButton} onClick={handleSubmit}>
                         Submit</button>
                 </div>
             </form>
