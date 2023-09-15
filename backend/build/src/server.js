@@ -76,13 +76,9 @@ passport.use(new GitHubStrategy({
         return done(null, profile);
     });
 }));
-<<<<<<< HEAD
 app.get(process.env.BASE_API_PATH, (req, res) => {
     res.send("API HOME");
 });
-=======
-console.log("http://localhost:3000" + process.env.BASE_API_PATH + '/auth/github');
->>>>>>> a20b97d5f1f90016e416df79c16ba85d8b91d03a
 app.get(process.env.HOME_PATH + '/auth/github', passport.authenticate('github', {
     scope: ['user:email']
 }));
@@ -107,11 +103,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('
     res.cookie('accessToken', token, {
         maxAge: 172800000
     });
-<<<<<<< HEAD
     res.redirect(process.env.BASE_API_PATH);
-=======
-    res.redirect("/");
->>>>>>> a20b97d5f1f90016e416df79c16ba85d8b91d03a
     console.log("here");
     return;
 }));
@@ -193,7 +185,7 @@ function updateLeaderboard() {
         }
     });
 }
-app.get(process.env.BASE_API_PATH + '/repos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = req.accessToken;
     const repoArray = [];
     const repos = yield HacktoberRepo.find({}).exec();
@@ -270,7 +262,7 @@ app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, 
     res.json({ success: true });
 }));
 app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.body.secret_key === process.env.MODERATOR_KEY) {
+    if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
         const { repo_owner, repo_name } = req.body;
         if (!repo_owner || !repo_name) {
             return res.status(400).json({

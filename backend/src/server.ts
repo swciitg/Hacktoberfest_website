@@ -193,7 +193,7 @@ async function updateLeaderboard() {
   }
 }
 
-app.get(process.env.BASE_API_PATH + '/repos', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
   const accessToken = req.accessToken;
 const repoArray = [];
 const repos = await HacktoberRepo.find({}).exec();
@@ -273,7 +273,7 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req : any, res) => {
 
 app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
 
-  if (req.body.secret_key === process.env.MODERATOR_KEY) {
+  if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
     const {
       repo_owner,
       repo_name
