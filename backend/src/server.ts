@@ -340,7 +340,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
   }
 });
 
-cron.schedule('*/10 * * * * *',async () => {
+cron.schedule('0 * * * *',async () => {
   console.log("Updating leaderboard");
   updateLeaderboard();
 })
