@@ -152,8 +152,8 @@ function updateLeaderboard() {
         const randomIndex = Math.floor(Math.random() * tokenArray.length);
         for (const repo of repos) {
             const repo_name_owner = yield getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
-            repo.repo_owner = repo_name_owner.data.owner.login;
-            repo.repo_name = repo_name_owner.data.name;
+            repo.owner = repo_name_owner.data.owner.login;
+            repo.repo = repo_name_owner.data.name;
             const repoObject = {
                 name: repo_name_owner.data.name,
                 owner: repo_name_owner.data.owner.login,
@@ -213,8 +213,8 @@ app.get(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, voi
     const repos = yield HacktoberRepo.find({}).exec();
     for (const repo of repos) {
         const repoObject = {
-            name: repo.repo_name,
-            owner: repo.repo_owner,
+            name: repo.repo,
+            owner: repo.owner,
         };
         repoArray.push(repoObject);
     }
@@ -282,13 +282,13 @@ app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, 
 }));
 app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
-        const { repo_owner, repo_name } = req.body;
-        if (!repo_owner || !repo_name) {
+        const { owner, repo } = req.body;
+        if (!owner || !repo) {
             return res.status(400).json({
-                error: 'Both repo_owner and repo_name are required.'
+                error: 'Both owner and repo are required.'
             });
         }
-        const repo_info = yield getRepo.getRepoInfo(repo_owner, repo_name, req.accessToken);
+        const repo_info = yield getRepo.getRepoInfo(owner, repo, req.accessToken);
         const repo_id = repo_info.id;
         try {
             const existingRepo = yield HacktoberRepo.findOne({
@@ -300,8 +300,8 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
                 });
             }
             const newRepo = new HacktoberRepo({
-                repo_owner,
-                repo_name,
+                owner,
+                repo,
                 repo_id
             });
             yield newRepo.save();

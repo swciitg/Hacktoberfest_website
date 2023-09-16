@@ -72,17 +72,18 @@ function getPRCountsForMultipleRepos(repositories, accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const promises = repositories.map((repo) => __awaiter(this, void 0, void 0, function* () {
-                const owner = repo.repo_owner;
-                const name = repo.repo_name;
+                const owner = repo.owner;
+                const name = repo.repo;
                 const [techStacks, repoInfo, pullRequestCounts] = yield Promise.all([
                     getRepoTech(owner, name, accessToken),
                     getRepoInfo(owner, name, accessToken),
                     getRepositoryPullRequestCounts(owner, name, accessToken),
                 ]);
-                repo.repo_mergedPR_counts = pullRequestCounts.mergedPullRequestCount;
-                repo.repo_profile_img = repoInfo.owner.avatar_url;
-                repo.repo_techStacks = Object.keys(techStacks);
-                repo.repo_description = repoInfo.description;
+                repo.pullRequestCounts = pullRequestCounts;
+                repo.ownerProfileImage = repoInfo.owner.avatar_url;
+                repo.techStacks = Object.keys(techStacks);
+                repo.description = repoInfo.description;
+                repo.starCounts = repoInfo.stargazers_count;
                 return repo.save();
             }));
             yield Promise.all(promises);

@@ -161,8 +161,8 @@ async function updateLeaderboard() {
   const randomIndex = Math.floor(Math.random() * tokenArray.length);
   for (const repo of repos) {
     const repo_name_owner = await getRepo.getRepo_owner_name(repo.repo_id,tokenArray[randomIndex]);
-    repo.repo_owner=repo_name_owner.data.owner.login;
-    repo.repo_name=repo_name_owner.data.name;
+    repo.owner=repo_name_owner.data.owner.login;
+    repo.repo=repo_name_owner.data.name;
     const repoObject = {
       name: repo_name_owner.data.name,
       owner: repo_name_owner.data.owner.login,
@@ -223,8 +223,8 @@ const repoArray = [];
 const repos = await HacktoberRepo.find({}).exec();
 for (const repo of repos) {
   const repoObject = {
-    name: repo.repo_name,
-    owner: repo.repo_owner,
+    name: repo.repo,
+    owner: repo.owner,
   };
 
   repoArray.push(repoObject);
@@ -296,16 +296,16 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
 
   if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
     const {
-      repo_owner,
-      repo_name
+      owner,
+      repo
     } = req.body;
 
-    if (!repo_owner || !repo_name) {
+    if (!owner || !repo) {
       return res.status(400).json({
-        error: 'Both repo_owner and repo_name are required.'
+        error: 'Both owner and repo are required.'
       });
     }
-     const repo_info=await getRepo.getRepoInfo(repo_owner,repo_name,req.accessToken);
+     const repo_info=await getRepo.getRepoInfo(owner,repo,req.accessToken);
      const repo_id=repo_info.id;
     try {
       const existingRepo = await HacktoberRepo.findOne({
@@ -318,8 +318,8 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
         });
       }
       const newRepo = new HacktoberRepo({
-        repo_owner,
-        repo_name,
+        owner,
+        repo,
         repo_id
       });
       await newRepo.save();

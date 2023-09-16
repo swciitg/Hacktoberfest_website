@@ -2,26 +2,27 @@ import mongoose from "mongoose";
 const repoSchema = new mongoose.Schema({
     repo_id: {
         type: Number,
-        required: true
+        required: true,
     },
-    repo_owner: {
-        type: String
+    owner: {
+        type: String,
     },
-    repo_name: {
-        type: String
+    repo: {
+        type: String,
     },
-    repo_mergedPR_counts: {
-        type: Number
+    pullRequestCounts: {
+        type: mongoose.Schema.Types.Mixed,
     },
-    repo_profile_img: {
-        type: String
+    ownerProfileImage: {
+        type: String,
     },
-    repo_techStacks: {
-        type: [String]
+    techStacks: [String],
+    description: {
+        type: String,
     },
-    repo_description: {
-        type: String
-    }
+    starCounts: {
+        type: Number,
+    },
 });
 const HacktoberRepo = mongoose.model("HacktoberRepos", repoSchema);
 export default HacktoberRepo;
