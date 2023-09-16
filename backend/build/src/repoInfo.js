@@ -8,34 +8,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import axios from 'axios';
-function getRepoTech(owner, repo, accessToken) {
+function getRepoTech(owner, repo, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         const languagesResponse = yield axios.get(`https://api.github.com/repos/${owner}/${repo}/languages`, {
             headers: {
-                'Authorization': `token ${accessToken}`,
+                'Authorization': `token ${access_token}`,
                 'User-Agent': 'GitHub-Repo-Data-Requester'
             }
         });
         return languagesResponse.data;
     });
 }
-function getRepo_owner_name(repo_id, accessToken) {
+function getRepo_owner_name(repo_id, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         const repo_data = yield axios.get(`https://api.github.com/repositories/${repo_id}`, {
             headers: {
-                'Authorization': `token ${accessToken}`,
+                'Authorization': `token ${access_token}`,
                 'User-Agent': 'GitHub-Repo-Data-Requester'
             }
         });
         return repo_data;
     });
 }
-function getRepoInfo(owner, repo, accessToken) {
+function getRepoInfo(owner, repo, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const repoInfoResponse = yield axios.get(`https://api.github.com/repos/${owner}/${repo}`, {
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${access_token}`,
                     'User-Agent': 'GitHub-Repo-Data-Requester'
                 }
             });
@@ -47,12 +47,12 @@ function getRepoInfo(owner, repo, accessToken) {
         }
     });
 }
-function getRepositoryPullRequestCounts(owner, repo, accessToken) {
+function getRepositorypull_request_count(owner, repo, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pullRequestsResponse = yield axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`, {
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${access_token}`,
                     'User-Agent': 'GitHub-Repo-Data-Requester'
                 }
             });
@@ -68,19 +68,19 @@ function getRepositoryPullRequestCounts(owner, repo, accessToken) {
         }
     });
 }
-function getPRCountsForMultipleRepos(repositories, accessToken) {
+function getPRCountsForMultipleRepos(repositories, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const promises = repositories.map((repo) => __awaiter(this, void 0, void 0, function* () {
                 const owner = repo.owner;
                 const name = repo.repo;
-                const [techStacks, repoInfo, pullRequestCounts] = yield Promise.all([
-                    getRepoTech(owner, name, accessToken),
-                    getRepoInfo(owner, name, accessToken),
-                    getRepositoryPullRequestCounts(owner, name, accessToken),
+                const [techStacks, repoInfo, pull_request_count] = yield Promise.all([
+                    getRepoTech(owner, name, access_token),
+                    getRepoInfo(owner, name, access_token),
+                    getRepositorypull_request_count(owner, name, access_token),
                 ]);
-                repo.pullRequestCounts = pullRequestCounts;
-                repo.ownerProfileImage = repoInfo.owner.avatar_url;
+                repo.pull_request_count = pull_request_count;
+                repo.avatar_url = repoInfo.owner.avatar_url;
                 repo.techStacks = Object.keys(techStacks);
                 repo.description = repoInfo.description;
                 repo.starCounts = repoInfo.stargazers_count;

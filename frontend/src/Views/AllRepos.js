@@ -2,22 +2,37 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card/Card"
 import axios from "axios";
 import { BACKEND_API } from "../api";
+import { useCookies } from "react-cookie";
+import profile from './profile.svg';
 
 const AllRepos = () => {
-    const [repos, setRepos] = useState();
+    const [iitgRepos, setIitgRepos] = useState();
+    const [nonIitgRepos, setNonIitgRepos] = useState();
     useEffect(() => {
         axios
           .get(`${BACKEND_API}/api/repo`, {
             withCredentials: true,
           })
           .then((response) => {
-            const data = response.data.map((row, index) => {
+            console.log(response.data);
+            let iitgData = response.data.filter((row,index) => {
+                return row.type==="IITG";
+            })
+            setIitgRepos(iitgData.map((row, index) => {
                 return {
                   ...row,
                   index: index + 1,
                 };
-              });
-              setRepos(data);
+              }));
+            let nonIitgData = response.data.filter((row,index) => {
+                return row.type!=="IITG";
+            })
+            setNonIitgRepos(nonIitgData.map((row, index) => {
+                return {
+                  ...row,
+                  index: index + 1,
+                };
+              }));
           })
           .catch((error) => {
             console.log(error);
@@ -27,8 +42,8 @@ const AllRepos = () => {
     return (
         <div className="bg-[#2a303c] w-full h-full">
              <div className="absolute top-[8px] right-2 z-10 text-white">
-                <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/register">
-                    <img src="profile.svg" width = {35}></img>
+                <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
+                    <img src={profile} width = {35}></img>
                 </a>
             </div>
             <div className="absolute top-[40px] right-20 z-10 text-white">
@@ -42,14 +57,14 @@ const AllRepos = () => {
                     </div>
                     <div>
                         <div className="pt-24 pb-48">
-                            <img src="Images\swc_hacktober.svg" width={800}></img>
+                            <img src="/Images/swc_hacktober.svg" width={800}></img>
                         </div>
                     </div>
                 </div>
             </div>
             <div className="md:pl-24 pl-24 bg-[#170f1e]">
                 <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-                {repos?.map(row => (
+                {iitgRepos?.map(row => (
                 <Card row={row} key={row.index}/>
                 ))}
                 </div>

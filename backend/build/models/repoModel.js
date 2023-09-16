@@ -6,14 +6,17 @@ const repoSchema = new mongoose.Schema({
     },
     owner: {
         type: String,
+        required: true,
     },
     repo: {
         type: String,
+        required: true,
     },
-    pullRequestCounts: {
+    pull_request_count: {
         type: mongoose.Schema.Types.Mixed,
+        default: 0
     },
-    ownerProfileImage: {
+    avatar_url: {
         type: String,
     },
     techStacks: [String],
@@ -23,6 +26,11 @@ const repoSchema = new mongoose.Schema({
     starCounts: {
         type: Number,
     },
+    type: {
+        type: String,
+        enum: ["IITG", "NON-IITG"],
+        required: true
+    }
 });
 const HacktoberRepo = mongoose.model("HacktoberRepos", repoSchema);
 export default HacktoberRepo;

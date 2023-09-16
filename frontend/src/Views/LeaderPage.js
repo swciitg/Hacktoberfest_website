@@ -3,13 +3,10 @@ import Confetti from "react-confetti";
 import React, { useState, useRef, useEffect } from "react";
 import swclogo from '../components/LandingPage/hacktober_logo.svg';
 import profile from './profile.svg';
-
-import RegistrationForm from "../components/RegistrationForm/RegistrationForm";
 import axios from "axios";
 import { BACKEND_API } from "../api";
 
 const LeaderPage = () => {
-
     const [leaderboard, setLeaderboard] = useState();
     const [name, setName] = useState();
     useEffect(() => {
@@ -57,12 +54,12 @@ const LeaderPage = () => {
         <div ref={confetiRef}>
             <Confetti numberOfPieces={150} width={width} height={height} />
             <div className="absolute top-[8px] right-2 z-10 text-white">
-                <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/register">
+                <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
                     <img src={profile} width = {35}></img>
                 </a>
             </div>
             <div className="absolute top-[40px] right-20 z-10 text-white">
-                <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/repos">All Repos</a>
+                <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/hacktoberfest/repos">All Repos</a>
             </div>
             <div className="flex flex-col items-center">
                 <div className="h-2/5 w-full bg-[#170f1e] flex flex-col items-center">

@@ -25,6 +25,8 @@ const InputField = ({
     onEventChange && onEventChange(event);
   };
 
+  console.log(value)
+
   return (
     <div className={classNameDiv}>
       {label && (

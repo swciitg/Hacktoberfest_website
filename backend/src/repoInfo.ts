@@ -1,19 +1,19 @@
 import axios from 'axios';
 
-async function getRepoTech(owner, repo, accessToken) {
+async function getRepoTech(owner, repo, access_token) {
   const languagesResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/languages`, {
     headers: {
-      'Authorization': `token ${accessToken}`,
+      'Authorization': `token ${access_token}`,
       'User-Agent': 'GitHub-Repo-Data-Requester'
     }
   });
   return languagesResponse.data;
 }
 
-async function getRepo_owner_name(repo_id,accessToken){
+async function getRepo_owner_name(repo_id,access_token){
 const repo_data=await axios.get(`https://api.github.com/repositories/${repo_id}`, {
   headers: {
-    'Authorization': `token ${accessToken}`,
+    'Authorization': `token ${access_token}`,
     'User-Agent': 'GitHub-Repo-Data-Requester'
   }
 });
@@ -21,11 +21,11 @@ return repo_data;
 
 }
 
-async function getRepoInfo(owner, repo, accessToken) {
+async function getRepoInfo(owner, repo, access_token) {
   try {
     const repoInfoResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}`, {
       headers: {
-        'Authorization': `token ${accessToken}`,
+        'Authorization': `token ${access_token}`,
         'User-Agent': 'GitHub-Repo-Data-Requester'
       }
     });
@@ -37,11 +37,11 @@ async function getRepoInfo(owner, repo, accessToken) {
   }
 }
 
-async function getRepositoryPullRequestCounts(owner, repo, accessToken) {
+async function getRepositorypull_request_count(owner, repo, access_token) {
   try {
     const pullRequestsResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`, {
       headers: {
-        'Authorization': `token ${accessToken}`,
+        'Authorization': `token ${access_token}`,
         'User-Agent': 'GitHub-Repo-Data-Requester'
       }
     });
@@ -58,20 +58,20 @@ async function getRepositoryPullRequestCounts(owner, repo, accessToken) {
   }
 }
 
-async function getPRCountsForMultipleRepos(repositories, accessToken) {
+async function getPRCountsForMultipleRepos(repositories, access_token) {
   try {
     const promises = repositories.map(async (repo) => {
       const owner = repo.owner;
       const name = repo.repo;
 
-      const [techStacks, repoInfo, pullRequestCounts] = await Promise.all([
-        getRepoTech(owner, name, accessToken),
-        getRepoInfo(owner, name, accessToken),
-        getRepositoryPullRequestCounts(owner, name, accessToken),
+      const [techStacks, repoInfo, pull_request_count] = await Promise.all([
+        getRepoTech(owner, name, access_token),
+        getRepoInfo(owner, name, access_token),
+        getRepositorypull_request_count(owner, name, access_token),
       ]);
 
-      repo.pullRequestCounts = pullRequestCounts;
-      repo.ownerProfileImage = repoInfo.owner.avatar_url;
+      repo.pull_request_count = pull_request_count;
+      repo.avatar_url = repoInfo.owner.avatar_url;
       repo.techStacks = Object.keys(techStacks);
       repo.description = repoInfo.description;
       repo.starCounts=repoInfo.stargazers_count;

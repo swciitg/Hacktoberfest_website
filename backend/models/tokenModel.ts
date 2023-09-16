@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const tokenSchema = new mongoose.Schema({
-    accessToken: {
+    access_token: {
         type: String,
         required: true
     },

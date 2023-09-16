@@ -8,12 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import axios from 'axios';
-function getUserInfo(accessToken) {
+function getUserInfo(access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield axios.get('https://api.github.com/user', {
                 headers: {
-                    Authorization: `token ${accessToken}`,
+                    Authorization: `token ${access_token}`,
                 },
             });
             if (response.status === 200) {

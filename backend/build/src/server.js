@@ -25,7 +25,7 @@ import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
 import HacktoberRepo from '../models/repoModel.js';
 import UserLeaderboard from '../models/leaderboardModel.js';
 import cron from 'node-cron';
-let accessToken = '';
+let access_token = '';
 const app = express();
 dotenv.config();
 const corsConfig = {
@@ -58,9 +58,9 @@ passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URI
-}, function (accessToken, refreshToken, profile, done) {
+}, function (access_token, refreshToken, profile, done) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('accessToken:', accessToken);
+        console.log('access_token:', access_token);
         console.log('refreshToken:', refreshToken);
         console.log('profile:', profile);
         let tokenInfo = yield UserTokenInfo.findOne({
@@ -69,19 +69,23 @@ passport.use(new GitHubStrategy({
         console.log(tokenInfo);
         if (tokenInfo) {
             console.log("already had token saved");
-            tokenInfo.accessToken = accessToken;
+            tokenInfo.access_token = access_token;
         }
         else {
             console.log("new token");
             tokenInfo = new UserTokenInfo({
                 github_id: profile.id,
-                accessToken: accessToken
+                access_token: access_token
             });
         }
         yield tokenInfo.save();
         return done(null, profile);
     });
 }));
+app.use((req, res, next) => {
+    console.log(req.originalUrl);
+    next();
+});
 app.get(process.env.BASE_API_PATH, (req, res) => {
     res.send("API HOME");
 });
@@ -100,25 +104,26 @@ app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('
     let tokenInfo = yield UserTokenInfo.findOne({
         github_id: res.req.user.id
     });
-    const token = jwt.sign(tokenInfo.accessToken, process.env.SECRET_KEY);
+    const token = jwt.sign(tokenInfo.access_token, process.env.SECRET_KEY);
     console.log("Hello", token);
     let user = yield User.findOne({
         github_id: req.user.id
     });
     console.log(user);
-    res.cookie('accessToken', token, {
+    res.cookie('access_token', token, {
         maxAge: 172800000
     });
-    res.redirect(process.env.REACT_APP_URL + "/register");
+    console.log("REGISTER USER");
+    res.redirect(process.env.REACT_APP_URL + "/leaderboard");
     return;
 }));
 app.use((req, res, next) => {
     try {
         console.log('Cookies: ', req.cookies);
-        if (req.cookies.accessToken) {
-            var decoded = jwt.verify(req.cookies.accessToken, process.env.SECRET_KEY);
+        if (req.cookies.access_token) {
+            var decoded = jwt.verify(req.cookies.access_token, process.env.SECRET_KEY);
             console.log(decoded);
-            req.accessToken = decoded;
+            req.access_token = decoded;
             next();
         }
         else {
@@ -126,6 +131,7 @@ app.use((req, res, next) => {
         }
     }
     catch (err) {
+        console.log(err);
         res.redirect(process.env.HOME_PATH + '/auth/github');
     }
 });
@@ -148,7 +154,7 @@ function updateLeaderboard() {
         const tokens = yield UserTokenInfo.find({}).exec();
         const repoArray = [];
         const repos = yield HacktoberRepo.find({}).exec();
-        const tokenArray = tokens.map(token => token.accessToken);
+        const tokenArray = tokens.map(token => token.access_token);
         const randomIndex = Math.floor(Math.random() * tokenArray.length);
         for (const repo of repos) {
             const repo_name_owner = yield getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
@@ -162,9 +168,9 @@ function updateLeaderboard() {
             yield repo.save();
         }
         yield getRepo.getPRCountsForMultipleRepos(repos, tokenArray[randomIndex]);
-        for (const accessToken of tokenArray) {
-            const userInfo = yield UserTokenInfo.findOne({ accessToken: accessToken });
-            const userData = yield getUserInfo(accessToken);
+        for (const access_token of tokenArray) {
+            const userInfo = yield UserTokenInfo.findOne({ access_token: access_token });
+            const userData = yield getUserInfo(access_token);
             User.findOne({ github_id: userInfo.github_id })
                 .exec()
                 .then((existingUser) => {
@@ -180,7 +186,7 @@ function updateLeaderboard() {
             const username = userData.login;
             let total_pr_merged = 0;
             for (const repo of repoArray) {
-                const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, accessToken);
+                const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, access_token);
                 repo.repo_mergedPR_counts = merged_pr_Data.count;
                 total_pr_merged += merged_pr_Data.total_count;
             }
@@ -223,18 +229,22 @@ app.get(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, voi
 }));
 app.get(process.env.BASE_API_PATH + '/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("HERE");
-    accessToken = req.accessToken;
-    const userData = yield getUserInfo(accessToken);
+    access_token = req.access_token;
+    let tokenInfo = yield UserTokenInfo.findOne({ access_token });
+    const userData = {};
+    if (tokenInfo && tokenInfo.github_id) {
+        yield User.findOne({ github_id: tokenInfo.github_id });
+    }
     res.json({ userData });
 }));
-function createOrUpdateTokenInfo(github_id, accessToken) {
+function createOrUpdateTokenInfo(github_id, access_token) {
     return __awaiter(this, void 0, void 0, function* () {
         let tokenInfo = yield UserTokenInfo.findOne({ github_id });
         if (tokenInfo) {
-            tokenInfo.accessToken = accessToken;
+            tokenInfo.access_token = access_token;
         }
         else
-            tokenInfo = new UserTokenInfo({ github_id, accessToken });
+            tokenInfo = new UserTokenInfo({ github_id, access_token });
         yield tokenInfo.save();
     });
 }
@@ -251,7 +261,7 @@ function createLeaderboardEntry(github_id) {
 app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     let body = req.body;
-    let userInfo = yield getUserInfo(req.accessToken);
+    let userInfo = yield getUserInfo(req.access_token);
     console.log(userInfo);
     if (!body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
         return res.status(400).json({ success: false });
@@ -260,7 +270,7 @@ app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, 
         github_id: userInfo.id
     });
     if (user !== null) {
-        user.github_id = userInfo.id;
+        console.log(user.name);
         user.roll_no = req.body.roll_no;
         user.outlook_email = req.body.outlook_email;
         user.programme = req.body.programme;
@@ -271,24 +281,25 @@ app.put(process.env.BASE_API_PATH + "/profile", (req, res) => __awaiter(void 0, 
     }
     else {
         console.log("USER NOT FOUND");
-        user = new User(Object.assign({ github_id: userInfo.id }, body));
+        user = new User(Object.assign({ github_id: userInfo.id, github_username: userInfo.login }, body));
         console.log(user);
         yield user.save();
     }
-    yield createOrUpdateTokenInfo(user.github_id, req.accessToken);
+    yield createOrUpdateTokenInfo(user.github_id, req.access_token);
     yield createLeaderboardEntry(user.github_id);
     console.log("UPDATED PROFILE");
     res.json({ success: true });
 }));
 app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
-        const { owner, repo } = req.body;
-        if (!owner || !repo) {
+        const { owner, repo, type } = req.body;
+        if (!owner || !repo || !type) {
             return res.status(400).json({
                 error: 'Both owner and repo are required.'
             });
         }
-        const repo_info = yield getRepo.getRepoInfo(owner, repo, req.accessToken);
+        const repo_info = yield getRepo.getRepoInfo(owner, repo, req.access_token);
+        console.log(repo_info);
         const repo_id = repo_info.id;
         try {
             const existingRepo = yield HacktoberRepo.findOne({
@@ -302,7 +313,9 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
             const newRepo = new HacktoberRepo({
                 owner,
                 repo,
-                repo_id
+                repo_id,
+                avatar_url: repo_info.avatar_url,
+                type
             });
             yield newRepo.save();
             return res.status(200).json({
@@ -312,7 +325,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         catch (error) {
             console.error('Error saving the repo:', error);
             return res.status(500).json({
-                error: 'Internal server error.'
+                error: `Internal server error: ${error.toString()}`
             });
         }
     }
@@ -322,7 +335,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         });
     }
 }));
-cron.schedule('*/10 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+cron.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Updating leaderboard");
     updateLeaderboard();
 }));
@@ -350,6 +363,6 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', (req, res) => __awaiter(void
     }
     catch (error) {
         console.error("Error fetching leaderboard data:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: `Internal server error: ${error.toString()}` });
     }
 }));

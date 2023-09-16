@@ -1,9 +1,9 @@
 import axios from 'axios';
-async function getUserInfo(accessToken) {
+async function getUserInfo(access_token) {
   try {
     const response = await axios.get('https://api.github.com/user', {
       headers: {
-        Authorization: `token ${accessToken}`,
+        Authorization: `token ${access_token}`,
       },
     });
 
