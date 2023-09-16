@@ -28,7 +28,13 @@ import cron from 'node-cron';
 let accessToken = '';
 const app = express();
 dotenv.config();
-// app.use(cors());
+const corsConfig = {
+    origin: true,
+    credentials: true,
+};
+//Add request parsers
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
 app.use(cookieParser());
 app.use(express.json());
 app.use(expressSession({
@@ -83,7 +89,7 @@ app.get(process.env.HOME_PATH + '/auth/github', passport.authenticate('github', 
     scope: ['user:email']
 }));
 app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('github', {
-    failureRedirect: '/'
+    failureRedirect: process.env.REACT_APP_URL
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.user);
     // console.log("at res");
@@ -103,8 +109,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('
     res.cookie('accessToken', token, {
         maxAge: 172800000
     });
-    res.redirect(process.env.BASE_API_PATH);
-    console.log("here");
+    res.redirect(process.env.REACT_APP_URL + "/register");
     return;
 }));
 app.use((req, res, next) => {
@@ -143,22 +148,40 @@ function updateLeaderboard() {
         const tokens = yield UserTokenInfo.find({}).exec();
         const repoArray = [];
         const repos = yield HacktoberRepo.find({}).exec();
+        const tokenArray = tokens.map(token => token.accessToken);
+        const randomIndex = Math.floor(Math.random() * tokenArray.length);
         for (const repo of repos) {
-            const repo_data = yield getRepo.getRepo_owner_name(repo.repo_id, accessToken);
+            const repo_name_owner = yield getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
+            repo.repo_owner = repo_name_owner.data.owner.login;
+            repo.repo_name = repo_name_owner.data.name;
             const repoObject = {
-                name: repo_data.data.name,
-                owner: repo_data.data.owner.login,
+                name: repo_name_owner.data.name,
+                owner: repo_name_owner.data.owner.login,
             };
             repoArray.push(repoObject);
+            yield repo.save();
         }
-        const tokenArray = tokens.map(token => token.accessToken);
+        yield getRepo.getPRCountsForMultipleRepos(repos, tokenArray[randomIndex]);
         for (const accessToken of tokenArray) {
             const userInfo = yield UserTokenInfo.findOne({ accessToken: accessToken });
             const userData = yield getUserInfo(accessToken);
+            User.findOne({ github_id: userInfo.github_id })
+                .exec()
+                .then((existingUser) => {
+                if (existingUser) {
+                    existingUser.github_username = userData.login;
+                    existingUser.avatar_url = userData.avatar_url;
+                    return existingUser.save();
+                }
+            })
+                .catch((error) => {
+                console.error("Error while updating User data:", error);
+            });
             const username = userData.login;
             let total_pr_merged = 0;
             for (const repo of repoArray) {
                 const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, accessToken);
+                repo.repo_mergedPR_counts = merged_pr_Data.count;
                 total_pr_merged += merged_pr_Data.total_count;
             }
             UserLeaderboard.findOne({ github_id: userInfo.github_id })
@@ -186,21 +209,17 @@ function updateLeaderboard() {
     });
 }
 app.get(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const accessToken = req.accessToken;
     const repoArray = [];
     const repos = yield HacktoberRepo.find({}).exec();
     for (const repo of repos) {
-        const repo_data = yield getRepo.getRepo_owner_name(repo.repo_id, accessToken);
         const repoObject = {
-            name: repo_data.data.name,
-            owner: repo_data.data.owner.login,
+            name: repo.repo_name,
+            owner: repo.repo_owner,
         };
         repoArray.push(repoObject);
     }
-    console.log(repoArray);
-    const repoData = yield getRepo.getPRCountsForMultipleRepos(repoArray, accessToken);
-    res.send(repoData);
-    console.log(repoData);
+    console.log("here is repo datas", repos);
+    res.send(repos);
 }));
 app.get(process.env.BASE_API_PATH + '/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("HERE");
@@ -281,6 +300,8 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
                 });
             }
             const newRepo = new HacktoberRepo({
+                repo_owner,
+                repo_name,
                 repo_id
             });
             yield newRepo.save();
@@ -301,10 +322,10 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         });
     }
 }));
-cron.schedule('0 * * * *', () => {
+cron.schedule('*/10 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Updating leaderboard");
     updateLeaderboard();
-});
+}));
 app.get(process.env.BASE_API_PATH + '/leaderboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const leaderboardEntries = yield UserLeaderboard.find({}).exec();
@@ -312,16 +333,17 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', (req, res) => __awaiter(void
         const leaderboardData = [];
         for (const entry of leaderboardEntries) {
             const github_id = entry.github_id;
-            const tokenInfo = yield UserTokenInfo.findOne({ github_id: github_id }).exec();
-            const userData = yield getUserInfo(tokenInfo.accessToken);
-            const avatar_url = userData.avatar_url;
-            const username = userData.login;
-            const total_pr_merged = entry.pull_requests_merged;
-            leaderboardData.push({
-                username,
-                avatar_url,
-                total_pr_merged
-            });
+            const userData = yield User.findOne({ github_id: github_id });
+            if (userData) {
+                const avatar_url = userData.avatar_url;
+                const username = userData.github_username;
+                const total_pr_merged = entry.pull_requests_merged;
+                leaderboardData.push({
+                    username,
+                    avatar_url,
+                    total_pr_merged
+                });
+            }
         }
         console.log(leaderboardData);
         res.send(leaderboardData);

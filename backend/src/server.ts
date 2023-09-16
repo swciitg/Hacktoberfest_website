@@ -156,23 +156,42 @@ async function updateLeaderboard() {
   const tokens = await UserTokenInfo.find({}).exec();
   const repoArray = [];
   const repos = await HacktoberRepo.find({}).exec();
-  for (const repo of repos) {
-    const repo_data = await getRepo.getRepo_owner_name(repo.repo_id, accessToken);
-    const repoObject = {
-      name: repo_data.data.name,
-      owner: repo_data.data.owner.login,
-    };
   
-    repoArray.push(repoObject);
-  }
   const tokenArray = tokens.map(token => token.accessToken);
+  const randomIndex = Math.floor(Math.random() * tokenArray.length);
+  for (const repo of repos) {
+    const repo_name_owner = await getRepo.getRepo_owner_name(repo.repo_id,tokenArray[randomIndex]);
+    repo.repo_owner=repo_name_owner.data.owner.login;
+    repo.repo_name=repo_name_owner.data.name;
+    const repoObject = {
+      name: repo_name_owner.data.name,
+      owner: repo_name_owner.data.owner.login,
+    };
+    repoArray.push(repoObject);
+    await repo.save();
+  }
+  await getRepo.getPRCountsForMultipleRepos(repos, tokenArray[randomIndex]);
   for (const accessToken of tokenArray) {
     const userInfo = await UserTokenInfo.findOne({ accessToken: accessToken });
     const userData = await getUserInfo(accessToken);
+    User.findOne({github_id:userInfo.github_id})
+    .exec()
+    .then((existingUser)=>{
+       if(existingUser){
+        existingUser.github_username=userData.login;
+        existingUser.avatar_url=userData.avatar_url;
+        return existingUser.save();
+       }
+    })
+    .catch((error)=>{
+      console.error("Error while updating User data:", error);
+    })
+    
     const username = userData.login;
     let total_pr_merged = 0;
     for (const repo of repoArray) {
       const [pr_Data, merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, accessToken);
+      repo.repo_mergedPR_counts=merged_pr_Data.count;
       total_pr_merged += merged_pr_Data.total_count;
     }
     UserLeaderboard.findOne({ github_id : userInfo.github_id })
@@ -200,22 +219,18 @@ async function updateLeaderboard() {
 }
 
 app.get(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
-  const accessToken = req.accessToken;
 const repoArray = [];
 const repos = await HacktoberRepo.find({}).exec();
 for (const repo of repos) {
-  const repo_data = await getRepo.getRepo_owner_name(repo.repo_id, accessToken);
   const repoObject = {
-    name: repo_data.data.name,
-    owner: repo_data.data.owner.login,
+    name: repo.repo_name,
+    owner: repo.repo_owner,
   };
 
   repoArray.push(repoObject);
 }
-  console.log(repoArray);
-  const repoData = await getRepo.getPRCountsForMultipleRepos(repoArray, accessToken);
-  res.send(repoData);
-  console.log(repoData);
+console.log("here is repo datas",repos);
+  res.send(repos);
 });
 
 app.get(process.env.BASE_API_PATH + '/profile', async (req: any, res: any) => {
@@ -303,6 +318,8 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
         });
       }
       const newRepo = new HacktoberRepo({
+        repo_owner,
+        repo_name,
         repo_id
       });
       await newRepo.save();
@@ -323,7 +340,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
   }
 });
 
-cron.schedule('0 * * * *', () => {
+cron.schedule('*/10 * * * * *',async () => {
   console.log("Updating leaderboard");
   updateLeaderboard();
 })
@@ -335,18 +352,18 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req: any, res: any) =
     const leaderboardData = [];
     for (const entry of leaderboardEntries) {
       const github_id = entry.github_id;
-      const tokenInfo = await UserTokenInfo.findOne({ github_id: github_id }).exec();
-      const userData = await getUserInfo(tokenInfo.accessToken);
-      const avatar_url = userData.avatar_url;
-      const username = userData.login;
-      const total_pr_merged = entry.pull_requests_merged;
-
-      leaderboardData.push({
-        username,
-        avatar_url,
-        total_pr_merged
-      });
-    }
+      const userData = await User.findOne({github_id:github_id});
+      if(userData){
+        const avatar_url = userData.avatar_url;
+        const username = userData.github_username;
+        const total_pr_merged = entry.pull_requests_merged;
+        leaderboardData.push({
+          username,
+          avatar_url,
+          total_pr_merged
+        });
+      }
+      }
     console.log(leaderboardData);
     res.send(leaderboardData);
   } catch (error) {

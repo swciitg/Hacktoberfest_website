@@ -70,30 +70,26 @@ function getRepositoryPullRequestCounts(owner, repo, accessToken) {
 }
 function getPRCountsForMultipleRepos(repositories, accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pullRequestCountsArray = [];
-        for (const repo of repositories) {
-            const owner = repo.owner;
-            const name = repo.name;
-            try {
-                const techStacks = Object.keys(yield getRepoTech(owner, name, accessToken));
-                const repoInfo = yield getRepoInfo(owner, name, accessToken);
-                console.log(repoInfo);
-                const pullRequestCounts = yield getRepositoryPullRequestCounts(owner, name, accessToken);
-                pullRequestCountsArray.push({
-                    owner,
-                    repo: name,
-                    ownerProfileImage: repoInfo.owner.avatar_url,
-                    techStacks,
-                    starsCount: repoInfo.stargazers_count,
-                    description: repoInfo.description,
-                    pullRequestCounts,
-                });
-            }
-            catch (error) {
-                console.error(`Error fetching pull request counts for repository ${owner}/${name}:`, error.message);
-            }
+        try {
+            const promises = repositories.map((repo) => __awaiter(this, void 0, void 0, function* () {
+                const owner = repo.repo_owner;
+                const name = repo.repo_name;
+                const [techStacks, repoInfo, pullRequestCounts] = yield Promise.all([
+                    getRepoTech(owner, name, accessToken),
+                    getRepoInfo(owner, name, accessToken),
+                    getRepositoryPullRequestCounts(owner, name, accessToken),
+                ]);
+                repo.repo_mergedPR_counts = pullRequestCounts.mergedPullRequestCount;
+                repo.repo_profile_img = repoInfo.owner.avatar_url;
+                repo.repo_techStacks = Object.keys(techStacks);
+                repo.repo_description = repoInfo.description;
+                return repo.save();
+            }));
+            yield Promise.all(promises);
         }
-        return pullRequestCountsArray;
+        catch (error) {
+            console.error("Error fetching pull request counts:", error.message);
+        }
     });
 }
 export default { getPRCountsForMultipleRepos, getRepoInfo, getRepo_owner_name };

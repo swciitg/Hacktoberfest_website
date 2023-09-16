@@ -5,6 +5,12 @@ const userSchema : mongoose.Schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    github_username:{
+     type:String
+    },
+    avatar_url:{
+        type:String
+    },
     roll_no: {
         type: String,
         required: true

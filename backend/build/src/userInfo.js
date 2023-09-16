@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import axios from 'axios';
 function getUserInfo(accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("ACCESS TOKEN ", accessToken);
         try {
             const response = yield axios.get('https://api.github.com/user', {
                 headers: {
