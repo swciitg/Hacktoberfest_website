@@ -17,6 +17,7 @@ import getUserInfo from './userInfo.js'
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js'
 import HacktoberRepo from '../models/repoModel.js'
 import UserLeaderboard from '../models/leaderboardModel.js'
+import githubLabels from '../models/githubLabels.js'
 import cron from 'node-cron';
 
 let access_token = '';
@@ -188,11 +189,11 @@ async function updateLeaderboard() {
     .catch((error)=>{
       console.error("Error while updating User data:", error);
     })
-    
+    const labels=await githubLabels.find({}).exec();
     const username = userData.login;
     let total_pr_merged = 0;
     for (const repo of repoArray) {
-      const [pr_Data, merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, access_token);
+      const [merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, access_token,labels);
       repo.repo_mergedPR_counts=merged_pr_Data.count;
       total_pr_merged += merged_pr_Data.total_count;
     }
@@ -221,15 +222,7 @@ async function updateLeaderboard() {
 }
 
 app.get(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
-const repoArray = [];
 const repos = await HacktoberRepo.find({}).exec();
-for (const repo of repos) {
-  const repoObject = {
-    name: repo.repo,
-    owner: repo.owner,
-  };
-  repoArray.push(repoObject);
-}
 console.log("here is repo datas",repos);
   res.send(repos);
 });
@@ -308,7 +301,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
 
     if (!owner || !repo || !type) {
       return res.status(400).json({
-        error: 'Both owner and repo are required.'
+        error: 'Please fill all the three entries!'
       });
     }
      const repo_info=await getRepo.getRepoInfo(owner,repo,req.access_token);

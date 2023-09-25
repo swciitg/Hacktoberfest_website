@@ -24,6 +24,7 @@ import getUserInfo from './userInfo.js';
 import countPullRequestsForUserAndRepo from './mergedPR_Info.js';
 import HacktoberRepo from '../models/repoModel.js';
 import UserLeaderboard from '../models/leaderboardModel.js';
+import githubLabels from '../models/githubLabels.js';
 import cron from 'node-cron';
 let access_token = '';
 const app = express();
@@ -95,11 +96,6 @@ app.get(process.env.HOME_PATH + '/auth/github', passport.authenticate('github', 
 app.get(process.env.HOME_PATH + '/auth/github/callback', passport.authenticate('github', {
     failureRedirect: process.env.REACT_APP_URL
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.user);
-    // console.log("at res");
-    // console.log(res)
-    // console.log(req.query);
-    // console.log(req);
     console.log(req.user);
     let tokenInfo = yield UserTokenInfo.findOne({
         github_id: res.req.user.id
@@ -183,10 +179,11 @@ function updateLeaderboard() {
                 .catch((error) => {
                 console.error("Error while updating User data:", error);
             });
+            const labels = yield githubLabels.find({}).exec();
             const username = userData.login;
             let total_pr_merged = 0;
             for (const repo of repoArray) {
-                const [pr_Data, merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, access_token);
+                const [merged_pr_Data] = yield countPullRequestsForUserAndRepo(username, repo, access_token, labels);
                 repo.repo_mergedPR_counts = merged_pr_Data.count;
                 total_pr_merged += merged_pr_Data.total_count;
             }
@@ -215,15 +212,7 @@ function updateLeaderboard() {
     });
 }
 app.get(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const repoArray = [];
     const repos = yield HacktoberRepo.find({}).exec();
-    for (const repo of repos) {
-        const repoObject = {
-            name: repo.repo,
-            owner: repo.owner,
-        };
-        repoArray.push(repoObject);
-    }
     console.log("here is repo datas", repos);
     res.send(repos);
 }));
@@ -335,7 +324,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         });
     }
 }));
-cron.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+cron.schedule('*/30 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Updating leaderboard");
     updateLeaderboard();
 }));
