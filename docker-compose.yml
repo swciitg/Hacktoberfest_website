@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8115:4000"
+    volumes:
+      - .:/code/build

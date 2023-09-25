@@ -19,6 +19,8 @@ import HacktoberRepo from '../models/repoModel.js'
 import UserLeaderboard from '../models/leaderboardModel.js'
 import githubLabels from '../models/githubLabels.js'
 import cron from 'node-cron';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 let access_token = '';
 const app = express();
@@ -33,6 +35,10 @@ app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 app.use(cookieParser());
 app.use(express.json());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '../build')));
 
 app.use(expressSession({
   secret: process.env.SESSION_SECRET,
@@ -55,7 +61,7 @@ passport.use(new GitHubStrategy({
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
   callbackURL: process.env.CALLBACK_URI
 },
-  async function (access_token: any, refreshToken: any, profile: any, done: any) {
+  async function (access_token, refreshToken, profile, done) {
     console.log('access_token:', access_token);
     console.log('refreshToken:', refreshToken);
     console.log('profile:', profile);
@@ -78,7 +84,7 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   console.log(req.originalUrl);
   next();
 });
@@ -96,7 +102,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
   passport.authenticate('github', {
     failureRedirect: process.env.REACT_APP_URL
   }),
-  async (req: any, res: any) => {
+  async (req, res) => {
     console.log(req.user);
     let tokenInfo = await UserTokenInfo.findOne({
       github_id: res.req.user.id
@@ -115,7 +121,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
     return;
   });
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   try {
     console.log('Cookies: ', req.cookies);
     if (req.cookies.access_token) {
@@ -216,13 +222,13 @@ async function updateLeaderboard() {
   }
 }
 
-app.get(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/repo', async (req, res) => {
 const repos = await HacktoberRepo.find({}).exec();
 console.log("here is repo datas",repos);
   res.send(repos);
 });
 
-app.get(process.env.BASE_API_PATH + '/profile', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/profile', async (req, res) => {
   console.log("HERE");
   access_token = req.access_token;
   let tokenInfo = await UserTokenInfo.findOne({access_token});
@@ -252,7 +258,7 @@ async function createLeaderboardEntry(github_id){
   }
 }
 
-app.put(process.env.BASE_API_PATH + "/profile", async (req : any, res) => {
+app.put(process.env.BASE_API_PATH + "/profile", async (req , res) => {
   console.log(req.body);
   let body = req.body;
   let userInfo = await getUserInfo(req.access_token);
@@ -285,7 +291,7 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req : any, res) => {
 });
 
 
-app.post(process.env.BASE_API_PATH + '/repo', async (req: any, res: any) => {
+app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
 
   if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
     const {
@@ -342,7 +348,7 @@ cron.schedule('0 * * * *',async () => {
   updateLeaderboard();
 })
 
-app.get(process.env.BASE_API_PATH + '/leaderboard', async (req: any, res: any) => {
+app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
   try {
     const leaderboardEntries = await UserLeaderboard.find({}).exec();
     console.log(leaderboardEntries);
@@ -367,4 +373,8 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req: any, res: any) =
     console.error("Error fetching leaderboard data:", error);
     res.status(500).json({ error: `Internal server error: ${error.toString()}` });
   }
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });

@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "npm run build && node build/src/server.js",
-    "dev": "npx nodemon",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
     "build": "tsc"
   },
   "keywords": [],
