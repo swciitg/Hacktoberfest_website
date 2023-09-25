@@ -48,10 +48,6 @@ app.use(expressSession({
         maxAge: 1000 * 60 * 60 * 24 * 7,
     }
 }));
-app.use(cors({
-    origin: process.env.APP_URL,
-    credentials: true,
-}));
 app.use(passport.initialize());
 app.use(passport.session());
 const port = process.env.PORT || 8000;
@@ -284,7 +280,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         const { owner, repo, type } = req.body;
         if (!owner || !repo || !type) {
             return res.status(400).json({
-                error: 'Both owner and repo are required.'
+                error: 'Please fill all the three entries!'
             });
         }
         const repo_info = yield getRepo.getRepoInfo(owner, repo, req.access_token);
@@ -324,7 +320,7 @@ app.post(process.env.BASE_API_PATH + '/repo', (req, res) => __awaiter(void 0, vo
         });
     }
 }));
-cron.schedule('*/30 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+cron.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Updating leaderboard");
     updateLeaderboard();
 }));
