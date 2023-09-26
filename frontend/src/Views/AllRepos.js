@@ -4,6 +4,7 @@ import axios from "axios";
 import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
 import profile from './profile.svg';
+import swclogo from '../components/LandingPage/hacktober_logo.svg';
 
 const AllRepos = () => {
     const [iitgRepos, setIitgRepos] = useState();
@@ -57,7 +58,7 @@ const AllRepos = () => {
                     </div>
                     <div>
                         <div className="pt-24 pb-48">
-                            <img src="/Images/swc_hacktober.svg" width={800}></img>
+                            <img src={swclogo} width={800}></img>
                         </div>
                     </div>
                 </div>
