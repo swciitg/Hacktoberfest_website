@@ -95,30 +95,6 @@ app.get(process.env.BASE_API_PATH, (req, res) => {
   res.send("API HOME");
 });
 
-app.get(process.env.HOME_PATH + '/auth/github',
-  passport.authenticate('github', {
-    scope: ['user:email']
-  }));
-
-app.get(process.env.HOME_PATH + '/auth/github/callback',
-  passport.authenticate('github', {
-    failureRedirect: process.env.REACT_APP_URL
-  }),
-  async (req, res) => {
-    console.log(req.user);
-    let tokenInfo = await UserTokenInfo.findOne({
-      github_id: req.user.id
-    });
-    console.log(req.user.id);
-    const token = jwt.sign(tokenInfo.access_token, process.env.SECRET_KEY);
-    console.log("Hello", token);
-    res.cookie('access_token', token, {
-      maxAge: 172800000
-    });
-    res.redirect(process.env.REACT_APP_URL + "/leaderboard");
-    return;
-  });
-
 app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
   try {
     const leaderboardEntries = await UserLeaderboard.find({}).exec();
@@ -151,6 +127,30 @@ app.get(process.env.BASE_API_PATH + '/repo', async (req, res) => {
   console.log("here is repo datas", repos);
   res.send(repos);
 });
+
+app.get(process.env.HOME_PATH + '/auth/github',
+  passport.authenticate('github', {
+    scope: ['user:email']
+  }));
+
+app.get(process.env.HOME_PATH + '/auth/github/callback',
+  passport.authenticate('github', {
+    failureRedirect: process.env.REACT_APP_URL
+  }),
+  async (req, res) => {
+    console.log(req.user);
+    let tokenInfo = await UserTokenInfo.findOne({
+      github_id: req.user.id
+    });
+    console.log(req.user.id);
+    const token = jwt.sign(tokenInfo.access_token, process.env.SECRET_KEY);
+    console.log("Hello", token);
+    res.cookie('access_token', token, {
+      maxAge: 172800000
+    });
+    res.redirect(process.env.REACT_APP_URL + "/leaderboard");
+    return;
+  });
 
 app.use((req, res, next) => {
   try {
