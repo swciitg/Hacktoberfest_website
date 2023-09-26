@@ -8,6 +8,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "4000:4000"
+      - "8115:4000"
     volumes:
       - .:/code/build
