@@ -1,13 +1,11 @@
 FROM node:16-alpine  AS builder
 WORKDIR /code
-COPY ./frontend .
+COPY . .
+WORKDIR /code/frontend
 RUN npm install --legacy-peer-deps && npm run build
-
-FROM node:16-alpine  AS server
-WORKDIR /code
-RUN mkdir /public
-COPY --from=builder /code/build /public
-COPY ./backend .
+RUN ls -lah
+RUN mv /code/frontend/build /code/backend/
+WORKDIR /code/backend
 RUN npm install --legacy-peer-deps
 
 EXPOSE 4000
