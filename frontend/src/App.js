@@ -25,8 +25,6 @@ function App() {
         </Routes>
       </CookiesProvider>
     </BrowserRouter>
-
-
   );
 }
 

@@ -22,7 +22,6 @@ import cron from 'node-cron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-let access_token = '';
 const app = express();
 dotenv.config();
 const corsConfig = {
@@ -230,7 +229,7 @@ console.log("here is repo datas",repos);
 
 app.get(process.env.BASE_API_PATH + '/profile', async (req, res) => {
   console.log("HERE");
-  access_token = req.access_token;
+  let access_token = req.access_token;
   let tokenInfo = await UserTokenInfo.findOne({access_token});
   const userData = {};
   if(tokenInfo && tokenInfo.github_id){

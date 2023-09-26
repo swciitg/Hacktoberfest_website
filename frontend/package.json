@@ -8,7 +8,6 @@
     "start": "react-scripts start",
     "lint": "react-scripts lint"
   },
-  "homepage": "/hacktoberfest",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "@sentry/react": "^7.69.0",
