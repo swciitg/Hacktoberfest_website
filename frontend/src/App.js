@@ -15,13 +15,13 @@ function App() {
     window.location.href = BACKEND_API + "/auth/github";
   }
   return (
-    <BrowserRouter >
+    <BrowserRouter basename='/hacktoberfest'>
       <CookiesProvider>
         <Routes>
-          <Route path='/hacktoberfest' Component={LandingPage}></Route>
-          <Route path='/hacktoberfest/profile' Component={RegistrationForm}></Route>
-          <Route path='/hacktoberfest/' Component={LeaderPage}></Route>
-          <Route path='/hacktoberfest/repos' Component={AllRepos}></Route>
+          <Route path='/' Component={LandingPage}></Route>
+          <Route path='/profile' Component={RegistrationForm}></Route>
+          <Route path='/leaderboard' Component={LeaderPage}></Route>
+          <Route path='/repos' Component={AllRepos}></Route>
         </Routes>
       </CookiesProvider>
     </BrowserRouter>
