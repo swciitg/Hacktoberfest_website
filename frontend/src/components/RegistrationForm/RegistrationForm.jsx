@@ -19,6 +19,12 @@ const RegistrationForm = (props) => {
   const hostel_ref = useRef();
   const navigate = useNavigate();
 
+  const [cookies] = useCookies(["access_token"]);
+  console.log(cookies.access_token);
+  if (!cookies.access_token) {
+    window.location.href = BACKEND_API + "/auth/github";
+  }
+
   useEffect(() => {
     axios
       .get(`${BACKEND_API}/api/profile`, {

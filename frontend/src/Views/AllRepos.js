@@ -47,7 +47,7 @@ const AllRepos = () => {
                 </a>
             </div>
             <div className="absolute top-[40px] right-20 z-10 text-white">
-                <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/leaderboard">Leaderboard</a>
+                <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/hacktoberfest/leaderboard">Leaderboard</a>
             </div>
             <div className="flex flex-col items-center">
                 <div className="h-2/5 w-full bg-[#170f1e] flex flex-col items-center">
