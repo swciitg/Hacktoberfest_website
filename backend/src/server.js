@@ -230,9 +230,9 @@ app.get(process.env.BASE_API_PATH + '/profile', async (req, res) => {
   console.log("HERE");
   let access_token = req.access_token;
   let tokenInfo = await UserTokenInfo.findOne({access_token});
-  const userData = {};
+  let userData = {};
   if(tokenInfo && tokenInfo.github_id){
-    await User.findOne({github_id:tokenInfo.github_id})
+    userData=await User.findOne({github_id:tokenInfo.github_id})
   }
   res.json({ userData });
 })
@@ -257,6 +257,8 @@ async function createLeaderboardEntry(github_id){
 }
 
 app.put(process.env.BASE_API_PATH + "/profile", async (req , res) => {
+  console.log("INSIDE PROFILE");
+  console.log(req);
   console.log(req.body);
   let body = req.body;
   let userInfo = await getUserInfo(req.access_token);

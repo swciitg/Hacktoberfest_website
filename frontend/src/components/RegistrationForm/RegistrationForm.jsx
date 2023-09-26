@@ -55,11 +55,11 @@ const RegistrationForm = (props) => {
         withCredentials: true,
       })
       .then((response) => {
+        navigate("/leaderboard");
       })
       .catch((error) => {
         console.log(error);
       });
-    navigate("/hacktoberfest/leaderboard");
   }
 
   console.log(profile?.avatar_url)
