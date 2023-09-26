@@ -107,18 +107,14 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
   async (req, res) => {
     console.log(req.user);
     let tokenInfo = await UserTokenInfo.findOne({
-      github_id: res.req.user.id
-    });
-    const token = jwt.sign(tokenInfo.access_token, process.env.SECRET_KEY);
-    console.log("Hello", token);
-    let user = await User.findOne({
       github_id: req.user.id
     });
-    console.log(user);
+    console.log(req.user.id);
+    const token = jwt.sign(tokenInfo.access_token, process.env.SECRET_KEY);
+    console.log("Hello", token);
     res.cookie('access_token', token, {
       maxAge: 172800000
     });
-    console.log("REGISTER USER");
     res.redirect(process.env.REACT_APP_URL+"/leaderboard");
     return;
   });
