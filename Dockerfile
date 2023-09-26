@@ -5,7 +5,8 @@ RUN npm install --legacy-peer-deps && npm run build
 
 FROM node:16-alpine  AS server
 WORKDIR /code
-COPY --from=builder /code/build /build
+RUN mkdir /public
+COPY --from=builder /code/build /public
 COPY ./backend .
 RUN npm install --legacy-peer-deps
 
