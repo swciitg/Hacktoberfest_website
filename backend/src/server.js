@@ -58,34 +58,6 @@ app.use(passport.session());
 
 const port = process.env.PORT || 8000;
 
-passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: process.env.CALLBACK_URI
-},
-  async function (access_token, refreshToken, profile, done) {
-    console.log('access_token:', access_token);
-    console.log('refreshToken:', refreshToken);
-    console.log('profile:', profile);
-    let tokenInfo = await UserTokenInfo.findOne({
-      github_id: profile.id
-    });
-    console.log(tokenInfo);
-    if (tokenInfo) {
-      console.log("already had token saved")
-      tokenInfo.access_token = access_token;
-    } else {
-      console.log("new token");
-      tokenInfo = new UserTokenInfo({
-        github_id: profile.id,
-        access_token: access_token
-      });
-    }
-    await tokenInfo.save();
-    return done(null, profile);
-  }
-));
-
 app.use((req, res, next) => {
   console.log(req.originalUrl);
   next();
@@ -97,6 +69,7 @@ app.get(process.env.BASE_API_PATH, (req, res) => {
 
 app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
   try {
+    console.log("LEADERBOARD");
     const leaderboardEntries = await UserLeaderboard.find({}).exec();
     console.log(leaderboardEntries);
     const leaderboardData = [];
@@ -128,6 +101,34 @@ app.get(process.env.BASE_API_PATH + '/repo', async (req, res) => {
   res.send(repos);
 });
 
+passport.use(new GitHubStrategy({
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URI
+},
+  async function (access_token, refreshToken, profile, done) {
+    console.log('access_token:', access_token);
+    console.log('refreshToken:', refreshToken);
+    console.log('profile:', profile);
+    let tokenInfo = await UserTokenInfo.findOne({
+      github_id: profile.id
+    });
+    console.log(tokenInfo);
+    if (tokenInfo) {
+      console.log("already had token saved")
+      tokenInfo.access_token = access_token;
+    } else {
+      console.log("new token");
+      tokenInfo = new UserTokenInfo({
+        github_id: profile.id,
+        access_token: access_token
+      });
+    }
+    await tokenInfo.save();
+    return done(null, profile);
+  }
+));
+
 app.get(process.env.HOME_PATH + '/auth/github',
   passport.authenticate('github', {
     scope: ['user:email']
@@ -154,6 +155,7 @@ app.get(process.env.HOME_PATH + '/auth/github/callback',
 
 app.use((req, res, next) => {
   try {
+    if(req.originalUrl===process.env.BASE_API_PATH + '/profile'){
     console.log('Cookies: ', req.cookies);
     if (req.cookies.access_token) {
       var decoded = jwt.verify(req.cookies.access_token, process.env.SECRET_KEY);
@@ -163,6 +165,8 @@ app.use((req, res, next) => {
     } else {
       throw new Error("no token found")
     }
+  }
+  else next();
   } catch (err) {
     console.log(err);
     res.redirect(process.env.HOME_PATH + '/auth/github');

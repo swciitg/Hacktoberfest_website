@@ -1,7 +1,8 @@
 
 const Entry = (props) => {
+    console.log(props);
     let style;
-    if (props.name == props.row.username) {
+    if (props.name === props.row.username) {
         style = "p-4 grid grid-cols-3 gap-4 text-lg text-center transition-all hover:scale-105 bg-blue-100"
     }
     else{
