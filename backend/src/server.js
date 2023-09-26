@@ -20,6 +20,7 @@ import UserLeaderboard from '../models/leaderboardModel.js'
 import githubLabels from '../models/githubLabels.js'
 import cron from 'node-cron';
 import path from 'path';
+import fs from "fs";
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -37,7 +38,9 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, '../build')));
+console.log(path.join(__dirname, '..', 'build'));
+
+app.use('/hacktoberfest', express.static(path.join(__dirname, '..', 'build')));
 
 app.use(expressSession({
   secret: process.env.SESSION_SECRET,
@@ -375,5 +378,5 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build/index.html'));
+  res.sendFile(path.join(__dirname, '..', 'build','index.html'));
 });
