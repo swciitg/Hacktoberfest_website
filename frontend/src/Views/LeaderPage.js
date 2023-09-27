@@ -96,12 +96,10 @@ const LeaderPage = () => {
               <img src={swclogo} width={800}></img>
             </div>
           </div>
-          {
-            userRankInfo !== null ? <div className="items-center pb-24">
-              <span className="text-white font-bold text-[38.4px]">Your rank: {userRankInfo.rank} | PRs Merged: {userRankInfo.total_pr_merged}</span>
+            <div className="items-center pb-24">
+              <span className="text-white font-bold text-[38.4px]">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
               <hr color="white"></hr>
-            </div> : null
-          }
+            </div>
         </div>
         <div className="w-3/4 -m-12">
           <Leaderboard data={leaderboard} name={name}></Leaderboard>
