@@ -3,7 +3,7 @@ import Confetti from "react-confetti";
 import React, { useState, useRef, useEffect } from "react";
 import swclogo from '../components/LandingPage/hacktober_logo.svg';
 import profile from './profile.svg';
-import axios from "axios";
+import axios, { all } from "axios";
 import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
 import logout from "./logout.svg"
@@ -14,6 +14,9 @@ const LeaderPage = () => {
   const [userRankInfo, setUserRankInfo] = useState(null);
 
   const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+
+  const [allCookies, , removeAllCookie] = useCookies();
+
 
   useEffect(() => {
     axios
@@ -76,8 +79,10 @@ const LeaderPage = () => {
   }, []);
 
   const handleLogout = () => {
-    removeCookie('access_token');
-    window.location.href = '/hacktoberfest';
+    Object.keys(allCookies).forEach(cookieName => {
+      removeCookie(cookieName, { path: '/' }); // Remove React cookie
+            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
+      window.location.href = '/hacktoberfest';
     // console.log(cookies.access_token)
 
   }

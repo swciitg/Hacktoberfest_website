@@ -9,7 +9,7 @@ import logout from "./logout.svg"
 const AllRepos = () => {
     const [iitgRepos, setIitgRepos] = useState();
     const [nonIitgRepos, setNonIitgRepos] = useState();
-    const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     useEffect(() => {
         axios
@@ -44,7 +44,9 @@ const AllRepos = () => {
       }, []);
       
       const handleLogout = () => {
-        removeCookie('access_token');
+        Object.keys(cookies).forEach(cookieName => {
+            removeCookie(cookieName, { path: '/' }); // Remove React cookie
+            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
         window.location.href = '/hacktoberfest';
         // console.log(cookies.access_token)
       }
