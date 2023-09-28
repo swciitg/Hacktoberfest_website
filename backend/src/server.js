@@ -311,7 +311,7 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
     await user.save();
   } else {
     console.log("USER NOT FOUND");
-    user = new User({ github_id: userInfo.id, github_username: userInfo.login, ...body });
+    user = new User({ github_id: userInfo.id, avatar_url: userInfo.avatar_url, github_username: userInfo.login, ...body });
     console.log(user);
     await user.save();
   }
