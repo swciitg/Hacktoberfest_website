@@ -12,8 +12,8 @@ const LandingPage = () => {
             </div>
             <div className={styles.GithubSection}>
                 <div className={styles.GithubSectionText}>
-                    <div>Celebrate open source with Students' Web Committee, Register now<br /> for
-                        <span style={{ color: `rgba(110,208,255,1)` }}>Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 and win exciting prizes.
+                    <div>Celebrate open source with Students&apos; Web Committee, Register now<br /> for
+                        <span style={{ color: `rgba(110,208,255,1)` }}>Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 and win exciting prizes 🏆.
                     </div>
                     <div>
                         <a href={`/hacktoerbfest/profile`} className={styles.GithubSectionButton} ><svg
