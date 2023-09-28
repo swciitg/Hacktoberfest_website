@@ -369,7 +369,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
         owner,
         repo,
         repo_id,
-        avatar_url: repo_info.avatar_url,
+        avatar_url: repo_info.owner.avatar_url,
         type
       });
       await newRepo.save();
