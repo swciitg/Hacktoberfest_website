@@ -185,11 +185,7 @@ passport.deserializeUser(function (id, done) {
 
 mongoose.connect(process.env.MONGO_URL, {}).then(() => {
   console.log("mongodb connected");
-  app.listen(port, () => {const leaderboardData = new UserLeaderboard({
-    github_id: userInfo.github_id,
-    pull_requests_merged: total_pr_merged,
-  });
-  return leaderboardData.save();
+  app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
   });
 })
