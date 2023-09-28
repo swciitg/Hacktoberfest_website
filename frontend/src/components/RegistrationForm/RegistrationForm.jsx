@@ -77,7 +77,11 @@ const RegistrationForm = (props) => {
       </div>
       <div className={styles.FormSection}>
         <div className={styles.UserName}>
-          Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> {profile?.github_username}
+          {
+            profile!==null ? <div>
+              Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> {profile?.github_username}
+            </div> : <div>Fill out below details to register</div>
+          }
         </div>
         <form action="" className='flex flex-col items-center w-full' >
           <div className={styles.Form}>
@@ -153,7 +157,6 @@ const RegistrationForm = (props) => {
               Submit</button>
           </div>
         </form>
-
       </div>
       <div className={styles.HacktoberLogo}>
         <img src={hacktoberlogo} alt="" />
