@@ -12,11 +12,11 @@ const LandingPage = () => {
             </div>
             <div className={styles.GithubSection}>
                 <div className={styles.GithubSectionText}>
-                    <div>Celebrate open source, create a<br /> free
-                        <span style={{ color: `rgba(110,208,255,1)` }}>Hacktoberfest</span> leaderboard <br />for your team 🎉
+                    <div>Celebrate open source with Students' Web Committee, Register now<br /> for
+                        <span style={{ color: `rgba(110,208,255,1)` }}>Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 and win exciting prizes 🏆.
                     </div>
                     <div>
-                        <a href={`${BACKEND_API}/auth/github`} className={styles.GithubSectionButton} ><svg
+                        <a href={`/hacktoerbfest/profile`} className={styles.GithubSectionButton} ><svg
                             className={styles.GithubSectionLogo} viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <title>GitHub icon</title>
