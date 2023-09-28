@@ -5,10 +5,12 @@ import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
 import profile from './profile.svg';
 import swclogo from '../components/LandingPage/hacktober_logo.svg';
-
+import logout from "./logout.svg"
 const AllRepos = () => {
     const [iitgRepos, setIitgRepos] = useState();
     const [nonIitgRepos, setNonIitgRepos] = useState();
+    const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+
     useEffect(() => {
         axios
           .get(`${BACKEND_API}/api/repo`, {
@@ -40,15 +42,24 @@ const AllRepos = () => {
           });
     
       }, []);
+      
+      const handleLogout = () => {
+        removeCookie('access_token');
+        window.location.href = '/hacktoberfest';
+        // console.log(cookies.access_token)
+      }
+
     return (
         <div className="bg-[#2a303c] w-full h-full">
-             <div className="absolute top-[8px] right-2 z-10 text-white">
+             <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
+             <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/hacktoberfest/leaderboard">Leaderboard</a>
+
                 <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
                     <img src={profile} width = {35}></img>
                 </a>
-            </div>
-            <div className="absolute top-[40px] right-20 z-10 text-white">
-                <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href ="/hacktoberfest/leaderboard">Leaderboard</a>
+                <button onClick={handleLogout}>
+          <img src={logout} width={40}></img>
+        </button>
             </div>
             <div className="flex flex-col items-center">
                 <div className="h-2/5 w-full bg-[#170f1e] flex flex-col items-center">

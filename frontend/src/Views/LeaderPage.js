@@ -6,13 +6,14 @@ import profile from './profile.svg';
 import axios from "axios";
 import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
+import logout from "./logout.svg"
 
 const LeaderPage = () => {
   const [leaderboard, setLeaderboard] = useState(null);
   const [name, setName] = useState('');
   const [userRankInfo, setUserRankInfo] = useState(null);
 
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
 
   useEffect(() => {
     axios
@@ -74,16 +75,26 @@ const LeaderPage = () => {
     setWidth(confetiRef.current.clientWidth);
   }, []);
 
+  const handleLogout = () => {
+    removeCookie('access_token');
+    window.location.href = '/hacktoberfest';
+    // console.log(cookies.access_token)
+
+  }
+
   return (
     <div ref={confetiRef}>
       <Confetti numberOfPieces={150} width={width} height={height} />
-      <div className="absolute top-[8px] right-2 z-10 text-white">
+      <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
+      <a className="bg-[#ffffff26] text-white font-[20px] p-4 rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
+
         <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
           <img src={profile} width={35}></img>
         </a>
-      </div>
-      <div className="absolute top-[40px] right-20 z-10 text-white">
-        <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
+        <button onClick={handleLogout}>
+          <img src={logout} width={40}></img>
+        </button>
+     
       </div>
       <div className="flex flex-col items-center">
         <div className="w-full bg-[#170f1e] flex flex-col items-center">

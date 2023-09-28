@@ -78,7 +78,7 @@ const RegistrationForm = (props) => {
       <div className={styles.FormSection}>
         <div className={styles.UserName}>
           {
-            profile!==null ? <div>
+            profile!==null ? <div className='flex gap-2 items-center'>
               Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> {profile?.github_username}
             </div> : <div>Fill out below details to register</div>
           }
