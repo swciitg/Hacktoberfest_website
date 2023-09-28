@@ -12,8 +12,12 @@ const repoSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    pull_request_count: {
-        type: mongoose.Schema.Types.Mixed,
+    pullRequestCount: {
+        type: Number,
+        default: 0
+    },
+    mergedPullRequestCount: {
+        type: Number,
         default: 0
     },
     avatar_url: {
