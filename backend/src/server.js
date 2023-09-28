@@ -185,11 +185,7 @@ passport.deserializeUser(function (id, done) {
 
 mongoose.connect(process.env.MONGO_URL, {}).then(() => {
   console.log("mongodb connected");
-  app.listen(port, () => {const leaderboardData = new UserLeaderboard({
-    github_id: userInfo.github_id,
-    pull_requests_merged: total_pr_merged,
-  });
-  return leaderboardData.save();
+  app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
   });
 })
@@ -353,7 +349,10 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
         error: 'Please fill all the three entries!'
       });
     }
-    const repo_info = await getRepo.getRepoInfo(owner, repo, req.access_token);
+    const tokens = await UserTokenInfo.find({}).exec();
+    const tokenArray = tokens.map(token => token.access_token);
+    const randomIndex = Math.floor(Math.random() * tokenArray.length);
+    const repo_info = await getRepo.getRepoInfo(owner, repo, tokenArray[randomIndex]);
     console.log(repo_info);
     const repo_id = repo_info.id;
     try {
@@ -370,7 +369,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
         owner,
         repo,
         repo_id,
-        avatar_url: repo_info.avatar_url,
+        avatar_url: repo_info.owner.avatar_url,
         type
       });
       await newRepo.save();

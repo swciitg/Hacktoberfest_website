@@ -96,23 +96,23 @@ const LeaderPage = () => {
         </button>
      
       </div>
-      <div className="flex flex-col items-center">
-        <div className="w-full bg-[#170f1e] flex flex-col items-center">
-          <div className="items-center p-6">
-            <span className="text-white font-bold text-[38.4px]">Welcome to Leaderboard</span>
+      <div className="flex bg-[#170f1e]  flex-col sm:min-w-screen items-center">
+        <div className=" flex flex-col md:items-center items-start">
+          <div className="md:items-center sm:block hidden md:p-6 md:mt-0 mt-8 md:mx-0 mx-12">
+            <span className="text-white font-bold md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
             <hr color="white"></hr>
           </div>
           <div>
-            <div className="pt-24 pb-12">
+            <div className="pt-24 pb-12 md:mx-0 mx-12">
               <img src={swclogo} width={800}></img>
             </div>
           </div>
-            <div className="items-center pb-24">
-              <span className="text-white font-bold text-[38.4px]">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
-              <hr color="white"></hr>
-            </div>
+          <div className="items-center pb-24 md:mx-0 mx-12">
+            <span className="text-white font-bold text-[38.4px]">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
+            <hr color="white"></hr>
+          </div>
         </div>
-        <div className="w-3/4 -m-12">
+        <div className="sm:w-3/4 w-[90vw] -m-12 sm:mx-0 mx-4">
           <Leaderboard data={leaderboard} name={name}></Leaderboard>
         </div>
       </div>
