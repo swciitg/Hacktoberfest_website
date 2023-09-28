@@ -7,47 +7,49 @@ import profile from './profile.svg';
 import swclogo from '../components/LandingPage/hacktober_logo.svg';
 import logout from "./logout.svg"
 const AllRepos = () => {
-  const [iitgRepos, setIitgRepos] = useState();
-  const [nonIitgRepos, setNonIitgRepos] = useState();
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+    const [iitgRepos, setIitgRepos] = useState();
+    const [nonIitgRepos, setNonIitgRepos] = useState();
+    const [cookies, setCookie, removeCookie] = useCookies();
 
-  useEffect(() => {
-    axios
-      .get(`${BACKEND_API}/api/repo`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        let iitgData = response.data.filter((row, index) => {
-          return row.type === "IITG";
-        })
-        setIitgRepos(iitgData.map((row, index) => {
-          return {
-            ...row,
-            index: index + 1,
-          };
-        }));
-        let nonIitgData = response.data.filter((row, index) => {
-          return row.type !== "IITG";
-        })
-        setNonIitgRepos(nonIitgData.map((row, index) => {
-          return {
-            ...row,
-            index: index + 1,
-          };
-        }));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-  }, []);
-
-  const handleLogout = () => {
-    removeCookie('access_token');
-    window.location.href = '/hacktoberfest';
-    // console.log(cookies.access_token)
-  }
+    useEffect(() => {
+        axios
+          .get(`${BACKEND_API}/api/repo`, {
+            withCredentials: true,
+          })
+          .then((response) => {
+            console.log(response.data);
+            let iitgData = response.data.filter((row,index) => {
+                return row.type==="IITG";
+            })
+            setIitgRepos(iitgData.map((row, index) => {
+                return {
+                  ...row,
+                  index: index + 1,
+                };
+              }));
+            let nonIitgData = response.data.filter((row,index) => {
+                return row.type!=="IITG";
+            })
+            setNonIitgRepos(nonIitgData.map((row, index) => {
+                return {
+                  ...row,
+                  index: index + 1,
+                };
+              }));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    
+      }, []);
+      
+      const handleLogout = () => {
+        Object.keys(cookies).forEach(cookieName => {
+            removeCookie(cookieName, { path: '/' }); // Remove React cookie
+            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
+        window.location.href = '/hacktoberfest';
+        // console.log(cookies.access_token)
+      }
 
   return (
     <div className="bg-[#2a303c] w-full h-full">
