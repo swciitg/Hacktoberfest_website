@@ -61,7 +61,7 @@ const RegistrationForm = (props) => {
         withCredentials: true,
       })
       .then((response) => {
-        navigate("/hacktoberfest/leaderboard");
+        navigate("/leaderboard");
       })
       .catch((error) => {
         console.log(error);
