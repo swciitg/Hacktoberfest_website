@@ -185,7 +185,11 @@ passport.deserializeUser(function (id, done) {
 
 mongoose.connect(process.env.MONGO_URL, {}).then(() => {
   console.log("mongodb connected");
-  app.listen(port, () => {
+  app.listen(port, () => {const leaderboardData = new UserLeaderboard({
+    github_id: userInfo.github_id,
+    pull_requests_merged: total_pr_merged,
+  });
+  return leaderboardData.save();
     console.log(`Server is running on port ${port}`)
   });
 })
@@ -321,6 +325,19 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
   res.json({ success: true });
 });
 
+app.post(process.env.BASE_API_PATH + '/label', async (req, res) => {
+  if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
+    const {label} = req.body;
+    const githubLabelInfo = githubLabels({label_type: label});
+    await githubLabelInfo.save();
+    res.json({success: true, message : "posted label successfully"});
+  }
+  else{
+    return res.status(403).json({
+      error: 'Invalid secret key.'
+    });
+  }
+});
 
 app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
 
