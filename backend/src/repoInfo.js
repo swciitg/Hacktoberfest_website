@@ -46,8 +46,7 @@ async function getRepositorypull_request_count(owner, repo, access_token) {
       }
     });
 
-    const mergedPullRequests = pullRequestsResponse.data.filter(pr => pr.state === 'closed' || pr.merged);
-
+    const mergedPullRequests = pullRequestsResponse.data.filter(pr => pr.merged===true);
     return {
       pullRequestCount: pullRequestsResponse.data.length,
       mergedPullRequestCount: mergedPullRequests.length,
@@ -70,7 +69,8 @@ async function getPRCountsForMultipleRepos(repositories, access_token) {
         getRepositorypull_request_count(owner, name, access_token),
       ]);
 
-      repo.pull_request_count = pull_request_count;
+      repo.pullRequestCount = pull_request_count.pullRequestCount;
+      repo.mergedPullRequestCount = pull_request_count.mergedPullRequestCount;
       repo.avatar_url = repoInfo.owner.avatar_url;
       repo.techStacks = Object.keys(techStacks);
       repo.description = repoInfo.description;
