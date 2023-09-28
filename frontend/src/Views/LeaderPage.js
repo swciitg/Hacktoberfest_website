@@ -96,9 +96,11 @@ const LeaderPage = () => {
         <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
           <img src={profile} width={35}></img>
         </a>
-        <button onClick={handleLogout}>
+        {
+         cookies.access_token ? <button onClick={handleLogout}>
           <img src={logout} width={40}></img>
-        </button>
+        </button> : null
+        }
      
       </div>
       <div className="flex bg-[#170f1e]  flex-col sm:min-w-screen items-center">

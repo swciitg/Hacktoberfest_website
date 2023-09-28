@@ -59,9 +59,11 @@ const AllRepos = () => {
         <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
           <img src={profile} width={35}></img>
         </a>
-        <button onClick={handleLogout}>
+        {
+         cookies.access_token ? <button onClick={handleLogout}>
           <img src={logout} width={40}></img>
-        </button>
+        </button> : null
+        }
       </div>
       <div className="flex flex-col items-center">
         <div className="h-2/5 w-full bg-[#170f1e] flex flex-col items-center">
