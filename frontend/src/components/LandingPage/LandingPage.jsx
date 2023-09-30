@@ -1,4 +1,3 @@
-import { BACKEND_API } from '../../api';
 import styles from './LandingPage.module.css';
 import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';

@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import styles from './RegistrationForm.module.css';
 import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';
@@ -78,8 +77,8 @@ const RegistrationForm = (props) => {
       <div className={styles.FormSection}>
         <div className={styles.UserName}>
           {
-            profile!==null ? <div className='flex gap-2 items-center'>
-              Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> {profile?.github_username}
+            profile!==null ? <div className='flex gap-2 items-center sm:text-4xl text-2xl '>
+              Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
             </div> : <div>Fill out below details to register</div>
           }
         </div>

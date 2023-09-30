@@ -131,7 +131,7 @@ body {
 @media screen and (max-width :650px) {
     .landingPage {
         flex-direction: column;
-        height: auto;
+        height: 110vh;
     }
 
     .FormSection {
@@ -140,7 +140,7 @@ body {
     }
 
     .HacktoberLogo {
-
+        margin-top: 8vw;
         align-items: center;
         width: 100%;
         padding: 3vh 0%;
@@ -164,4 +164,13 @@ body {
     .FormInput select {
         width: 100%;
     }
+}
+
+@media screen and (width:375px) {
+      .FormSection{
+        height: 100vh;
+      }
+      .landingPage{
+        height: 140vh;
+      }
 }
