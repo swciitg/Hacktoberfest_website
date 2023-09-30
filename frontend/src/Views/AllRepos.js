@@ -52,7 +52,7 @@ const AllRepos = () => {
       }
 
   return (
-    <div className="bg-[#2a303c] w-full h-full">
+    <div className="bg-[#2a303c] w-full h-screen">
       <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
         <a className="bg-[#ffffff26] text-white font-[20px] p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/leaderboard">Leaderboard</a>
 
@@ -78,14 +78,14 @@ const AllRepos = () => {
           </div>
         </div>
       </div>
-      <div className="md:pl-24 pl-24 bg-[#170f1e]">
-        <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="md:pl-24 sm:pl-24 bg-[#170f1e]">
+        <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
           {iitgRepos?.map(row => (
             <Card row={row} key={row.index} />
           ))}
         </div>
       </div>
-      <p className="text-white sm:text-start text-center pt-5 sm:pl-20 bg-[#170f1e] sm:text-[20px] text-lg pb-16">If you find any more repo suitable to be included here then, fill out this <a href="https://forms.office.com/r/YzX1rQPs2b" className="text-cyan-500">form</a></p>
+      <p className="text-white sm:text-start sm:px-0 px-1 text-center pt-5 sm:pl-20 bg-[#170f1e] sm:text-[20px] text-lg pb-16">If you find any more repo suitable to be included here then, fill out this <a href="https://forms.office.com/r/YzX1rQPs2b" className="text-cyan-500">form</a></p>
     </div>
   );
 }

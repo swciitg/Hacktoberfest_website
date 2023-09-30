@@ -103,7 +103,7 @@ const LeaderPage = () => {
         }
      
       </div>
-      <div className="flex bg-[#170f1e]  flex-col sm:min-w-screen items-center">
+      <div className="flex bg-[#170f1e] h-[200vh] flex-col sm:min-w-screen items-center">
         <div className=" flex flex-col items-center">
           <div className="items-center md:p-6 md:mt-0 mt-24 md:mx-0">
             <span className="text-white font-bold sm:p-0 md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
@@ -115,7 +115,7 @@ const LeaderPage = () => {
             </div>
           </div>
           <div className="items-center pb-24 md:mx-0 mx-12">
-            <span className="text-white font-bold text-[38.4px]">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
+            <span className="text-white font-bold sm:text-[38.4px] text-2xl">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
             <hr color="white"></hr>
           </div>
         </div>
