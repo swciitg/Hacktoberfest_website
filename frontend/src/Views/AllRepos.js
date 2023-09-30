@@ -67,18 +67,17 @@ const AllRepos = () => {
       </div>
       <div className="flex flex-col items-center">
         <div className="h-2/5 w-full bg-[#170f1e] flex flex-col items-center">
-          <div className="items-center p-6">
-            <span className="text-white font-bold text-[38.4px]">All Repos</span>
+          <div className="items-center sm:p-6 pt-24 pb-4">
+            <span className="text-white font-bold sm:text-[38.4px] text-2xl">All Repos</span>
             <hr color="white"></hr>
           </div>
           <div>
-            <div className="pt-24 pb-24">
+            <div className="sm:pt-24 sm:pb-24 pb-12 mx-8">
               <img src={swclogo} width={800}></img>
             </div>
           </div>
         </div>
       </div>
-      <p className="text-white pt-5 pl-20 bg-[#170f1e] text-[20px] pb-16">If you find any more repo suitable to be included here then, fill out this <a href="https://forms.office.com/r/YzX1rQPs2b" className="text-cyan-500">form</a></p>
       <div className="md:pl-24 pl-24 bg-[#170f1e]">
         <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
           {iitgRepos?.map(row => (
@@ -86,6 +85,7 @@ const AllRepos = () => {
           ))}
         </div>
       </div>
+      <p className="text-white sm:text-start text-center pt-5 sm:pl-20 bg-[#170f1e] sm:text-[20px] text-lg pb-16">If you find any more repo suitable to be included here then, fill out this <a href="https://forms.office.com/r/YzX1rQPs2b" className="text-cyan-500">form</a></p>
     </div>
   );
 }

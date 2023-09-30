@@ -104,13 +104,13 @@ const LeaderPage = () => {
      
       </div>
       <div className="flex bg-[#170f1e]  flex-col sm:min-w-screen items-center">
-        <div className=" flex flex-col md:items-center items-start">
-          <div className="md:items-center sm:block hidden md:p-6 md:mt-0 mt-8 md:mx-0 mx-12">
-            <span className="text-white font-bold md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
+        <div className=" flex flex-col items-center">
+          <div className="items-center md:p-6 md:mt-0 mt-24 md:mx-0">
+            <span className="text-white font-bold sm:p-0 md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
             <hr color="white"></hr>
           </div>
           <div>
-            <div className="pt-24 pb-12 md:mx-0 mx-12">
+            <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8">
               <img src={swclogo} width={800}></img>
             </div>
           </div>
