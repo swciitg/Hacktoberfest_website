@@ -5,7 +5,6 @@ import RegistrationForm from './components/RegistrationForm/RegistrationForm';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import AllRepos from './Views/AllRepos'
-import { BACKEND_API } from './api';
 
 function App() {
   return (

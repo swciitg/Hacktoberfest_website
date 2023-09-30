@@ -10,6 +10,9 @@
   },
   "homepage": "/hacktoberfest",
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.11",
     "@reduxjs/toolkit": "^1.9.5",
     "@sentry/react": "^7.69.0",
     "@sentry/tracing": "^7.69.0",

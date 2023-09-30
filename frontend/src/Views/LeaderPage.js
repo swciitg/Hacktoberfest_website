@@ -80,11 +80,9 @@ const LeaderPage = () => {
 
   const handleLogout = () => {
     Object.keys(allCookies).forEach(cookieName => {
-      removeCookie(cookieName, { path: '/' }); // Remove React cookie
+      removeCookie(cookieName, { path: '/' });
             document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
       window.location.href = '/hacktoberfest';
-    // console.log(cookies.access_token)
-
   }
 
   return (
