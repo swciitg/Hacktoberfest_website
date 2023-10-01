@@ -226,7 +226,7 @@ async function updateLeaderboard() {
         console.error("Error while updating User data:", error);
       })
     const labels = await githubLabels.find({}).exec();
-    const username = userData.login;
+    const username = userData.login;/repo
     let total_pr_merged = 0;
     for (const repo of repoArray) {
       const [merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, access_token, labels);
