@@ -216,6 +216,9 @@ async function updateLeaderboard() {
   for (const access_token of tokenArray) {
     const userInfo = await UserTokenInfo.findOne({ access_token: access_token });
     const userData = await getUserInfo(access_token);
+    if(userData===undefined){ // token expired
+      continue;
+    }
     console.log(userData);
     User.findOne({ github_id: userInfo.github_id })
       .exec()
