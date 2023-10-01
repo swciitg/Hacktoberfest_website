@@ -87,6 +87,7 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
         });
       }
     }
+    leaderboardData.sort((a,b) => b.total_pr_merged-a.total_pr_merged);
     console.log(leaderboardData);
     res.send(leaderboardData);
   } catch (error) {
