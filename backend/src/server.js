@@ -198,7 +198,7 @@ async function updateLeaderboard() {
   const tokens = await UserTokenInfo.find({}).exec();
   const repoArray = [];
   const repos = await HacktoberRepo.find({}).exec();
-
+  try{
   const tokenArray = tokens.map(token => token.access_token);
   const randomIndex = Math.floor(Math.random() * tokenArray.length);
   for (const repo of repos) {
@@ -228,10 +228,7 @@ async function updateLeaderboard() {
           existingUser.avatar_url = userData.avatar_url;
           return existingUser.save();
         }
-      })
-      .catch((error) => {
-        console.error("Error while updating User data:", error);
-      })
+      });
     const labels = await githubLabels.find({}).exec();
     const username = userData.login;
     let total_pr_merged = 0;
@@ -256,12 +253,12 @@ async function updateLeaderboard() {
       })
       .then(() => {
         console.log("Leaderboard data saved successfully");
-      })
-      .catch((error) => {
-        console.error("Error while saving leaderboard data:", error);
       });
-
-  }
+    }}
+    catch (err){
+      updateLeaderboard(); // again call -> with diff random index
+      console.error("Error while saving leaderboard data:", err);
+    }
 }
 
 app.get(process.env.BASE_API_PATH + '/profile', async (req, res) => {
@@ -350,7 +347,7 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
       repo,
       type
     } = req.body;
-
+    try {
     if (!owner || !repo || !type) {
       return res.status(400).json({
         error: 'Please fill all the three entries!'
@@ -362,7 +359,6 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
     const repo_info = await getRepo.getRepoInfo(owner, repo, tokenArray[randomIndex]);
     console.log(repo_info);
     const repo_id = repo_info.id;
-    try {
       const existingRepo = await HacktoberRepo.findOne({
         repo_id
       });
