@@ -188,6 +188,7 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
   console.log("mongodb connected");
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
+    updateLeaderboard();
   });
 })
 
@@ -214,6 +215,7 @@ async function updateLeaderboard() {
   for (const access_token of tokenArray) {
     const userInfo = await UserTokenInfo.findOne({ access_token: access_token });
     const userData = await getUserInfo(access_token);
+    console.log(userData);
     User.findOne({ github_id: userInfo.github_id })
       .exec()
       .then((existingUser) => {
