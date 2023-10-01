@@ -18,7 +18,7 @@ const Card = (props) => {
                     <div className={styles.Tags} key={row.index}>  <a href={`https://github.com/topics/${row}`}>{row}</a> </div>
                 ))}
             </div>
-            <div className={styles.CardDetail}> Open Pull requests: {props.row.pullRequestCount}
+            <div className={styles.CardDetail}> Total Pull requests: {props.row.pullRequestCount}
             </div>
             <div className={styles.CardDetail}> Merged Pull requests: {props.row.mergedPullRequestCount}
             </div>
