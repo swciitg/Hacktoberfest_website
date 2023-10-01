@@ -158,13 +158,14 @@ app.use((req, res, next) => {
   try {
     if(req.originalUrl===process.env.BASE_API_PATH + '/profile'){
     console.log('Cookies: ', req.cookies);
-    if (req.cookies.access_token) {
+    if (req.cookies.access_token!==undefined) {
       var decoded = jwt.verify(req.cookies.access_token, process.env.SECRET_KEY);
       console.log(decoded)
       req.access_token = decoded
       next();
     } else {
-      throw new Error("no token found")
+      console.log("no token found");
+      res.redirect(process.env.HOME_PATH + '/auth/github');
     }
   }
   else next();
