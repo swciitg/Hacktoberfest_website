@@ -298,7 +298,7 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
   let body = req.body;
   let userInfo = await getUserInfo(req.access_token);
   console.log(userInfo);
-  if(userData===undefined){ // token invalid
+  if(userInfo===undefined){ // token invalid
     res.redirect(process.env.HOME_PATH + '/auth/github');
     return;
   }
