@@ -78,17 +78,17 @@ const AllRepos = () => {
           </div>
         </div>
       </div>
-      <div className="md:pl-24 sm:pl-24 bg-[#170f1e]">
-      <span className="text-white font-bold sm:text-[38.4px] text-2xl my-5">Our Selected Repos</span>
-        <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="bg-[#170f1e]">
+      <span className="text-white font-bold sm:text-[38.4px] text-2xl my-5 px-20">Our Selected Repos</span>
+        <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 py-10 sm:mx-12">
           {iitgRepos?.map(row => (
             <Card row={row} key={row.index} />
           ))}
         </div>
       </div>
-      <div className="md:pl-24 sm:pl-24 bg-[#170f1e]">
-      <span className="text-white font-bold sm:text-[38.4px] text-2xl mt-5 my-5">External Repos</span>
-        <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="bg-[#170f1e] text-center sm:text-start">
+      <span className="text-white font-bold sm:text-[38.4px] text-2xl mt-5 my-5 sm:px-20">External Repos</span>
+        <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 py-10 sm:mx-12">
           {nonIitgRepos?.map(row => (
             <Card row={row} key={row.index} />
           ))}
