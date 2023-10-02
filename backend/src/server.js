@@ -216,7 +216,7 @@ async function updateLeaderboard() {
   for (const access_token of tokenArray) {
     const userInfo = await UserTokenInfo.findOne({ access_token: access_token });
     const userData = await getUserInfo(access_token);
-    if(userData===undefined){ // token expired
+    if(userData===undefined){ // token invalid
       continue;
     }
     console.log(userData);
@@ -298,6 +298,10 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
   let body = req.body;
   let userInfo = await getUserInfo(req.access_token);
   console.log(userInfo);
+  if(userData===undefined){ // token invalid
+    res.redirect(process.env.HOME_PATH + '/auth/github');
+    return;
+  }
   if (!body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
     return res.status(400).json({ success: false });
   }
