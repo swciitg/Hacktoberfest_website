@@ -15,7 +15,7 @@ const Leaderboard = ({ data, name }) => {
   return (
     <div className='shadow-md'>
       <div className='p-4 rounded-t-3xl bg-white shadow-md'>
-        <div className="grid grid-cols-3 gap-4 font-bold text-md text-center">
+        <div className="grid grid-cols-4 gap-4 font-bold text-md text-center">
           <div className="">
             <span>Sr. No</span>
           </div>
@@ -24,6 +24,9 @@ const Leaderboard = ({ data, name }) => {
           </div>
           <div className="">
             <span>Total PRs Merged</span>
+          </div>
+          <div className="">
+            <span>Total Points</span>
           </div>
         </div>
       </div>

@@ -31,6 +31,7 @@ const LeaderPage = () => {
           };
         });
         setLeaderboard(leaderboardData);
+        console.log(leaderboardData);
         console.log(cookies.access_token);
         if (cookies.access_token) {
           console.log("FOUND COOKIE");
@@ -39,7 +40,7 @@ const LeaderPage = () => {
               withCredentials: true,
             })
             .then((response) => {
-              const data = response.data;
+              const {data} = response;
               console.log(data);
               setName(data.userData.github_username);
               let userRank = 0;
@@ -113,7 +114,7 @@ const LeaderPage = () => {
             </div>
           </div>
           <div className="items-center pb-24 md:mx-0 mx-12">
-            <span className="text-white font-bold sm:text-[38.4px] text-2xl">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | PRs Merged: ${userRankInfo.total_pr_merged}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
+            <span className="text-white font-bold sm:text-[38.4px] text-2xl">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | Total Points : ${userRankInfo.total_points}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
             <hr color="white"></hr>
           </div>
         </div>

@@ -76,6 +76,7 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
     for (const entry of leaderboardEntries) {
       const github_id = entry.github_id;
       const userData = await User.findOne({ github_id: github_id });
+      const total_points = entry.points;
       if (userData) {
         const avatar_url = userData.avatar_url;
         const username = userData.github_username;
@@ -83,7 +84,8 @@ app.get(process.env.BASE_API_PATH + '/leaderboard', async (req, res) => {
         leaderboardData.push({
           username,
           avatar_url,
-          total_pr_merged
+          total_pr_merged,
+          total_points 
         });
       }
     }
@@ -237,16 +239,30 @@ async function updateLeaderboard() {
       repo.repo_mergedPR_counts = merged_pr_Data.count;
       total_pr_merged += merged_pr_Data.total_count;
     }
+    let points = 0;
+    for (const pr of merged_pr_data) {
+      for (const label of pr.labels) {
+        if (label.name === 'easy') {
+          points += 5;
+        } else if (label.name === 'medium') {
+          points += 10;
+        } else if (label.name === 'hard') {
+          points += 20;
+        }
+      }
+    }
     UserLeaderboard.findOne({ github_id: userInfo.github_id })
       .exec()
       .then((existingLeaderboardData) => {
         if (existingLeaderboardData) {
           existingLeaderboardData.pull_requests_merged = total_pr_merged;
+          existingleaderboarddata.points = points;
           return existingLeaderboardData.save();
         } else {
           const leaderboardData = new UserLeaderboard({
             github_id: userInfo.github_id,
             pull_requests_merged: total_pr_merged,
+            points: points
           });
           return leaderboardData.save();
         }

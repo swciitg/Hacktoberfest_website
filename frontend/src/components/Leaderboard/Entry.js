@@ -3,10 +3,10 @@ const Entry = (props) => {
     console.log(props);
     let style;
     if (props.name === props.row.username) {
-        style = "p-4 grid grid-cols-3 gap-4 text-lg text-center transition-all hover:scale-105 bg-blue-100"
+        style = "p-4 grid grid-cols-4 gap-4 text-lg text-center transition-all hover:scale-105 bg-blue-100"
     }
     else{
-        style = "p-4 grid grid-cols-3 gap-4 text-lg text-center transition-all hover:scale-105 bg-white"
+        style = "p-4 grid grid-cols-4 gap-4 text-lg text-center transition-all hover:scale-105 bg-white"
     }
     return (
         
@@ -17,6 +17,7 @@ const Entry = (props) => {
                 <span>{props.row.username}</span>
             </div>
             <span className="">{props.row.total_pr_merged}</span>
+            <span className="">{props.row.total_points}</span>
       </div>
     );
 }

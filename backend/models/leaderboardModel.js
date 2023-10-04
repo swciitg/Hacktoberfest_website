@@ -7,7 +7,11 @@ const leaderboardSchema = new mongoose.Schema({
     pull_requests_merged: {
         type: Number,
         default: 0
-    }
+    },
+    points: {
+        type: Number,
+        default: 0
+    },
 });
 const UserLeaderboard = mongoose.model("LeaderboardData", leaderboardSchema);
 export default UserLeaderboard;
