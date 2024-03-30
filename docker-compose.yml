@@ -11,3 +11,10 @@ services:
       - "8115:4000"
     volumes:
       - .:/code/build
+    networks:
+      - swc_website_default
+
+networks:
+  swc_website_default:
+    external:
+      name: swc_website_default
