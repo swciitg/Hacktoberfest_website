@@ -413,6 +413,48 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
   }
 });
 
+app.delete(process.env.BASE_API_PATH + '/repo', async (req, res) => {
+
+  if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
+    const { owner, repo } = req.body;
+
+    try {
+      
+      if (!owner || !repo) {
+        return res.status(400).json({
+          error: 'Please provide both the owner and the repo name!'
+        });
+      }
+
+
+      const repoToDelete = await HacktoberRepo.findOne({ owner, repo });
+
+
+      if (!repoToDelete) {
+        return res.status(404).json({
+          error: 'Repository not found in the database.'
+        });
+      }
+
+     
+      await HacktoberRepo.deleteOne({ _id: repoToDelete._id });
+
+      return res.status(200).json({
+        message: 'Repo deleted successfully.'
+      });
+    } catch (error) {
+      console.error('Error deleting the repo:', error);
+      return res.status(500).json({
+        error: `Internal server error: ${error.toString()}`
+      });
+    }
+  } else {
+    return res.status(403).json({
+      error: 'Invalid secret key.'
+    });
+  }
+});
+
 cron.schedule('0 * * * *', async () => {
   console.log("Updating leaderboard");
   updateLeaderboard();
