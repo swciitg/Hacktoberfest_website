@@ -19,7 +19,7 @@ const Leaderboard = ({ data, name }) => {
           <div className="w-2/12 mobile:w-1/3">
             <span>Sr. No</span>
           </div>
-          <div className="w-5/12 mobile:w-1/3 text-center">
+          <div className="w-5/12 mobile:w-1/3 text-left">
             <span>Contributor</span>
           </div>
           <div className="w-5/12 mobile:w-1/3 text-center">
