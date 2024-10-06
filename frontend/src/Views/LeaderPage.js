@@ -109,14 +109,14 @@ const LeaderPage = () => {
             <hr color="white"></hr>
           </div>
           <div>
-            <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8">
-              <img src={swclogo} width={800}></img>
+            <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8 mb-10 w-full">
+              <img className="block w-1/2 mx-auto" src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' width={800}></img>
             </div>
           </div>
-          <div className="items-center pb-24 md:mx-0 mx-12">
+          {/* <div className="items-center pb-24 md:mx-0 mx-12">
             <span className="text-white font-bold sm:text-[38.4px] text-2xl">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | Total Points : ${userRankInfo.total_points}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
             <hr color="white"></hr>
-          </div>
+          </div> */}
         </div>
         <div className="sm:w-3/4 w-[90vw] -m-12 sm:mx-0 mx-4">
           <Leaderboard data={leaderboard} name={name}></Leaderboard>

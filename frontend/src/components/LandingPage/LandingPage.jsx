@@ -13,7 +13,7 @@ const LandingPage = () => {
                 <div className={styles.GithubSection}>
                     <div className={styles.GithubSectionText}>
                         <div>Celebrate open source with Us, Register now<br /> for
-                            <span style={{ color: `rgba(110,208,255,1)` }}> Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 <br />win exciting prizes 🏆.
+                            <span style={{ color: `#50DA4C` }}> Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 <br />win exciting prizes 🏆.
                         </div>
                         <div className='sm:py-0 py-4'>
                             <a href={`/hacktoberfest/profile`} className={styles.GithubSectionButton} ><svg
@@ -29,7 +29,7 @@ const LandingPage = () => {
 
                 </div>
                 <div className={`${styles.HacktoberLogo}`}>
-                    <img src={hacktoberlogo} alt="" />
+                    <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
                 </div>
             </div>
         </div>

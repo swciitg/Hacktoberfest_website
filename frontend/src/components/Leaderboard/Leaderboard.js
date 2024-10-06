@@ -15,18 +15,15 @@ const Leaderboard = ({ data, name }) => {
   return (
     <div className='shadow-md'>
       <div className='p-4 rounded-t-3xl bg-white shadow-md'>
-        <div className="grid grid-cols-4 gap-4 font-bold text-md text-center">
-          <div className="">
+        <div className="flex justify-between gap-4 font-bold text-md ">
+          <div className="w-2/12 mobile:w-1/3">
             <span>Sr. No</span>
           </div>
-          <div className="">
+          <div className="w-5/12 mobile:w-1/3 text-center">
             <span>Contributor</span>
           </div>
-          <div className="">
+          <div className="w-5/12 mobile:w-1/3 text-center">
             <span>Total PRs Merged</span>
-          </div>
-          <div className="">
-            <span>Total Points</span>
           </div>
         </div>
       </div>
