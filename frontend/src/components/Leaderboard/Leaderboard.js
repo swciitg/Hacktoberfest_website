@@ -3,6 +3,7 @@ import useTable from '../../hooks/useTable.js';
 import { useState } from 'react'; 
 import Pagination from '@mui/material/Pagination';
 
+
 const Leaderboard = ({ data, name }) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 10; // Define how many rows per page you want
@@ -13,6 +14,7 @@ const Leaderboard = ({ data, name }) => {
   };
 
   return (
+    <>
     <div className='shadow-md'>
       <div className='p-4 rounded-t-3xl bg-white shadow-md'>
         <div className="flex justify-between gap-4 font-bold text-md ">
@@ -36,6 +38,7 @@ const Leaderboard = ({ data, name }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

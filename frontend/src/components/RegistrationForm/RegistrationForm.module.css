@@ -4,14 +4,14 @@ body {
 }
 
 .landingPage {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: row;
     background-color: rgb(23, 15, 30);
     padding: 25px;
     box-sizing: border-box;
-
+    overflow-x: hidden;
 }
 
 .FormSection {
@@ -111,7 +111,7 @@ body {
 }
 
 .FormSectionButton {
-    margin: 20px 0px 0px;
+    margin: 30px 0px 0px;
     letter-spacing: 0.02rem;
     background: rgb(23, 15, 30);
     color: rgb(255, 255, 255);
@@ -136,7 +136,7 @@ body {
 
     .FormSection {
         width: 100%;
-        height: 80%;
+        height: 75%;
     }
 
     .HacktoberLogo {
@@ -166,9 +166,9 @@ body {
     }
 }
 
-@media screen and (width:375px) {
+@media screen and (max-width:380px) {
       .FormSection{
-        height: 100vh;
+        height: 75%;
       }
       .landingPage{
         height: 140vh;

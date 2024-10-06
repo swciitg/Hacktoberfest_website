@@ -7,6 +7,7 @@ import axios from 'axios';
 import InputField from '../input/CustomInput';
 import { Navigate, redirect, useNavigate } from 'react-router-dom';
 import { useCookies } from "react-cookie";
+import Footer from '../Footer/footer';
 
 const RegistrationForm = (props) => {
   const [profile, setProfile] = useState();
@@ -70,6 +71,7 @@ const RegistrationForm = (props) => {
   console.log(profile?.avatar_url)
 
   return (
+    <>
     <div className={styles.landingPage}>
       <div className={styles.SwcLogo}>
         <img src={swclogo} alt="" />
@@ -77,7 +79,7 @@ const RegistrationForm = (props) => {
       <div className={styles.FormSection}>
         <div className={styles.UserName}>
           {
-            profile!==null ? <div className='flex gap-2 items-center sm:text-4xl text-2xl '>
+            profile!==null ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
               Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
             </div> : <div>Fill out below details to register</div>
           }
@@ -161,6 +163,8 @@ const RegistrationForm = (props) => {
         <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 
