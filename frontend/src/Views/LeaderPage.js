@@ -7,6 +7,7 @@ import axios, { all } from "axios";
 import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
 import logout from "./logout.svg"
+import Footer from "../components/Footer/footer";
 
 const LeaderPage = () => {
   const [leaderboard, setLeaderboard] = useState(null);
@@ -87,7 +88,8 @@ const LeaderPage = () => {
   }
 
   return (
-    <div ref={confetiRef}>
+    <>
+    <div ref={confetiRef} className="overflow-x-hidden bg-[#170f1e]">
       {/* <Confetti numberOfPieces={150} width={width} height={height} /> */}
       <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
       <a className="bg-[#ffffff26] text-white font-[20px] p-4 rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
@@ -102,7 +104,7 @@ const LeaderPage = () => {
         }
      
       </div>
-      <div className="flex bg-[#170f1e] h-[200vh] flex-col sm:min-w-screen items-center">
+      <div className="flex bg-[#170f1e] h-[200vh]  flex-col sm:min-w-screen items-center">
         <div className=" flex flex-col items-center">
           <div className="items-center md:p-6 md:mt-0 mt-24 md:mx-0">
             <span className="text-white font-bold sm:p-0 md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
@@ -123,7 +125,8 @@ const LeaderPage = () => {
         </div>
       </div>
     </div>
-
+    <Footer/>
+</>
   );
 }
 
