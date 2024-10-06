@@ -158,7 +158,7 @@ const RegistrationForm = (props) => {
         </form>
       </div>
       <div className={styles.HacktoberLogo}>
-        <img src={hacktoberlogo} alt="" />
+        <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
       </div>
     </div>
   );
