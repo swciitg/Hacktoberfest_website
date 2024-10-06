@@ -88,7 +88,7 @@ const LeaderPage = () => {
 
   return (
     <div ref={confetiRef}>
-      <Confetti numberOfPieces={150} width={width} height={height} />
+      {/* <Confetti numberOfPieces={150} width={width} height={height} /> */}
       <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
       <a className="bg-[#ffffff26] text-white font-[20px] p-4 rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
 

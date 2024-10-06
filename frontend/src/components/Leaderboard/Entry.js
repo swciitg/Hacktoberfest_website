@@ -12,7 +12,7 @@ const Entry = (props) => {
         
         <div className={style}>
             <span className="w-1/12 mobile:w-1/3 text-left">{props.row.index}</span>
-            <div className="flex space-x-3 w-1/3 mobile:justify-center">
+            <div className="flex space-x-3 w-2/3 mobile:w-1/3 ">
                 <img src={props.row.avatar_url} className="rounded-full" width={40}></img>
                 <span className="text-bold mobile:text-md ">{props.row.username}</span>
             </div>
