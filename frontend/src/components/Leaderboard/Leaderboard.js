@@ -25,9 +25,9 @@ const Leaderboard = ({ data, name }) => {
           <div className="">
             <span>Total PRs Merged</span>
           </div>
-          <div className="">
+          {/* <div className="">
             <span>Total Points</span>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='bg-white'>

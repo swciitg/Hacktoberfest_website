@@ -17,7 +17,7 @@ const Entry = (props) => {
                 <span>{props.row.username}</span>
             </div>
             <span className="">{props.row.total_pr_merged}</span>
-            <span className="">{props.row.total_points}</span>
+            {/* <span className="">{props.row.total_points}</span> */}
       </div>
     );
 }
