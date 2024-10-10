@@ -81,7 +81,7 @@ const AllRepos = () => {
         </div>
       </div>
       <div className="">
-      <span className="text-white font-bold sm:text-[38.4px] text-2xl my-5 px-4 mobile:px-20">Our Selected Repos</span>
+      <div className="text-white font-bold sm:text-[38.4px] text-2xl my-5 px-4 mobile:px-12">Our Selected Repos</div>
         <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 py-10 sm:mx-12">
           {iitgRepos?.map(row => (
             <Card row={row} key={row.index} />
@@ -89,7 +89,7 @@ const AllRepos = () => {
         </div>
       </div>
       <div className=" text-center sm:text-start">
-      <span className="text-white font-bold sm:text-[38.4px] text-2xl mt-5 my-5 sm:px-20">External Repos</span>
+      <div className="text-white font-bold sm:text-[38.4px] text-2xl mt-5 my-5 sm:px-12">External Repos</div>
         <div className="md:grid flex flex-col md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 py-10 sm:mx-12">
           {nonIitgRepos?.map(row => (
             <Card row={row} key={row.index} />
