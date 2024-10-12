@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const hacktoberfestStartDate = new Date('2023-10-01T00:00:00Z');
-const hacktoberfestEndDate = new Date('2023-10-31T23:59:59Z');
+const hacktoberfestStartDate = new Date('2024-10-05T00:00:00Z');
+const hacktoberfestEndDate = new Date('2024-10-31T23:59:59Z');
 
 async function fetchPullRequests(url, access_token) {
   try {
