@@ -239,18 +239,18 @@ async function updateLeaderboard() {
       repo.repo_mergedPR_counts = merged_pr_Data.count;
       total_pr_merged += merged_pr_Data.total_count;
     }
-    let points = 0;
-    for (const pr of merged_pr_data) {
-      for (const label of pr.labels) {
-        if (label.name === 'easy') {
-          points += 5;
-        } else if (label.name === 'medium') {
-          points += 10;
-        } else if (label.name === 'hard') {
-          points += 20;
-        }
-      }
-    }
+    // let points = 0;
+    // for (const pr of merged_pr_data) {
+    //   for (const label of pr.labels) {
+    //     if (label.name === 'easy') {
+    //       points += 5;
+    //     } else if (label.name === 'medium') {
+    //       points += 10;
+    //     } else if (label.name === 'hard') {
+    //       points += 20;
+    //     }
+    //   }
+    // }
     UserLeaderboard.findOne({ github_id: userInfo.github_id })
       .exec()
       .then((existingLeaderboardData) => {
