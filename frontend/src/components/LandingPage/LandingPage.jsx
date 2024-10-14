@@ -1,8 +1,13 @@
 import styles from './LandingPage.module.css';
-import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';
 import Footer from '../Footer/footer';
+import { useCookies } from "react-cookie";
 const LandingPage = () => {
+    let urlRedirect = '/hacktoberfest/leaderboard';
+    const [cookies] = useCookies(["access_token"]);
+    if (!cookies.access_token) {
+        urlRedirect = '/hacktoberfest/profile';
+    }
 
     return (
         <>
@@ -17,7 +22,7 @@ const LandingPage = () => {
                                 <span style={{ color: `#50DA4C` }}> Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 <br />win exciting prizes 🏆.
                             </div>
                             <div className='sm:py-0 py-4'>
-                                <a href={`/hacktoberfest/profile`} className={styles.GithubSectionButton} ><svg
+                                <a href={urlRedirect} className={styles.GithubSectionButton} ><svg
                                     className={styles.GithubSectionLogo} viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <title>GitHub icon</title>
