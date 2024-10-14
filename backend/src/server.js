@@ -22,6 +22,7 @@ import cron from 'node-cron';
 import path from 'path';
 import fs from "fs";
 import { fileURLToPath } from 'url';
+import { adminRouter } from '../admin_panel/admin-config.js'
 
 const app = express();
 dotenv.config();
@@ -29,6 +30,8 @@ const corsConfig = {
   origin: true,
   credentials: true,
 };
+
+app.use(`${process.env.BASE_API_PATH}/admin`, adminRouter);
 
 //Add request parsers
 app.use(cors(corsConfig));
