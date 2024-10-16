@@ -326,7 +326,20 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
     return;
   }
   if (!body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
-    return res.status(400).json({ success: false });
+
+    let missingEntries = [];
+    if (!body.roll_no) missingEntries.push('roll_no');
+    if (!body.outlook_email) missingEntries.push('outlook_email');
+    if (!body.programme) missingEntries.push('programme');
+    if (!body.hostel) missingEntries.push('hostel');
+    if (!body.department) missingEntries.push('department');
+    if (!body.year_of_study) missingEntries.push('year_of_study');
+
+    const missingEntriesString = missingEntries.join(', ');
+
+    return res.status(400).json({
+      error: `Please fill all the missing entries: ${missingEntriesString}`
+    });
   }
   let user = await User.findOne({
     github_id: userInfo.id
