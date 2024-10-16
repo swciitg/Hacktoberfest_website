@@ -341,6 +341,21 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
       error: `Please fill all the missing entries: ${missingEntriesString}`
     });
   }
+  // check if roll_no is valid
+  body.roll_no = body.roll_no.toString();
+  if (body.roll_no.length !== 9 ) return res.status(400).json({
+      error: 'Invalid roll number. Please enter a valid roll number.'
+  });
+  // check if enum values are valid
+  const validProgrammes = ['B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des', 'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD'];
+  const validYears = ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'];
+  if (!validProgrammes.includes(body.programme)) return res.status(400).json({
+      error: 'Invalid programme. Please enter a valid programme from: ' + validProgrammes.join(', ') + '.'
+  });
+  if (!validYears.includes(body.year_of_study)) return res.status(400).json({
+      error: 'Invalid year of study. Please enter a valid year of study from: ' + validYears.join(', ') + '.'
+  });
+
   let user = await User.findOne({
     github_id: userInfo.id
   });
