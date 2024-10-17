@@ -112,8 +112,8 @@ const RegistrationForm = (props) => {
                 <option value="0" selected hidden></option>
                 <option value="Freshman">Freshman</option>
                 <option value="Sophomore">Sophomore</option>
-                <option value="Junior">Junior</option>
-                <option value="Senior">Senior</option>
+                <option value="Pre-Final Yearite">Pre-Final Yearite</option>
+                <option value="Final Yearite">Final Yearite</option>
               </select></div>
             </div>
             <div className={styles.FormInput}>
