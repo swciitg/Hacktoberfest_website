@@ -106,33 +106,33 @@ const RegistrationForm = (props) => {
                 />
               </div>
 
-              <div className={styles.FormInput}>
-                <div><label for="Year">Year</label></div>
-                <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
-                  <option value="0" selected hidden></option>
-                  <option value="Freshman">Freshman</option>
-                  <option value="Sophomore">Sophomore</option>
-                  <option value="Junior">Junior</option>
-                  <option value="Senior">Senior</option>
-                </select></div>
-              </div>
-              <div className={styles.FormInput}>
-                <div><label for="Programme">Programme</label></div>
-                <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
-                  <option value="none" selected hidden></option>
-                  <option value="B.Tech">B.Tech</option>
-                  <option value="M.Tech">M.Tech</option>
-                  <option value="Ph.D">Ph.D</option>
-                  <option value="M.Sc">M.Sc</option>
-                  <option value="B.Des">B.Des</option>
-                  <option value="M.Des">M.Des</option>
-                  <option value="M.S.(R)">M.S.(R)</option>
-                  <option value="M.A.">M.A.</option>
-                  <option value="MBA">MBA</option>
-                  <option value="MTech+PhD">MTech+PhD</option>
-                  <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
-                </select></div>
-              </div>
+            <div className={styles.FormInput}>
+              <div><label for="Year">Year</label></div>
+              <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
+                <option value="0" selected hidden></option>
+                <option value="Freshman">Freshman</option>
+                <option value="Sophomore">Sophomore</option>
+                <option value="Pre-Final Yearite">Pre-Final Yearite</option>
+                <option value="Final Yearite">Final Yearite</option>
+              </select></div>
+            </div>
+            <div className={styles.FormInput}>
+              <div><label for="Programme">Programme</label></div>
+              <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
+                <option value="none" selected hidden></option>
+                <option value="B.Tech">B.Tech</option>
+                <option value="M.Tech">M.Tech</option>
+                <option value="Ph.D">Ph.D</option>
+                <option value="M.Sc">M.Sc</option>
+                <option value="B.Des">B.Des</option>
+                <option value="M.Des">M.Des</option>
+                <option value="M.S.(R)">M.S.(R)</option>
+                <option value="M.A.">M.A.</option>
+                <option value="MBA">MBA</option>
+                <option value="MTech+PhD">MTech+PhD</option>
+                <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
+              </select></div>
+            </div>
 
               <div className={styles.FormInput}>
                 <InputField

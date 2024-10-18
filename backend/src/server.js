@@ -22,6 +22,7 @@ import cron from 'node-cron';
 import path from 'path';
 import fs from "fs";
 import { fileURLToPath } from 'url';
+import { adminRouter } from '../admin_panel/admin-config.js'
 
 const app = express();
 dotenv.config();
@@ -29,6 +30,8 @@ const corsConfig = {
   origin: true,
   credentials: true,
 };
+
+app.use(`${process.env.BASE_API_PATH}/admin`, adminRouter);
 
 //Add request parsers
 app.use(cors(corsConfig));
@@ -323,8 +326,36 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
     return;
   }
   if (!body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
-    return res.status(400).json({ success: false });
+
+    let missingEntries = [];
+    if (!body.roll_no) missingEntries.push('roll_no');
+    if (!body.outlook_email) missingEntries.push('outlook_email');
+    if (!body.programme) missingEntries.push('programme');
+    if (!body.hostel) missingEntries.push('hostel');
+    if (!body.department) missingEntries.push('department');
+    if (!body.year_of_study) missingEntries.push('year_of_study');
+
+    const missingEntriesString = missingEntries.join(', ');
+
+    return res.status(400).json({
+      error: `Please fill all the missing entries: ${missingEntriesString}`
+    });
   }
+  // check if roll_no is valid
+  body.roll_no = body.roll_no.toString();
+  if (body.roll_no.length !== 9 ) return res.status(400).json({
+      error: 'Invalid roll number. Please enter a valid roll number.'
+  });
+  // check if enum values are valid
+  const validProgrammes = ['B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des', 'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD'];
+  const validYears = ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'];
+  if (!validProgrammes.includes(body.programme)) return res.status(400).json({
+      error: 'Invalid programme. Please enter a valid programme from: ' + validProgrammes.join(', ') + '.'
+  });
+  if (!validYears.includes(body.year_of_study)) return res.status(400).json({
+      error: 'Invalid year of study. Please enter a valid year of study from: ' + validYears.join(', ') + '.'
+  });
+
   let user = await User.findOne({
     github_id: userInfo.id
   });

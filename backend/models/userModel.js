@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     year_of_study: {
         type: String,
-        enum: ['Freshman', 'Sophomore', 'Junior', 'Senior'],
+        enum: ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'],
         required: true
     },
 });
