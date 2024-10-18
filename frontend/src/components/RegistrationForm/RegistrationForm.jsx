@@ -72,98 +72,98 @@ const RegistrationForm = (props) => {
 
   return (
     <>
-    <div className={styles.landingPage}>
-      <div className={styles.SwcLogo}>
-        <img src={swclogo} alt="" />
-      </div>
-      <div className={styles.FormSection}>
-        <div className={styles.UserName}>
-          {
-            profile!==null ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
-              Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
-            </div> : <div>Fill out below details to register</div>
-          }
+      <div className={styles.landingPage}>
+        <div className={styles.SwcLogo}>
+          <img src={swclogo} alt="" />
         </div>
-        <form action="" className='flex flex-col items-center w-full' >
-          <div className={styles.Form}>
-            <div className={styles.FormInput}>
-              <InputField
-                inputRef={roll_ref}
-                type={"text"}
-                label={"Roll Number"}
-                value={profile?.roll_no ?? ""}
-              // placeholder={"Enter roll number"}
-              />
-            </div>
-
-            <div className={styles.FormInput}>
-              <InputField
-                inputRef={mail_ref}
-                type={"text"}
-                label={"Outlook Email"}
-                value={profile?.outlook_email ?? ""}
-              // placeholder={"Enter name"}
-              />
-            </div>
-
-            <div className={styles.FormInput}>
-              <div><label for="Year">Year</label></div>
-              <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
-                <option value="0" selected hidden></option>
-                <option value="Freshman">Freshman</option>
-                <option value="Sophomore">Sophomore</option>
-                <option value="Junior">Junior</option>
-                <option value="Senior">Senior</option>
-              </select></div>
-            </div>
-            <div className={styles.FormInput}>
-              <div><label for="Programme">Programme</label></div>
-              <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
-                <option value="none" selected hidden></option>
-                <option value="B.Tech">B.Tech</option>
-                <option value="M.Tech">M.Tech</option>
-                <option value="Ph.D">Ph.D</option>
-                <option value="M.Sc">M.Sc</option>
-                <option value="B.Des">B.Des</option>
-                <option value="M.Des">M.Des</option>
-                <option value="M.S.(R)">M.S.(R)</option>
-                <option value="M.A.">M.A.</option>
-                <option value="MBA">MBA</option>
-                <option value="MTech+PhD">MTech+PhD</option>
-                <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
-              </select></div>
-            </div>
-
-            <div className={styles.FormInput}>
-              <InputField
-                inputRef={department_ref}
-                type={"text"}
-                label={"Department"}
-                value={profile?.department ?? ""}
-              // placeholder={"Enter name"}
-              /> </div>
-            <div className={styles.FormInput}>
-              <InputField
-                inputRef={hostel_ref}
-                type={"text"}
-                label={"Hostel"}
-                value={profile?.hostel ?? ""}
-              // placeholder={"Enter name"}
-              />
-            </div>
-
+        <div className={styles.FormSection}>
+          <div className={styles.UserName}>
+            {
+              profile !== null ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
+                Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
+              </div> : <div>Fill out below details to register</div>
+            }
           </div>
-          <div className='w-4/5'>
-            <button type="submit" className={styles.FormSectionButton} onClick={handleSubmit}>
-              Submit</button>
-          </div>
-        </form>
+          <form action="" className='flex flex-col items-center w-full' >
+            <div className={styles.Form}>
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={roll_ref}
+                  type={"text"}
+                  label={"Roll Number"}
+                  value={profile?.roll_no ?? ""}
+                // placeholder={"Enter roll number"}
+                />
+              </div>
+
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={mail_ref}
+                  type={"text"}
+                  label={"Outlook Email"}
+                  value={profile?.outlook_email ?? ""}
+                // placeholder={"Enter name"}
+                />
+              </div>
+
+              <div className={styles.FormInput}>
+                <div><label for="Year">Year</label></div>
+                <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
+                  <option value="0" selected hidden></option>
+                  <option value="Freshman">Freshman</option>
+                  <option value="Sophomore">Sophomore</option>
+                  <option value="Junior">Junior</option>
+                  <option value="Senior">Senior</option>
+                </select></div>
+              </div>
+              <div className={styles.FormInput}>
+                <div><label for="Programme">Programme</label></div>
+                <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
+                  <option value="none" selected hidden></option>
+                  <option value="B.Tech">B.Tech</option>
+                  <option value="M.Tech">M.Tech</option>
+                  <option value="Ph.D">Ph.D</option>
+                  <option value="M.Sc">M.Sc</option>
+                  <option value="B.Des">B.Des</option>
+                  <option value="M.Des">M.Des</option>
+                  <option value="M.S.(R)">M.S.(R)</option>
+                  <option value="M.A.">M.A.</option>
+                  <option value="MBA">MBA</option>
+                  <option value="MTech+PhD">MTech+PhD</option>
+                  <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
+                </select></div>
+              </div>
+
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={department_ref}
+                  type={"text"}
+                  label={"Department"}
+                  value={profile?.department ?? ""}
+                // placeholder={"Enter name"}
+                /> </div>
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={hostel_ref}
+                  type={"text"}
+                  label={"Hostel"}
+                  value={profile?.hostel ?? ""}
+                // placeholder={"Enter name"}
+                />
+              </div>
+
+            </div>
+            <div className='w-4/5'>
+              <button type="submit" className={styles.FormSectionButton} onClick={handleSubmit}>
+                Submit</button>
+            </div>
+          </form>
+        </div>
+        <div className={styles.HacktoberLogo}>
+          <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
+        </div>
       </div>
-      <div className={styles.HacktoberLogo}>
-        <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
-      </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 }

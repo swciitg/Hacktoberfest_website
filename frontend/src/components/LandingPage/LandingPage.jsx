@@ -1,8 +1,32 @@
+import { useEffect } from 'react';
+import axios from 'axios';
+import { BACKEND_API } from '../../api';
+
 import styles from './LandingPage.module.css';
 import hacktoberlogo from './hacktober_logo.svg';
 import swclogo from './swc_logo.png';
 import Footer from '../Footer/footer';
+
 const LandingPage = () => {
+    let redirectUrl = '/hacktoberfest/profile';
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_API}/api/profile`, {
+                withCredentials: true,
+            })
+            .then((response) => {
+                const data = response.data;
+                console.log(data);
+
+                if (data.userData) {
+                    redirectUrl = '/hacktoberfest/leaderboard';
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     return (
         <>
@@ -17,7 +41,7 @@ const LandingPage = () => {
                                 <span style={{ color: `#50DA4C` }}> Hacktoberfest Leaderboard</span><br />Kickoff your Open-Source journey 🎉 <br />win exciting prizes 🏆.
                             </div>
                             <div className='sm:py-0 py-4'>
-                                <a href={`/hacktoberfest/profile`} className={styles.GithubSectionButton} ><svg
+                                <a href={redirectUrl} className={styles.GithubSectionButton} ><svg
                                     className={styles.GithubSectionLogo} viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <title>GitHub icon</title>
