@@ -1,13 +1,17 @@
-
+import { useState,useEffect,useRef } from "react";
 const Footer = () => {
+    const [margin, setmargin] = useState()
 
+window.addEventListener('resize',()=>{
+    setmargin(window.innerWidth)
+})
   
     return (
         <div className="bg-[#170f1e] text-white flex flex-col bg-specialgrey mb-0  bottom-0">
             <div className=" flex flex-col lg:flex-row justify-evenly  pt-8">
                 <div className=" flex flex-col  basis-1 lg:basis-1/3">
                     <div className="font-Inter text-2xl md:text-6xl xl:text-6xl leading-tight md:text-center mx-auto">Get in touch! <p className="hidden lg:inline">&nbsp;</p></div>
-                    <div className={`flex my-4  ${window.innerWidth < 420 ? `mx-[20px] justify-between` : 'mx-5 justify-around'}`}>
+                    <div className={`flex my-4  ${window.innerWidth < 420 ? `mx-[15px] justify-between` : 'mx-5 justify-around'}`}>
                         <div className="flex flex-col ">
                             <div className="flex text-greyuse">SWC, New SAC</div>
                             <div className="flex text-greyuse">IIT Guwahati</div>
