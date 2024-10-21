@@ -24,6 +24,7 @@
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.46",
     "mongoose": "^7.5.0",
     "node-cron": "^3.0.2",
     "nodemon": "^2.0.22",

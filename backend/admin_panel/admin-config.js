@@ -11,6 +11,7 @@ import leaderboardModel from "../models/leaderboardModel.js";
 import repoModel from "../models/repoModel.js";
 import userModel from "../models/userModel.js";
 import tokenModel from "../models/tokenModel.js";
+import adminControl from "../models/adminControl.js";
 
 const ADMINPANELROOT = process.env.BASE_API_PATH + "/admin";
 
@@ -39,7 +40,8 @@ const adminOptions = {
     leaderboardModel,
     repoModel,
     userModel,
-    tokenModel
+    tokenModel,
+    adminControl
   ],
   rootPath: ADMINPANELROOT,
   loginPath: ADMINPANELROOT + "/login",

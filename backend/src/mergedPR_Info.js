@@ -1,7 +1,28 @@
 import axios from 'axios';
+import AdminControl from '../models/adminControl.js';
+import moment from 'moment-timezone';
 
-const hacktoberfestStartDate = new Date('2024-10-05T00:00:00Z');
-const hacktoberfestEndDate = new Date('2024-10-31T23:59:59Z');
+// Default start and end dates
+let hacktoberfestStartDate = new Date('2024-10-05T00:00:00Z');
+let hacktoberfestEndDate = new Date('2024-10-31T23:59:59Z');
+
+// Get the start and end date from the database
+const adminControl = await AdminControl.findOne({});
+
+if (adminControl) {
+    // convert the dates to IST
+    hacktoberfestStartDate = moment(adminControl.hacktoberFestStartDate).tz('Asia/Kolkata').toDate();
+    hacktoberfestEndDate = moment(adminControl.hacktoberFestEndDate).tz('Asia/Kolkata').toDate();
+    console.log("Setting Hacktoberfest start and end date from database in IST");
+    // display dates in IST
+    console.log("Hacktoberfest start date (IST): ", hacktoberfestStartDate.toLocaleString());
+    console.log("Hacktoberfest end date (IST): ", hacktoberfestEndDate.toLocaleString());
+} else {
+    console.log("Setting Hacktoberfest start and end date from default values");
+    // display dates in IST
+    console.log("Hacktoberfest start date (IST): ", hacktoberfestStartDate.toLocaleString());
+    console.log("Hacktoberfest end date (IST): ", hacktoberfestEndDate.toLocaleString());
+}
 
 async function fetchPullRequests(url, access_token) {
   try {
