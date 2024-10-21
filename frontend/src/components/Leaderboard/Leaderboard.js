@@ -15,7 +15,7 @@ const Leaderboard = ({ data, name }) => {
 
   return (
     <>
-    <div className='shadow-md'>
+    <div className='shadow-md h-[500px]'>
       <div className='p-4 rounded-t-3xl bg-white shadow-md'>
         <div className="flex justify-between gap-4 font-bold text-md ">
           <div className="w-2/12 mobile:w-1/3">

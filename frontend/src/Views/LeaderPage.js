@@ -41,7 +41,7 @@ const LeaderPage = () => {
               withCredentials: true,
             })
             .then((response) => {
-              const {data} = response;
+              const { data } = response;
               console.log(data);
               setName(data.userData.github_username);
               let userRank = 0;
@@ -83,50 +83,51 @@ const LeaderPage = () => {
   const handleLogout = () => {
     Object.keys(allCookies).forEach(cookieName => {
       removeCookie(cookieName, { path: '/' });
-            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
-      window.location.href = '/hacktoberfest';
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+    window.location.href = '/hacktoberfest';
   }
 
   return (
     <>
-    <div ref={confetiRef} className="overflow-x-hidden bg-[#170f1e]">
-      {/* <Confetti numberOfPieces={150} width={width} height={height} /> */}
-      <div className="absolute flex items-center top-[8px] right-2 z-10 text-white">
-      <a className="bg-[#ffffff26] text-white font-[20px] p-4 rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
+      <div ref={confetiRef} className="overflow-x-hidden bg-[#170f1e] pb-[450px]">
+        {/* <Confetti numberOfPieces={150} width={width} height={height} /> */}
+        <div className={`flex items-center top-[8px] absolute z-10 text-white ${window.innerWidth<400? 'right-0':'right-2'}`}>
+          <a className="bg-[#ffffff26] text-white font-[20px] p-4 rounded-md transition-all hover:scale-105" href="/hacktoberfest/repos">All Repos</a>
 
-        <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
-          <img src={profile} width={35}></img>
-        </a>
-        {
-         cookies.access_token ? <button onClick={handleLogout}>
-          <img src={logout} width={40}></img>
-        </button> : null
-        }
-     
-      </div>
-      <div className="flex bg-[#170f1e] h-[200vh]  flex-col sm:min-w-screen items-center">
-        <div className=" flex flex-col items-center">
-          <div className="items-center md:p-6 md:mt-0 mt-24 md:mx-0">
-            <span className="text-white font-bold sm:p-0 md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
-            <hr color="white"></hr>
-          </div>
-          <div>
-            <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8 mb-10 w-full">
-              <img className="block w-1/2 mx-auto" src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' width={800}></img>
+          <a className=" p-[15px] rounded-md transition-all hover:scale-105" href="/hacktoberfest/profile">
+            <img src={profile} width={35}></img>
+          </a>
+          {
+            cookies.access_token ? <button onClick={handleLogout}>
+              <img src={logout} width={40}></img>
+            </button> : null
+          }
+
+        </div>
+        <div className={`flex bg-[#170f1e] flex-col sm:min-w-screen items-center `}>
+          <div className=" flex flex-col items-center">
+            <div className="items-center md:p-6 md:mt-0 mt-24 md:mx-0">
+              <span className="text-white font-bold sm:p-0 md:text-[38.4px] text-2xl">Welcome to Leaderboard</span>
+              <hr color="white"></hr>
             </div>
-          </div>
-          {/* <div className="items-center pb-24 md:mx-0 mx-12">
+            <div>
+              <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8 mb-10 w-full">
+                <img className="block w-1/2 mx-auto" src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' width={800}></img>
+              </div>
+            </div>
+            {/* <div className="items-center pb-24 md:mx-0 mx-12">
             <span className="text-white font-bold sm:text-[38.4px] text-2xl">{userRankInfo !== null ? `Your rank: ${userRankInfo.rank} | Total Points : ${userRankInfo.total_points}` : <a href='/hacktoberfest/profile'>Click to Register</a>}</span>
             <hr color="white"></hr>
           </div> */}
-        </div>
-        <div className="sm:w-3/4 w-[90vw] -m-12 sm:mx-0 mx-4">
-          <Leaderboard data={leaderboard} name={name}></Leaderboard>
+          </div>
+          <div className="sm:w-3/4 w-[90vw] -m-12 sm:mx-0 mx-4">
+            <Leaderboard data={leaderboard} name={name}></Leaderboard>
+          </div>
         </div>
       </div>
-    </div>
-    <Footer/>
-</>
+      <Footer />
+    </>
   );
 }
 
