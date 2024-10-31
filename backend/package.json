@@ -25,11 +25,12 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.46",
-    "mongoose": "^7.5.0",
+    "mongoose": "^8.7.2",
     "node-cron": "^3.0.2",
     "nodemon": "^2.0.22",
     "octokit": "^3.1.0",
     "passport": "^0.6.0",
+    "passport-github": "^1.1.0",
     "passport-github2": "^0.1.12",
     "serve-static": "^1.15.0",
     "typescript": "^5.0.4"
