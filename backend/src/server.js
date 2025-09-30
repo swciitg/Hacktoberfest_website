@@ -206,8 +206,10 @@ async function updateLeaderboard() {
   try {
     const tokenArray = tokens.map(token => token.access_token);
     const randomIndex = Math.floor(Math.random() * tokenArray.length);
+    console.log("this is token Array",tokenArray);
     for (const repo of repos) {
       const repo_name_owner = await getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
+      console.log("name",repo_name_owner);
       repo.owner = repo_name_owner.data.owner.login;
       repo.repo = repo_name_owner.data.name;
       const repoObject = {

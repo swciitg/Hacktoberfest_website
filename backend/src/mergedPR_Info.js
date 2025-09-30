@@ -46,7 +46,6 @@ async function fetchPullRequests(url, access_token) {
 
 async function countPullRequestsForUserAndRepo(username, repo, access_token, labels = []) {
   const mergedPullRequestsUrl = `https://api.github.com/search/issues?q=is:pr+is:merged+author:${username}+created:${hacktoberfestStartDate.toISOString()}..${hacktoberfestEndDate.toISOString()}+repo:${repo.owner}/${repo.name}+${labels.map(label => `label:${label.label_type}`).join('+')}`;
-
   const [mergedPullRequestsData] = await Promise.all([
     fetchPullRequests(mergedPullRequestsUrl, access_token),
   ]);
