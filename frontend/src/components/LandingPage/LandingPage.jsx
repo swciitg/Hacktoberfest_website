@@ -54,7 +54,7 @@ const LandingPage = () => {
 
                     </div>
                     <div className={`${styles.HacktoberLogo}`}>
-                        <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
+                        <img src='https://hacktoberfest.com/_next/static/media/heroicon-animation.dd8cd700.gif' alt="" />
                     </div>
                 </div>
             </div>
