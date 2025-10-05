@@ -113,7 +113,7 @@ const LeaderPage = () => {
             </div>
             <div>
               <div className="sm:pt-24 pt-8 pb-12 md:mx-0 mx-8 mb-10 w-full">
-                <img className="block w-1/2 mx-auto" src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' width={800}></img>
+                <img className="block w-1/2 mx-auto" src='https://hacktoberfest.com/_next/static/media/heroicon-animation.dd8cd700.gif' width={800}></img>
               </div>
             </div>
             {/* <div className="items-center pb-24 md:mx-0 mx-12">
