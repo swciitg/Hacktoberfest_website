@@ -75,7 +75,7 @@ const AllRepos = () => {
           </div>
           <div>
             <div className="sm:pt-24 sm:pb-24 pb-12 mx-8">
-              <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' width={400}></img>
+              <img src='https://hacktoberfest.com/_next/static/media/heroicon-animation.dd8cd700.gif' width={400}></img>
             </div>
           </div>
         </div>
