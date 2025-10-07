@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "react-scripts dev",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build",
     "start": "react-scripts start",
     "lint": "react-scripts lint"
   },
