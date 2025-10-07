@@ -19,7 +19,7 @@ window.addEventListener('resize',()=>{
                         </div>
                         <div className="flex flex-col pr-0 "> 
                             <div className="flex text-greyuse"> <a href='mailto:swc@iitg.ac.in'> swc@iitg.ac.in </a></div>
-                            <div className="flex text-greyuse">+91 702 785 9553</div>
+                            <div className="flex text-greyuse">+91 626 424 1367</div>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ window.addEventListener('resize',()=>{
             </div>
             <div className="flex justify-center basis-1/3 mt-8 mb-6">
                 <div className="flex justify-between w-4/5  border-t border-greyuse">
-                    <div className="flex pl-3 pt-4 font-Inter font-normal text-xs leading-4 text-greyuse">@ 2024 Students Web Committee</div>
+                    <div className="flex pl-3 pt-4 font-Inter font-normal text-xs leading-4 text-greyuse">@ 2025 Students Web Committee</div>
                     <div className="flex pt-4">
                         <div className="flex mr-3">
                             <a href='https://www.facebook.com/swciitg/' target="_blank">
