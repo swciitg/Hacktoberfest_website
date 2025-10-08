@@ -23,7 +23,7 @@ window.addEventListener('resize',()=>{
                         </div>
                         <div className="flex flex-col pr-0 "> 
                             <div className="flex text-greyuse"> <a href='mailto:swc@iitg.ac.in'> swc@iitg.ac.in </a></div>
-                            <div className="flex text-greyuse">+91 626 424 1367</div>
+                            <div className="flex text-greyuse">+91 6264241367</div>
                         </div>
                     </div>
                 </div>
@@ -46,10 +46,10 @@ window.addEventListener('resize',()=>{
                     </div>
                     <div className="flex flex-col">
                         <div className="flex font-Inter text-1xl font-bold leading-6 tracking-wider mb-3">Our Products</div>
-                        <a href="https://swc.iitg.ac.in/placements/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Placement Portal</a>
+                        <a href="https://iitg.ac.in/placements/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Placement Portal</a>
                         <a href="https://swc.iitg.ac.in/election_portal/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Election Portal</a>
                         <a href="https://play.google.com/store/apps/details?id=com.swciitg.onestop2" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">One Stop</a>
-                        <a href="https://swc.iitg.ac.in/journeys/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Journeys</a>
+                        {/* <a href="https://swc.iitg.ac.in/journeys/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Journeys</a> */}
                     </div>
                     {/* <div className="flex flex-col">
                         <div className="flex font-Inter text-lg sm:text-xl font-bold leading-6 tracking-wider mb-3">Teams</div>
