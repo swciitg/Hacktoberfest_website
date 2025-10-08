@@ -5,6 +5,10 @@ const Footer = () => {
 window.addEventListener('resize',()=>{
     setmargin(window.innerWidth)
 })
+
+    function getCurrentYear () {
+        return new Date().getFullYear();
+    }
   
     return (
         <div className="bg-[#170f1e] text-white flex flex-col bg-specialgrey mb-0  bottom-0">
@@ -28,20 +32,21 @@ window.addEventListener('resize',()=>{
                     <div className="flex flex-col">
                         <div className="flex font-Inter text-1xl font-bold leading-6 tracking-wider mb-3">Important Links</div>
                         <a href="https://github.com/swciitg" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Github</a>
-                        <a href="/team" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Team</a>
-                        <a href="/products" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Products</a>
-                        <a href="/hiring" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Apply Now!</a>
+                        <a href="/swc/team" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Team</a>
+                        <a href="/swc/products" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Products</a>
+                        {/* <a href="/swc/hiring" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Apply Now!</a> */}
                     </div>
                    
                     <div className="flex flex-col">
                         <a href="" className="flex font-Inter text-1xl font-bold leading-6 tracking-wider mb-3">Gymkhana Sites</a>
-                        <a href="https://intranet.iitg.ac.in/sa/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">SA Portal</a>
+                        <a href="https://www.iitg.ac.in/stud/gymkhana/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Gymkhana Portal</a>
+                        <a href="https://intranet.iitg.ac.in/saportal/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">SA Portal</a>
                         <a href="https://swc.iitg.ac.in/hab/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">HAB Portal</a>
-                        <a href="https://swc.iitg.ac.in/sports_board/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Sports Board</a>
+                        <a href="https://swc.iitg.ac.in/sports-board/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Sports Board</a>
                     </div>
                     <div className="flex flex-col">
                         <div className="flex font-Inter text-1xl font-bold leading-6 tracking-wider mb-3">Our Products</div>
-                        <a href="https://online.iitg.ac.in/tnp/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Placement Portal</a>
+                        <a href="https://swc.iitg.ac.in/placements/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Placement Portal</a>
                         <a href="https://swc.iitg.ac.in/election_portal/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Election Portal</a>
                         <a href="https://play.google.com/store/apps/details?id=com.swciitg.onestop2" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">One Stop</a>
                         <a href="https://swc.iitg.ac.in/journeys/" className="flex text-greyuse sm:text-sm text-xs font-normal leading-6 hover:underline">Journeys</a>
@@ -59,7 +64,7 @@ window.addEventListener('resize',()=>{
             </div>
             <div className="flex justify-center basis-1/3 mt-8 mb-6">
                 <div className="flex justify-between w-4/5  border-t border-greyuse">
-                    <div className="flex pl-3 pt-4 font-Inter font-normal text-xs leading-4 text-greyuse">@ 2025 Students Web Committee</div>
+                    <div className="flex pl-3 pt-4 font-Inter font-normal text-xs leading-4 text-greyuse">@ {getCurrentYear()} Students Web Committee</div>
                     <div className="flex pt-4">
                         <div className="flex mr-3">
                             <a href='https://www.facebook.com/swciitg/' target="_blank">
