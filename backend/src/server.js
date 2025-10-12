@@ -209,16 +209,11 @@ async function updateLeaderboard() {
     // console.log("this is token Array",tokenArray);
     for (const repo of repos) {
       // const repo_name_owner = await getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
-      const repo_name_owner = repo.owner;
-      // console.log("name",repo_name_owner);
-      repo.owner = repo_name_owner.data.owner.login;
-      repo.repo = repo_name_owner.data.name;
       const repoObject = {
-        name: repo_name_owner.data.name,
-        owner: repo_name_owner.data.owner.login,
+        name: repo.repo,
+        owner: repo.owner,
       };
       repoArray.push(repoObject);
-      await repo.save();
     }
     await getRepo.getPRCountsForMultipleRepos(repos, tokenArray[randomIndex]);
     for (const access_token of tokenArray) {
