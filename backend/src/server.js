@@ -220,6 +220,11 @@ async function updateLeaderboard() {
       const userInfo = await UserTokenInfo.findOne({ access_token: access_token });
       const userData = await getUserInfo(access_token);
       if (userData === undefined) { // token invalid
+
+        // cleanup invalid token from db
+        console.log("Deleting invalid token for github_id:", userInfo.github_id, " with access_token:", access_token);
+        await UserTokenInfo.deleteOne({ access_token: access_token });
+
         continue;
       }
       //console.log(userData);
