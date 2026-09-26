@@ -6,17 +6,16 @@ import profile from './profile.svg';
 import axios, { all } from "axios";
 import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
-import logout from "./logout.svg"
+import logoutIcon from "./logout.svg"
 import Footer from "../components/Footer/footer";
+import { logout } from "../utils/auth";
 
 const LeaderPage = () => {
   const [leaderboard, setLeaderboard] = useState(null);
   const [name, setName] = useState('');
   const [userRankInfo, setUserRankInfo] = useState(null);
 
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
-
-  const [allCookies, , removeAllCookie] = useCookies();
+  const [cookies] = useCookies(['access_token']);
 
 
   useEffect(() => {
@@ -80,14 +79,6 @@ const LeaderPage = () => {
     setWidth(confetiRef.current.clientWidth);
   }, []);
 
-  const handleLogout = () => {
-    Object.keys(allCookies).forEach(cookieName => {
-      removeCookie(cookieName, { path: '/' });
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    });
-    window.location.href = '/hacktoberfest';
-  }
-
   return (
     <>
       <div ref={confetiRef} className="overflow-x-hidden bg-[#170f1e] pb-[450px]">
@@ -99,8 +90,8 @@ const LeaderPage = () => {
             <img src={profile} width={35}></img>
           </a>
           {
-            cookies.access_token ? <button onClick={handleLogout}>
-              <img src={logout} width={40}></img>
+            cookies.access_token ? <button onClick={logout}>
+              <img src={logoutIcon} width={40}></img>
             </button> : null
           }
 

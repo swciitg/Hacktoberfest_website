@@ -1,171 +1,160 @@
-import styles from './RegistrationForm.module.css';
-import hacktoberlogo from './hacktober_logo.svg';
-import swclogo from './swc_logo.png';
-import { BACKEND_API } from '../../api';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import InputField from '../input/CustomInput';
-import { Navigate, redirect, useNavigate } from 'react-router-dom';
-import { useCookies } from "react-cookie";
+import styles from './RegistrationForm.module.css';
+import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/footer';
+import useProfile from '../../hooks/useProfile';
+import { BACKEND_API } from '../../api';
+import { asset as A } from '../../utils/asset';
+import { loginWithGithub } from '../../utils/auth';
 
-const RegistrationForm = (props) => {
-  const [profile, setProfile] = useState();
-  const roll_ref = useRef();
-  const mail_ref = useRef();
-  const year_ref = useRef();
-  const department_ref = useRef();
-  const programme_ref = useRef();
-  const hostel_ref = useRef();
+const YEAR_OPTIONS = ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'];
+const PROGRAMME_OPTIONS = [
+  'B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des',
+  'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD',
+];
+
+// Positions taken from the 1440px-wide Figma frame.
+const CLOUDS = [
+  { src: 'reg-cloud-6.svg',      left: 32,   top: 768,  width: 303 },
+  { src: 'reg-cloud-5.svg',      left: 521,  top: 794,  width: 183 },
+  { src: 'reg-cloud-7.svg',      left: 507,  top: 869,  width: 183 },
+  { src: 'reg-cloud-1.svg',      left: 1257, top: 745,  width: 215 },
+  { src: 'reg-cloud-4.svg',      left: 959,  top: 802,  width: 183, flip: true },
+  { src: 'reg-cloud-2.svg',      left: 108,  top: 957,  width: 183, flip: true },
+  { src: 'reg-cloud-3.svg',      left: 1134, top: 972,  width: 117, flip: true },
+  { src: 'reg-cloud-double.svg', left: 654,  top: 956,  width: 266, flip: true },
+];
+
+const TEXT_FIELDS = [
+  { name: 'roll_no',       label: 'Roll number',   type: 'text',  placeholder: 'e.g. 220102035', minLength: 9, maxLength: 9 },
+  { name: 'outlook_email', label: 'Outlook Email', type: 'email', placeholder: 'yourname@iitg.ac.in' },
+];
+
+const WIDE_FIELDS = [
+  { name: 'department', label: 'Department', placeholder: 'e.g. Computer Science and Engineering' },
+  { name: 'hostel',     label: 'Hostel',     placeholder: 'e.g. Kameng' },
+];
+
+const SELECT_FIELDS = [
+  { name: 'year_of_study', label: 'Year',      placeholder: 'Select year',      options: YEAR_OPTIONS },
+  { name: 'programme',     label: 'Programme', placeholder: 'Select programme', options: PROGRAMME_OPTIONS },
+];
+
+const RegistrationForm = () => {
+  const { isLoggedIn, profile, loaded } = useProfile();
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef();
   const navigate = useNavigate();
-
-  const [cookies] = useCookies(["access_token"]);
-  console.log(cookies.access_token);
-  if (!cookies.access_token) {
-    window.location.href = BACKEND_API + "/auth/github";
-  }
+  // Checked once on mount; reacting to later changes would hijack logout's redirect.
+  const loggedInOnMount = useRef(isLoggedIn);
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_API}/api/profile`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
-        setProfile(data.userData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    if (!loggedInOnMount.current) loginWithGithub();
   }, []);
 
   const handleSubmit = (e) => {
-
     e.preventDefault();
-    const updatedData = {
-      hostel: hostel_ref.current.value,
-      roll_no: roll_ref.current.value,
-      year_of_study: year_ref.current.value,
-      outlook_email: mail_ref.current.value,
-      department: department_ref.current.value,
-      programme: programme_ref.current.value
-    }
-    console.log(updatedData);
+    setError('');
+    setSubmitting(true);
+    const updatedData = Object.fromEntries(new FormData(formRef.current));
     axios
-      .put(`${BACKEND_API}/api/profile`, updatedData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-      .then((response) => {
-        navigate("/leaderboard");
-      })
-      .catch((error) => {
-        console.log(error);
+      .put(`${BACKEND_API}/api/profile`, updatedData, { withCredentials: true })
+      .then(() => navigate('/leaderboard'))
+      .catch((err) => {
+        setError(err.response?.data?.error || 'Something went wrong. Please check your details and try again.');
+        setSubmitting(false);
       });
-  }
-
-  console.log(profile?.avatar_url)
+  };
 
   return (
-    <>
-      <div className={styles.landingPage}>
-        <div className={styles.SwcLogo}>
-          <img src={swclogo} alt="" />
-        </div>
-        <div className={styles.FormSection}>
-          <div className={styles.UserName}>
-            {
-              profile !== null ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
-                Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
-              </div> : <div>Fill out below details to register</div>
-            }
-          </div>
-          <form action="" className='flex flex-col items-center w-full' >
-            <div className={styles.Form}>
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={roll_ref}
-                  type={"text"}
-                  label={"Roll Number"}
-                  value={profile?.roll_no ?? ""}
-                // placeholder={"Enter roll number"}
-                />
-              </div>
+    <div className={styles.page}>
+      <img src={A('stars.svg')} alt="" className={styles.starsBg} aria-hidden="true" />
+      <img src={A('stars-blue.svg')} alt="" className={styles.starsBlue} aria-hidden="true" />
+      <div className={styles.clouds} aria-hidden="true">
+        {CLOUDS.map(({ src, left, top, width, flip }) => (
+          <img
+            key={`${src}-${left}`}
+            src={A(src)}
+            alt=""
+            className={flip ? styles.flipped : undefined}
+            style={{ left, top, width }}
+          />
+        ))}
+      </div>
 
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={mail_ref}
-                  type={"text"}
-                  label={"Outlook Email"}
-                  value={profile?.outlook_email ?? ""}
-                // placeholder={"Enter name"}
-                />
-              </div>
+      <Navbar isLoggedIn={isLoggedIn} username={profile?.github_username} />
 
-            <div className={styles.FormInput}>
-              <div><label for="Year">Year</label></div>
-              <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
-                <option value="0" selected hidden></option>
-                <option value="Freshman">Freshman</option>
-                <option value="Sophomore">Sophomore</option>
-                <option value="Pre-Final Yearite">Pre-Final Yearite</option>
-                <option value="Final Yearite">Final Yearite</option>
-              </select></div>
-            </div>
-            <div className={styles.FormInput}>
-              <div><label for="Programme">Programme</label></div>
-              <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
-                <option value="none" selected hidden></option>
-                <option value="B.Tech">B.Tech</option>
-                <option value="M.Tech">M.Tech</option>
-                <option value="Ph.D">Ph.D</option>
-                <option value="M.Sc">M.Sc</option>
-                <option value="B.Des">B.Des</option>
-                <option value="M.Des">M.Des</option>
-                <option value="M.S.(R)">M.S.(R)</option>
-                <option value="M.A.">M.A.</option>
-                <option value="MBA">MBA</option>
-                <option value="MTech+PhD">MTech+PhD</option>
-                <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
-              </select></div>
+      <section className={styles.hero}>
+        <img src={A('reg-invader-hero.svg')} alt="" className={styles.heroInvader} aria-hidden="true" />
+        <p className={styles.eyebrow}>REGISTER</p>
+        <h1 className={styles.heroTitle}>FILL OUT BELOW DETAILS TO REGISTER</h1>
+        <p className={styles.heroSubtitle}>
+          Register once so your merged pull requests count on the leaderboard.
+        </p>
+      </section>
+
+      <main className={styles.main}>
+        <div className={styles.card}>
+          <img src={A('reg-card-frame.svg')} alt="" className={styles.cardFrame} aria-hidden="true" />
+          {/* Remount once the profile arrives so defaultValues pick up saved details */}
+          <form
+            key={loaded ? 'loaded' : 'loading'}
+            ref={formRef}
+            className={styles.cardContent}
+            onSubmit={handleSubmit}
+          >
+            <div className={styles.formGrid}>
+              {TEXT_FIELDS.map(({ name, label, ...inputProps }) => (
+                <label key={name} className={styles.field}>
+                  <span>{label}</span>
+                  <input name={name} defaultValue={profile?.[name] ?? ''} required {...inputProps} />
+                </label>
+              ))}
+
+              {SELECT_FIELDS.map(({ name, label, placeholder, options }) => (
+                <label key={name} className={styles.field}>
+                  <span>{label}</span>
+                  <span className={styles.selectWrap}>
+                    <select name={name} defaultValue={profile?.[name] ?? ''} required>
+                      <option value="" disabled hidden>{placeholder}</option>
+                      {options.map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                    <span className={styles.selectArrow}>&#9662;</span>
+                  </span>
+                </label>
+              ))}
+
+              {WIDE_FIELDS.map(({ name, label, placeholder }) => (
+                <label key={name} className={`${styles.field} ${styles.fieldWide}`}>
+                  <span>{label}</span>
+                  <input name={name} type="text" defaultValue={profile?.[name] ?? ''} placeholder={placeholder} required />
+                </label>
+              ))}
             </div>
 
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={department_ref}
-                  type={"text"}
-                  label={"Department"}
-                  value={profile?.department ?? ""}
-                // placeholder={"Enter name"}
-                /> </div>
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={hostel_ref}
-                  type={"text"}
-                  label={"Hostel"}
-                  value={profile?.hostel ?? ""}
-                // placeholder={"Enter name"}
-                />
-              </div>
+            {error && <p className={styles.errorText} role="alert">{error}</p>}
 
-            </div>
-            <div className='w-4/5'>
-              <button type="submit" className={styles.FormSectionButton} onClick={handleSubmit}>
-                Submit</button>
-            </div>
+            <button type="submit" className={styles.submitBtn} disabled={submitting}>
+              <img src={A('btn-primary.svg')} alt="" className={styles.submitBtnBg} />
+              <span>{submitting ? 'Submitting…' : 'Submit'}</span>
+            </button>
           </form>
         </div>
-        <div className={styles.HacktoberLogo}>
-          <img src='https://hacktoberfest.com/_next/static/media/logo-hacktoberfest-11--footer.cc639da3.svg' alt="" />
+
+        <div className={styles.cityscape} aria-hidden="true">
+          <img src={A('city-base.svg')} alt="" className={styles.cityBase} />
+          <img src={A('city-right.svg')} alt="" className={styles.cityR} />
         </div>
-      </div>
+      </main>
+
       <Footer />
-    </>
+    </div>
   );
-}
+};
 
 export default RegistrationForm;
