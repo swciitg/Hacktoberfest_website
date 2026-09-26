@@ -20,26 +20,25 @@ const RegistrationForm = (props) => {
   const navigate = useNavigate();
 
   const [cookies] = useCookies(["access_token"]);
-  console.log(cookies.access_token);
-  if (!cookies.access_token) {
-    window.location.href = BACKEND_API + "/auth/github";
-  }
 
   useEffect(() => {
+    if (!cookies.access_token) {
+      window.location.href = BACKEND_API + "/auth/github";
+      return;
+    }
+
     axios
       .get(`${BACKEND_API}/api/profile`, {
         withCredentials: true,
       })
       .then((response) => {
         const data = response.data;
-        console.log(data);
         setProfile(data.userData);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error fetching user profile:", error);
       });
-
-  }, []);
+  }, [cookies.access_token]);
 
   const handleSubmit = (e) => {
 
@@ -79,8 +78,8 @@ const RegistrationForm = (props) => {
         <div className={styles.FormSection}>
           <div className={styles.UserName}>
             {
-              profile !== null ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
-                Hello <img src={profile?.avatar_url} width={60} className='rounded-full'></img> <p className='sm:block'> {profile?.github_username}</p>
+              profile?.github_username ? <div className='flex gap-2 mobile:mt-10 items-center sm:text-4xl text-2xl '>
+                Hello <img src={profile?.avatar_url} width={60} className='rounded-full' alt="Avatar" /> <p className='sm:block'> {profile?.github_username}</p>
               </div> : <div>Fill out below details to register</div>
             }
           </div>
@@ -124,8 +123,8 @@ const RegistrationForm = (props) => {
 
             <div className={styles.FormInput}>
               <div><label htmlFor="Year">Year</label></div>
-              <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
-                <option value="0" selected hidden></option>
+              <div>  <select key={profile?.github_id ? `${profile.github_id}_year` : 'init_year'} name="Year" defaultValue={profile?.year_of_study || "0"} ref={year_ref}>
+                <option value="0" disabled hidden></option>
                 <option value="Freshman">Freshman</option>
                 <option value="Sophomore">Sophomore</option>
                 <option value="Pre-Final Yearite">Pre-Final Yearite</option>
@@ -134,8 +133,8 @@ const RegistrationForm = (props) => {
             </div>
             <div className={styles.FormInput}>
               <div><label htmlFor="Programme">Programme</label></div>
-              <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
-                <option value="none" selected hidden></option>
+              <div>  <select key={profile?.github_id ? `${profile.github_id}_prog` : 'init_prog'} name="Programme" defaultValue={profile?.programme || "none"} ref={programme_ref}>
+                <option value="none" disabled hidden></option>
                 <option value="B.Tech">B.Tech</option>
                 <option value="M.Tech">M.Tech</option>
                 <option value="Ph.D">Ph.D</option>
