@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './LandingPage.module.css';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/footer';
+import ProjectCard from '../ProjectCard/ProjectCard';
 import useProfile from '../../hooks/useProfile';
 import useRepos from '../../hooks/useRepos';
 import { asset as A } from '../../utils/asset';
 
 const CYCLE_WORDS = ['Learn?', 'Grow?', 'Create?', 'Level Up?', 'Imagine?'];
-const BUILD_TARGET = 'BUILD ME';
 const FEATURED_COUNT = 4;
 
 const matchesQuery = (repo, query) => {
@@ -19,35 +19,14 @@ const matchesQuery = (repo, query) => {
 };
 
 const LandingPage = () => {
-    const [buildText, setBuildText] = useState('');
     const [cycleWord, setCycleWord] = useState('');
     const [satelliteClicked, setSatelliteClicked] = useState(false);
     const [query, setQuery] = useState('');
     const { isLoggedIn, profile } = useProfile();
     const { repos, loading } = useRepos();
-    const buildRef = useRef(null);
 
     const featuredRepos = repos.filter((r) => matchesQuery(r, query)).slice(0, FEATURED_COUNT);
     const startPath = isLoggedIn ? '/leaderboard' : '/login';
-
-    useEffect(() => {
-        let interval;
-        const observer = new IntersectionObserver(([entry]) => {
-            if (!entry.isIntersecting) return;
-            let i = 0;
-            interval = setInterval(() => {
-                i++;
-                setBuildText(BUILD_TARGET.slice(0, i));
-                if (i >= BUILD_TARGET.length) clearInterval(interval);
-            }, 120);
-            observer.disconnect();
-        }, { threshold: 0.4 });
-        if (buildRef.current) observer.observe(buildRef.current);
-        return () => {
-            observer.disconnect();
-            clearInterval(interval);
-        };
-    }, []);
 
     useEffect(() => {
         let charIdx = 0;
@@ -105,7 +84,7 @@ const LandingPage = () => {
 
                 <div className={styles.heroContent}>
                     <img src={A('hero-invader.svg')} alt="" className={styles.heroInvader} aria-hidden="true" />
-                    <h1 className={styles.heroTitle}>What is Hactober?</h1>
+                    <h1 className={styles.heroTitle}>What is Hacktober?</h1>
                     <p className={styles.heroDesc}>
                         Hacktober is a month-long coding competition organised by the Students&rsquo; Web Committee, IIT Guwahati.
                     </p>
@@ -149,33 +128,8 @@ const LandingPage = () => {
                         <p className={styles.emptyText}>No projects match your search.</p>
                     )}
                 </div>
-            </section>
 
-            {/* ── Builder Section ── */}
-            <section className={styles.builderSection}>
-                <h2 className={styles.builderTitle}>Build your invader</h2>
-                <p className={styles.builderSubtitle}>Hackstack is a student learning platform</p>
-
-                <div className={styles.builderGrid}>
-                    <div className={styles.builderPreview}>
-                        <div className={styles.builderBadges}>
-                            <img src={A('builder-top1.png')} alt="badge" className={styles.badge} />
-                            <img src={A('badge1.png')} alt="badge" className={styles.badge} />
-                            <img src={A('badge2.png')} alt="badge" className={styles.badge} />
-                            <img src={A('badge3.png')} alt="badge" className={styles.badge} />
-                            <img src={A('badge4.png')} alt="badge" className={styles.badge} />
-                            <img src={A('builder-top2.png')} alt="badge" className={styles.badge} />
-                        </div>
-                        <img src={A('builder-body.svg')} alt="Space Invader builder" className={styles.builderBody} />
-                    </div>
-
-                    <div className={styles.buildMeWrap} ref={buildRef}>
-                        <div className={styles.btnBuildMe}>
-                            <img src={A('buildme-btn.svg')} alt="" className={styles.buildMeBtnBg} />
-                            <span className={styles.buildMeText}>{buildText}<span className={styles.cursor}>|</span></span>
-                        </div>
-                    </div>
-                </div>
+                <Link to="/repos" className={styles.btnViewAll}>View all</Link>
             </section>
 
             {/* ── CTA Section ── */}
@@ -195,27 +149,5 @@ const LandingPage = () => {
         </div>
     );
 };
-
-const ProjectCard = ({ repo }) => (
-    <div className={styles.card}>
-        <img src={A('module.svg')} alt="" className={styles.cardFrame} aria-hidden="true" />
-        <div className={styles.cardContent}>
-            <p className={styles.cardName}>{repo.repo}</p>
-            <p className={styles.cardDesc}>
-                {repo.description || `A project by ${repo.owner}. Open it to find issues where help is needed.`}
-            </p>
-            <div className={styles.cardTags}>
-                {(repo.techStacks || []).slice(0, 3).map((t) => (
-                    <span key={t} className={styles.tag}>{t}</span>
-                ))}
-            </div>
-            <img src={A('card-divider.svg')} alt="" className={styles.cardDivider} aria-hidden="true" />
-            <Link to={`/repos/${repo.owner}/${repo.repo}`} className={styles.cardLink}>
-                <span>View Project</span>
-                <span>&rarr;</span>
-            </Link>
-        </div>
-    </div>
-);
 
 export default LandingPage;

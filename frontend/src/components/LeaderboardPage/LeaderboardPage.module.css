@@ -1,0 +1,256 @@
+/* ─── Page shell ─── */
+.page {
+    position: relative;
+    min-height: 100vh;
+    background-color: #08080a;
+    color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.starsBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ─── Main content ─── */
+.main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    padding: 60px 136px 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+/* ─── Header ─── */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.headerInvader {
+    width: 64px;
+    margin-bottom: 8px;
+}
+
+.title {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: clamp(28px, 3.3vw, 44px);
+    letter-spacing: 4.32px;
+    color: #fff;
+    margin: 0;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #a9b8da;
+    margin: 0;
+}
+
+.statusText {
+    font-family: 'Inter', sans-serif;
+    color: #a9b8da;
+    font-size: 16px;
+}
+
+/* ─── Your rank card ─── */
+.myRankCard {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: rgba(139, 207, 240, 0.08);
+    border: 1.5px solid rgba(139, 207, 240, 0.4);
+    border-radius: 6px;
+}
+
+.myRankAvatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.myRankInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.myRankLabel {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8bcff0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.myRankUsername {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 18px;
+    color: #f8f8f8;
+}
+
+.myRankStats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.myRankNumber {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.myRankPr {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #a9b8da;
+}
+
+/* ─── Table card ─── */
+.tableCard {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(169, 184, 218, 0.15);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tableHead {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(169, 184, 218, 0.15);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #a9b8da;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.tableBody {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(169, 184, 218, 0.1);
+    transition: background 0.2s;
+}
+
+.row:last-child { border-bottom: none; }
+
+.row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.rowActive {
+    background: rgba(139, 207, 240, 0.08);
+}
+
+.rowActive:hover {
+    background: rgba(139, 207, 240, 0.12);
+}
+
+.colRank {
+    width: 72px;
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.rankNumber {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 18px;
+    color: #f8f8f8;
+}
+
+.rankGold   { color: #ffd76a; }
+.rankSilver { color: #c7d0e0; }
+.rankBronze { color: #e0a468; }
+
+.colContributor {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.username {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #f8f8f8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.colPr {
+    width: 140px;
+    flex-shrink: 0;
+    text-align: right;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #f8f8f8;
+}
+
+.paginationWrap {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    border-top: 1px solid rgba(169, 184, 218, 0.1);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+    .main { padding: 48px 48px 120px; }
+}
+
+@media (max-width: 640px) {
+    .main { padding: 32px 16px 80px; }
+    .colPr { width: 90px; }
+    .username { font-size: 14px; }
+    .myRankCard { flex-wrap: wrap; }
+}

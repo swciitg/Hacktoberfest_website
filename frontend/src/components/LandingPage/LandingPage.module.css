@@ -4,7 +4,7 @@
     min-height: 100vh;
     background-color: #08080a;
     color: #f8f8f8;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* ─── Backgrounds ─── */
@@ -271,180 +271,30 @@
     margin-top: 16px;
 }
 
-.card {
-    position: relative;
-    width: 272px;
-    flex-shrink: 0;
-}
-
-.cardFrame {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 323px;
-    display: block;
-}
-
-.cardContent {
-    position: relative;
-    z-index: 1;
-    padding: 54px 20px 20px;
-    height: 323px;
-    display: flex;
-    flex-direction: column;
-}
-
-.cardName {
-    font-family: 'Pixelify Sans', monospace;
-    font-weight: 600;
-    font-size: 20px;
-    color: #f8f8f8;
-    letter-spacing: 3.6px;
-    margin: 0 0 12px;
-}
-
-.cardDesc {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color: #f8f8f8;
-    line-height: 21px;
-    margin: 0;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.cardTags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 12px 0;
-}
-
-.tag {
-    border: 1px solid rgba(255,255,255,0.5);
-    border-radius: 2px;
-    padding: 5px 10px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: #fff;
-}
-
-.cardDivider {
-    width: 100%;
-    height: 1px;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.cardLink {
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color: #fff;
-    text-decoration: none;
-}
-
-.cardLink:hover { opacity: 0.8; }
-
 .emptyText {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #a9b8da;
 }
 
-/* ─── Builder Section ─── */
-.builderSection {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 80px 60px 100px;
-    gap: 16px;
-}
-
-.builderTitle {
-    font-family: 'Pixelify Sans', monospace;
-    font-weight: 600;
-    font-size: clamp(24px, 2.8vw, 40px);
-    color: #f8f8f8;
-    margin: 0;
-}
-
-.builderSubtitle {
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    color: #f8f8f8;
-    letter-spacing: 3.6px;
-    margin: 0 0 32px;
-}
-
-.builderGrid {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
-    width: 100%;
-    max-width: 600px;
-}
-
-.builderBadges {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-}
-
-.badge {
-    width: 46px;
-    height: 46px;
-    object-fit: contain;
-}
-
-.builderBody {
-    width: min(520px, 90vw);
-    display: block;
-}
-
-.buildMeWrap {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    max-width: 600px;
-    margin-top: -16px;
-}
-
-.btnBuildMe {
-    position: relative;
+.btnViewAll {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 223px;
-    height: 50px;
-}
-
-.buildMeBtnBg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    transform: scaleY(-1);
-}
-
-.buildMeText {
-    position: relative;
-    z-index: 1;
+    min-width: 160px;
+    height: 48px;
+    margin-top: 16px;
+    border: 1.5px solid rgba(255, 255, 255, 0.72);
+    border-radius: 4px;
     font-family: 'Pixelify Sans', monospace;
-    font-size: 20px;
+    font-weight: 600;
+    font-size: 18px;
     color: #fff;
+    text-decoration: none;
+    transition: opacity 0.2s;
 }
+
+.btnViewAll:hover { opacity: 0.7; }
 
 /* ─── CTA Section ─── */
 .ctaSection {
@@ -521,7 +371,6 @@
 @media (max-width: 900px) {
     .cardsRow { gap: 20px; }
     .satelliteWrap { display: none; }
-    .builderGrid { max-width: 360px; }
 }
 
 @media (max-width: 600px) {

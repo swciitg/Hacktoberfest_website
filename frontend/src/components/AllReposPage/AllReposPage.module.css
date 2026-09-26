@@ -1,0 +1,185 @@
+/* ─── Page shell ─── */
+.page {
+    position: relative;
+    min-height: 100vh;
+    background-color: #08080a;
+    color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.starsBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ─── Main content ─── */
+.main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    padding: 60px 60px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+}
+
+/* ─── Header ─── */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.headerInvader {
+    width: 64px;
+    margin-bottom: 8px;
+}
+
+.title {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: clamp(28px, 3.3vw, 44px);
+    letter-spacing: 4.32px;
+    color: #fff;
+    margin: 0;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #a9b8da;
+    margin: 0;
+    max-width: 560px;
+}
+
+.statusText {
+    font-family: 'Inter', sans-serif;
+    color: #a9b8da;
+    font-size: 16px;
+}
+
+/* ─── Search ─── */
+.searchRow {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.searchBox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 320px;
+    height: 58px;
+}
+
+.searchBorder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 8px;
+    width: 42px;
+    height: 42px;
+    z-index: 1;
+}
+
+.searchInput {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: rgba(255,255,255,0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    padding-left: 60px;
+    width: 100%;
+    height: 100%;
+}
+
+.searchInput::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+/* ─── Repo sections ─── */
+.repoSection {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.sectionTitle {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 28px);
+    letter-spacing: 2px;
+    text-align: center;
+    color: #fff;
+    margin: 0;
+    align-self: flex-start;
+}
+
+/* ─── Cards ─── */
+.cardsRow {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.emptyText {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #a9b8da;
+}
+
+/* ─── Form note ─── */
+.formNote {
+    position: relative;
+    z-index: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #a9b8da;
+    text-align: center;
+    max-width: 560px;
+}
+
+.formLink {
+    color: #8bcff0;
+    text-decoration: underline;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+    .cardsRow { gap: 20px; }
+    .sectionTitle { align-self: center; }
+}
+
+@media (max-width: 600px) {
+    .main { padding: 40px 20px 60px; gap: 40px; }
+    .searchBox { width: 100%; max-width: 280px; }
+    .cardsRow { flex-direction: column; align-items: center; }
+}

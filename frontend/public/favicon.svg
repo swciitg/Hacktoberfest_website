@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <g id="Icon / Primary">
+    <circle id="Disc" cx="256" cy="256" r="256" fill="#0A0A0A"></circle>
+    <path id="Mark" fill="#FDFBF8" d="M178 162H242L189 256L206 284L278 162H334L387 256L334 350H270L323 256L306 228L234 350H178L125 256Z"></path>
+  </g>
+</svg>
