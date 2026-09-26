@@ -13,10 +13,10 @@ const RegistrationForm = (props) => {
   const [profile, setProfile] = useState();
   const roll_ref = useRef();
   const mail_ref = useRef();
+  const mobile_ref = useRef();
+  const college_ref = useRef();
   const year_ref = useRef();
-  const department_ref = useRef();
   const programme_ref = useRef();
-  const hostel_ref = useRef();
   const navigate = useNavigate();
 
   const [cookies] = useCookies(["access_token"]);
@@ -45,11 +45,11 @@ const RegistrationForm = (props) => {
 
     e.preventDefault();
     const updatedData = {
-      hostel: hostel_ref.current.value,
       roll_no: roll_ref.current.value,
+      email: mail_ref.current.value,
+      mobile_number: mobile_ref.current.value,
+      college: college_ref.current.value,
       year_of_study: year_ref.current.value,
-      outlook_email: mail_ref.current.value,
-      department: department_ref.current.value,
       programme: programme_ref.current.value
     }
     console.log(updatedData);
@@ -92,7 +92,6 @@ const RegistrationForm = (props) => {
                   type={"text"}
                   label={"Roll Number"}
                   value={profile?.roll_no ?? ""}
-                // placeholder={"Enter roll number"}
                 />
               </div>
 
@@ -100,14 +99,31 @@ const RegistrationForm = (props) => {
                 <InputField
                   inputRef={mail_ref}
                   type={"text"}
-                  label={"Outlook Email"}
-                  value={profile?.outlook_email ?? ""}
-                // placeholder={"Enter name"}
+                  label={"Email"}
+                  value={profile?.email || profile?.outlook_email || ""}
+                />
+              </div>
+
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={mobile_ref}
+                  type={"text"}
+                  label={"Mobile Number"}
+                  value={profile?.mobile_number ?? ""}
+                />
+              </div>
+
+              <div className={styles.FormInput}>
+                <InputField
+                  inputRef={college_ref}
+                  type={"text"}
+                  label={"College"}
+                  value={profile?.college ?? ""}
                 />
               </div>
 
             <div className={styles.FormInput}>
-              <div><label for="Year">Year</label></div>
+              <div><label htmlFor="Year">Year</label></div>
               <div>  <select name="Year" value={profile?.year_of_study} ref={year_ref}>
                 <option value="0" selected hidden></option>
                 <option value="Freshman">Freshman</option>
@@ -117,7 +133,7 @@ const RegistrationForm = (props) => {
               </select></div>
             </div>
             <div className={styles.FormInput}>
-              <div><label for="Programme">Programme</label></div>
+              <div><label htmlFor="Programme">Programme</label></div>
               <div>  <select name="Programme" value={profile?.programme} ref={programme_ref}>
                 <option value="none" selected hidden></option>
                 <option value="B.Tech">B.Tech</option>
@@ -133,24 +149,6 @@ const RegistrationForm = (props) => {
                 <option value="M.S. (Engineering) + PhD">M.S. (Engineering) + PhD</option>
               </select></div>
             </div>
-
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={department_ref}
-                  type={"text"}
-                  label={"Department"}
-                  value={profile?.department ?? ""}
-                // placeholder={"Enter name"}
-                /> </div>
-              <div className={styles.FormInput}>
-                <InputField
-                  inputRef={hostel_ref}
-                  type={"text"}
-                  label={"Hostel"}
-                  value={profile?.hostel ?? ""}
-                // placeholder={"Enter name"}
-                />
-              </div>
 
             </div>
             <div className='w-4/5'>
