@@ -1,0 +1,118 @@
+.nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 136px;
+    background: #08080a;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.brand {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: 22px;
+    color: #f8f8f8;
+    letter-spacing: 1.32px;
+    white-space: nowrap;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+}
+
+.links a,
+.linkButton {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.linkButton {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.links a:hover,
+.linkButton:hover { opacity: 0.7; }
+
+.profileChip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 112px;
+    height: 40px;
+    padding: 0 16px 0 12px;
+    box-sizing: border-box;
+    border: 1.5px solid rgba(139, 207, 240, 0.72);
+    border-radius: 4px;
+    flex-shrink: 0;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #f8f8f8;
+    white-space: nowrap;
+}
+
+.loginButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 158px;
+    height: 48px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.loginButton img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.loginButton span {
+    position: relative;
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: 20px;
+    color: #08080a;
+}
+
+.divider {
+    position: relative;
+    z-index: 5;
+    display: block;
+    width: 100%;
+    height: 1px;
+}
+
+@media (max-width: 1100px) {
+    .nav { padding: 16px 48px; }
+    .links { gap: 40px; }
+}
+
+@media (max-width: 860px) {
+    .nav { padding: 16px 20px; }
+    .links { display: none; }
+}

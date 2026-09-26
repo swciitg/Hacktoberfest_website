@@ -5,12 +5,13 @@ import { BACKEND_API } from "../api";
 import { useCookies } from "react-cookie";
 import profile from './profile.svg';
 import swclogo from '../components/LandingPage/hacktober_logo.svg';
-import logout from "./logout.svg"
+import logoutIcon from "./logout.svg"
 import Footer from "../components/Footer/footer";
+import { logout } from "../utils/auth";
 const AllRepos = () => {
     const [iitgRepos, setIitgRepos] = useState();
     const [nonIitgRepos, setNonIitgRepos] = useState();
-    const [cookies, setCookie, removeCookie] = useCookies();
+    const [cookies] = useCookies(['access_token']);
 
     useEffect(() => {
         axios
@@ -44,14 +45,6 @@ const AllRepos = () => {
     
       }, []);
       
-      const handleLogout = () => {
-        Object.keys(cookies).forEach(cookieName => {
-            removeCookie(cookieName, { path: '/' }); // Remove React cookie
-            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;           });
-        window.location.href = '/hacktoberfest';
-        // console.log(cookies.access_token)
-      }
-
   return (
     <>
     <div className="bg-[#170f1e] w-full min-h-screen">
@@ -62,8 +55,8 @@ const AllRepos = () => {
           <img src={profile} width={35}></img>
         </a>
         {
-         cookies.access_token ? <button onClick={handleLogout}>
-          <img src={logout} width={40}></img>
+         cookies.access_token ? <button onClick={logout}>
+          <img src={logoutIcon} width={40}></img>
         </button> : null
         }
       </div>

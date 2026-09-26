@@ -1,0 +1,458 @@
+/* ─── Page shell ─── */
+.page {
+    position: relative;
+    min-height: 100vh;
+    background-color: #08080a;
+    color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ─── Background layers ─── */
+.starsBlue {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ─── Main content ─── */
+.main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    padding: 40px 136px 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.backLink {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #a9b8da;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+    width: fit-content;
+}
+
+.backLink:hover { opacity: 0.7; }
+
+.statusText {
+    font-family: 'Inter', sans-serif;
+    color: #a9b8da;
+    font-size: 16px;
+}
+
+/* ─── Two-column layout ─── */
+.twoCol {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* ─── Left card ─── */
+.leftCard {
+    position: relative;
+    flex: 1;
+    max-width: 767px;
+    min-height: 600px;
+}
+
+/* Shared card frame (absolute SVG border) */
+.cardFrame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    object-fit: fill;
+}
+
+.leftContent {
+    position: relative;
+    z-index: 1;
+    padding: 48px 44px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* ─── Repo header ─── */
+.repoHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.repoAvatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.repoMeta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.repoName {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: #f8f8f8;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+}
+
+.repoName:hover { opacity: 0.8; }
+
+.repoDesc {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #a9b8da;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.headerInvader {
+    width: 48px;
+    height: auto;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+/* ─── Tech tags ─── */
+.techTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.techTag {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8bcff0;
+    background: rgba(139, 207, 240, 0.12);
+    border: 1px solid rgba(139, 207, 240, 0.3);
+    border-radius: 4px;
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+/* ─── Stats row ─── */
+.statsRow {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.statBox {
+    position: relative;
+    width: 150px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.statFrame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    object-fit: fill;
+}
+
+.statInner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.statValue {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: #f8f8f8;
+    line-height: 1;
+}
+
+.statLabel {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #a9b8da;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ─── List rows ─── */
+.listRows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.listRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 8px;
+    border-bottom: 1px solid rgba(169, 184, 218, 0.1);
+    text-decoration: none;
+    color: #f8f8f8;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    transition: background 0.2s;
+    border-radius: 4px;
+}
+
+.listRow:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.listIcon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.listLabel {
+    flex: 1;
+    font-weight: 500;
+}
+
+.listArrow {
+    color: #a9b8da;
+    font-size: 14px;
+}
+
+/* ─── Right column ─── */
+.rightCol {
+    width: 402px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ─── Contribute card ─── */
+.contributeCard {
+    position: relative;
+    min-height: 380px;
+}
+
+.contributeContent {
+    position: relative;
+    z-index: 1;
+    padding: 44px 36px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ─── More card ─── */
+.moreCard {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
+}
+
+.moreCardLandscape {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 60%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.moreContent {
+    position: relative;
+    z-index: 1;
+    padding: 36px 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Shared card heading */
+.cardHeading {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f8f8f8;
+    letter-spacing: 1.2px;
+    margin: 0;
+}
+
+/* ─── Steps list ─── */
+.stepsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stepItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.stepNum {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: #8bcff0;
+    line-height: 1.2;
+    flex-shrink: 0;
+    min-width: 18px;
+}
+
+.stepText {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #a9b8da;
+    line-height: 1.5;
+}
+
+/* ─── Start button ─── */
+.startBtn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 46px;
+    text-decoration: none;
+    margin-top: 8px;
+}
+
+.startBtnBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    object-fit: fill;
+}
+
+.startBtn span {
+    position: relative;
+    z-index: 1;
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: #08080a;
+}
+
+/* ─── More repos list ─── */
+.moreList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.moreRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(169, 184, 218, 0.1);
+    text-decoration: none;
+    transition: opacity 0.2s;
+    gap: 8px;
+}
+
+.moreRow:hover { opacity: 0.7; }
+
+.moreRepoName {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #f8f8f8;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.morePrCount {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #a9b8da;
+    flex-shrink: 0;
+}
+
+/* ─── City skyline ─── */
+.cityscape {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 230px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cityscape img { position: absolute; bottom: 0; }
+
+.cityBase { left: 0;                width: 100%; object-fit: cover; }
+.cityR    { right: 0;               width: 340px; }
+.cityArch { left: 50%;  transform: translateX(-50%); width: 280px; }
+.cityR2   { right: 120px;           width: 180px; }
+.cityL    { left: 80px;             width: 200px; }
+.cityBl   { left: 0;                width: 260px; }
+.citySm   { left: 380px;            width: 140px; }
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+    .main { padding: 32px 48px 240px; }
+}
+
+@media (max-width: 860px) {
+    .main { padding: 24px 16px 48px; }
+    .twoCol { flex-direction: column; }
+    .leftCard { max-width: 100%; width: 100%; }
+    .rightCol { width: 100%; }
+    .statsRow { gap: 8px; }
+    .statBox { width: 120px; height: 68px; }
+    .cityscape { display: none; }
+}

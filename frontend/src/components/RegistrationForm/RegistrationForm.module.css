@@ -1,176 +1,269 @@
-body {
-    padding: 0px;
-    margin: 0px;
-}
-
-.landingPage {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(23, 15, 30);
-    padding: 25px;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-.FormSection {
-    width: 60vw;
-    background-color: rgb(255, 255, 255);
+/* ─── Page shell ─── */
+.page {
+    position: relative;
+    min-height: 100vh;
+    background-color: #08080a;
+    color: #f8f8f8;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
+    overflow: hidden;
 }
 
-.HacktoberLogo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40vw;
-}
-
-.HacktoberLogo img {
-    width: 85%;
-}
-
-.SwcLogo {
+/* ─── Backgrounds ─── */
+.starsBg {
     position: absolute;
-    top: 50px;
-    left: 50px;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
 }
 
-.SwcLogo img {
-    width: 75px;
+.starsBlue {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
 }
 
-.UserName {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 2rem;
-    font-family: Montserrat, sans-serif;
-    width: 80%;
-    margin-bottom: 20px;
+.clouds {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1440px;
+    height: 100%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 1;
 }
 
-.Form {
+.clouds img { position: absolute; height: auto; }
+.clouds .flipped { transform: scaleX(-1); }
+
+/* ─── Hero ─── */
+.hero {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    width: 80%;
-    gap: 0.3vh;
+    align-items: center;
+    text-align: center;
+    padding: 56px 20px 24px;
+    gap: 8px;
 }
 
-.FormInput label {
-    color: rgb(23, 15, 30);
-    font-size: 1.2rem;
-    font-family: Montserrat, sans-serif;
+.heroInvader {
+    width: 72px;
+    height: auto;
+    margin-bottom: 8px;
 }
 
-.FormInput {
+.eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #8bcff0;
+    letter-spacing: 3.36px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.heroTitle {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 700;
+    font-size: 36px;
+    color: #f8f8f8;
+    letter-spacing: 1.5px;
+    margin: 0;
+    max-width: 900px;
+}
+
+.heroSubtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #a9b8da;
+    letter-spacing: 0.36px;
+    margin: 0;
+    max-width: 640px;
+}
+
+/* ─── Form card ─── */
+.main {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px 180px;
+}
+
+.card {
+    position: relative;
+    z-index: 1;
+    width: 705px;
+    max-width: 100%;
+}
+
+.cardFrame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    object-fit: fill;
+}
+
+.cardContent {
+    position: relative;
+    z-index: 1;
+    padding: 48px 56px 56px;
     display: flex;
     flex-direction: column;
-    gap: 0.5vh;
+    gap: 32px;
 }
 
-.FormInput input {
-    height: 40px;
-    width: 65%;
-    font-size: 1.2rem;
-    color: rgb(96, 94, 94);
-    border-radius: 5px;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid grey;
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 30px;
 }
 
-.FormInput select {
-    width: 65%;
-    height: 40px;
-    font-size: 1.2rem;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid grey;
-    border-radius: 5px;
-}
-
-.FormInput select option {
-    width: 65%;
-    height: 40px;
-    font-size: 1.2rem;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-.FormInput input:focus {
-    border-color: rgb(23, 15, 30);
-    /* border-color: #dedede;
-    border-style: solid; */
-
-}
-
-.FormSectionButton {
-    margin: 30px 0px 0px;
-    letter-spacing: 0.02rem;
-    background: rgb(23, 15, 30);
-    color: rgb(255, 255, 255);
-    padding: 0px 25px;
-    height: 40px;
-
-    border-radius: 5px;
+.field {
     display: flex;
-    -webkit-box-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fieldWide {
+    grid-column: 1 / -1;
+}
+
+.field > span:first-child {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.field input,
+.selectWrap select {
+    height: 52px;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: #f8f8f8;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 0 18px;
+}
+
+.field input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.field input:focus,
+.selectWrap select:focus {
+    outline: none;
+    border-color: #9edaf4;
+}
+
+.selectWrap {
+    position: relative;
+    display: block;
+}
+
+.selectWrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 40px;
+}
+
+.selectWrap select option {
+    background: #08080a;
+    color: #f8f8f8;
+}
+
+.selectArrow {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8bcff0;
+    pointer-events: none;
+    font-size: 14px;
+}
+
+.errorText {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #ff8080;
+    margin: 0;
+}
+
+/* ─── Submit button ─── */
+.submitBtn {
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    transition: all 0.2s ease 0s;
-    font-size: 1.1rem;
+    justify-content: center;
+    width: 214px;
+    height: 47px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
 }
 
-@media screen and (max-width :650px) {
-    .landingPage {
-        flex-direction: column;
-        height: 110vh;
-    }
-
-    .FormSection {
-        width: 100%;
-        height: 75%;
-    }
-
-    .HacktoberLogo {
-        margin-top: 8vw;
-        align-items: center;
-        width: 100%;
-        padding: 3vh 0%;
-        height: 15%;
-        background-color: rgb(23, 15, 30);
-    }
-
-    .FormSectionButton {
-        margin-bottom: 20px;
-
-    }
-
-    .UserName {
-        margin-top: 70px;
-    }
-
-    .FormInput input {
-        width: 100%;
-    }
-
-    .FormInput select {
-        width: 100%;
-    }
+.submitBtnBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
-@media screen and (max-width:380px) {
-      .FormSection{
-        height: 75%;
-      }
-      .landingPage{
-        height: 140vh;
-      }
+.submitBtn span {
+    position: relative;
+    z-index: 1;
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 600;
+    font-size: 20px;
+    color: #08080a;
+}
+
+.submitBtn:hover { opacity: 0.9; }
+.submitBtn:disabled { opacity: 0.6; cursor: progress; }
+
+/* ─── City skyline ─── */
+.cityscape {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cityscape img { position: absolute; bottom: 0; }
+
+.cityBase { left: 0; width: 100%; object-fit: cover; }
+.cityR    { right: 0; width: 535px; }
+
+/* ─── Responsive ─── */
+@media (max-width: 860px) {
+    .main { padding: 32px 16px 48px; }
+    .clouds { display: none; }
+    .cardContent { padding: 36px 24px 40px; }
+    .formGrid { grid-template-columns: 1fr; }
+    .heroTitle { font-size: 26px; }
+    .heroSubtitle { font-size: 15px; }
+    .cityscape { display: none; }
 }
