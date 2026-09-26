@@ -39,16 +39,39 @@ async function getRepoInfo(owner, repo, access_token) {
 
 async function getRepositorypull_request_count(owner, repo, access_token) {
   try {
-    const pullRequestsResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`, {
-      headers: {
-        'Authorization': `token ${access_token}`,
-        'User-Agent': 'GitHub-Repo-Data-Requester'
-      }
-    });
+    const pullRequests = [];
+    const perPage = 100;
+    let page = 1;
 
-    const mergedPullRequests = pullRequestsResponse.data.filter(pr => pr.merged===true);
+    // GitHub returns 30 pull requests by default. Keep requesting pages so the
+    // numbers shown on the site represent the repository's complete history.
+    while (true) {
+      const pullRequestsResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
+        params: {
+          state: 'all',
+          per_page: perPage,
+          page,
+        },
+        headers: {
+          'Authorization': `token ${access_token}`,
+          'User-Agent': 'GitHub-Repo-Data-Requester'
+        }
+      });
+
+      pullRequests.push(...pullRequestsResponse.data);
+
+      if (pullRequestsResponse.data.length < perPage) {
+        break;
+      }
+
+      page += 1;
+    }
+
+    // The list-pull-requests API identifies merged PRs with merged_at. The
+    // `merged` boolean is only guaranteed by the single-PR endpoint.
+    const mergedPullRequests = pullRequests.filter(pr => pr.merged_at != null);
     return {
-      pullRequestCount: pullRequestsResponse.data.length,
+      pullRequestCount: pullRequests.length,
       mergedPullRequestCount: mergedPullRequests.length,
     };
   } catch (error) {
