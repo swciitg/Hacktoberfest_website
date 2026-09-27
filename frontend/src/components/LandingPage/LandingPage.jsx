@@ -84,9 +84,9 @@ const LandingPage = () => {
 
                 <div className={styles.heroContent}>
                     <img src={A('hero-invader.svg')} alt="" className={styles.heroInvader} aria-hidden="true" />
-                    <h1 className={styles.heroTitle}>What is Hacktober?</h1>
+                    <h1 className={styles.heroTitle}>What is Hacktoberfest?</h1>
                     <p className={styles.heroDesc}>
-                        Hacktober is a month-long coding competition organised by the Students&rsquo; Web Committee, IIT Guwahati.
+                        Hacktoberfest is a month-long coding competition organised by the Students&rsquo; Web Committee, IIT Guwahati.
                     </p>
                     <p className={styles.heroSubtitle}>LEARN &nbsp;·&nbsp; PRACTICE &nbsp;·&nbsp; QUIZ &nbsp;·&nbsp; PROGRESS</p>
                     <a

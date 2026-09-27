@@ -33,7 +33,7 @@ const AllReposPage = () => {
                 <section className={styles.header}>
                     <img src={A('projects-invader.svg')} alt="" className={styles.headerInvader} aria-hidden="true" />
                     <h1 className={styles.title}>ALL REPOSITORIES</h1>
-                    <p className={styles.subtitle}>Every project taking part in Hacktober. Pick one and start contributing.</p>
+                    <p className={styles.subtitle}>Every project taking part in Hacktoberfest. Pick one and start contributing.</p>
 
                     <div className={styles.searchRow}>
                         <div className={styles.searchBox}>
