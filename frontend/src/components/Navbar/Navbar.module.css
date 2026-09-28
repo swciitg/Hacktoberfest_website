@@ -115,4 +115,5 @@
 @media (max-width: 860px) {
     .nav { padding: 16px 20px; }
     .links { display: none; }
+    .brand { display: none; }
 }
