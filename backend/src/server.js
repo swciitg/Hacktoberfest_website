@@ -13,7 +13,7 @@ import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js"
 import UserTokenInfo from "../models/tokenModel.js";
 import getRepo from './repoInfo.js'
-import getUserInfo from './userInfo.js'
+import getUserInfo, { getUserById } from './userInfo.js'
 import countPullRequestsForUserAndRepo, { fetchMergedPRsForRepo } from './mergedPR_Info.js'
 import HacktoberRepo from '../models/repoModel.js'
 import UserLeaderboard from '../models/leaderboardModel.js'
@@ -131,6 +131,13 @@ passport.use(new GitHubStrategy({
       });
     }
     await tokenInfo.save();
+    const avatar_url = profile._json?.avatar_url || profile.photos?.[0]?.value;
+    if (profile.username) {
+      await User.updateOne(
+        { github_id: profile.id },
+        { $set: { github_username: profile.username, ...(avatar_url && { avatar_url }) } }
+      );
+    }
     return done(null, profile);
   }
 ));
@@ -224,7 +231,9 @@ async function updateLeaderboard() {
     // Phase 2: Flipped Leaderboard Sync (1 query per repository)
     console.log("Syncing leaderboard with merged pull requests...");
     const labels = await githubLabels.find({}).exec();
+    // Keyed by numeric GitHub id so counts survive username changes.
     const userPRCounts = {};
+    const authorProfiles = {};
 
     for (const repo of repos) {
       const repoOwner = repo.owner;
@@ -233,9 +242,10 @@ async function updateLeaderboard() {
       const prs = await fetchMergedPRsForRepo(repoOwner, repoName, serverToken, labels);
 
       for (const pr of prs) {
-        if (pr.user && pr.user.login) {
-          const author = pr.user.login.toLowerCase();
-          userPRCounts[author] = (userPRCounts[author] || 0) + 1;
+        if (pr.user && pr.user.id != null) {
+          const authorId = String(pr.user.id);
+          userPRCounts[authorId] = (userPRCounts[authorId] || 0) + 1;
+          authorProfiles[authorId] = { login: pr.user.login, avatar_url: pr.user.avatar_url };
         }
       }
     }
@@ -243,8 +253,17 @@ async function updateLeaderboard() {
     // Update all registered users in MongoDB without deleting inactive accounts
     const registeredUsers = await User.find({}).exec();
     for (const user of registeredUsers) {
-      const username = user.github_username ? user.github_username.toLowerCase() : null;
-      const mergedCount = username && userPRCounts[username] ? userPRCounts[username] : 0;
+      const githubId = String(user.github_id);
+      const mergedCount = userPRCounts[githubId] || 0;
+
+      const githubProfile = authorProfiles[githubId] || await getUserById(githubId, serverToken);
+      if (githubProfile && githubProfile.login &&
+        (githubProfile.login !== user.github_username || githubProfile.avatar_url !== user.avatar_url)) {
+        await User.updateOne(
+          { _id: user._id },
+          { $set: { github_username: githubProfile.login, avatar_url: githubProfile.avatar_url } }
+        );
+      }
 
       await UserLeaderboard.updateOne(
         { github_id: user.github_id },
