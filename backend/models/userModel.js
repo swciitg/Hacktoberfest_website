@@ -14,28 +14,36 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    outlook_email: {
+    email: {
         type: String,
         required: true
     },
-    programme: {
-        type: String,
-        enum: ['B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des', 'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD'],
-        required: true
-    },
-    hostel: {
+    mobile_number: {
         type: String,
         required: true
     },
-    department: {
+    college: {
         type: String,
         required: true
     },
     year_of_study: {
         type: String,
-        enum: ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'],
         required: true
     },
+    programme: {
+        type: String,
+        required: true
+    },
+    // Optional legacy fields for backward compatibility
+    outlook_email: {
+        type: String
+    },
+    hostel: {
+        type: String
+    },
+    department: {
+        type: String
+    }
 });
 const User = mongoose.model("Users", userSchema);
 export default User;
