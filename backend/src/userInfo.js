@@ -18,4 +18,18 @@ async function getUserInfo(access_token) {
   }
 }
 
+// Looks up a GitHub account by its numeric id, which stays the same across username changes.
+async function getUserById(githubId, accessToken) {
+  try {
+    const headers = { 'User-Agent': 'Hacktoberfest-Leaderboard-Sync' };
+    if (accessToken) headers.Authorization = `token ${accessToken}`;
+    const response = await axios.get(`https://api.github.com/user/${encodeURIComponent(githubId)}`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch GitHub user ${githubId}:`, error.response?.status || error.message);
+    return null;
+  }
+}
+
+export { getUserById };
 export default getUserInfo;
