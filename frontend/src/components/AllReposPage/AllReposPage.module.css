@@ -180,6 +180,13 @@
 
 @media (max-width: 600px) {
     .main { padding: 40px 20px 60px; gap: 40px; }
-    .searchBox { width: 100%; max-width: 280px; }
+    .searchBox { width: 100%; max-width: 280px; height: 48px; }
+    .searchIcon { left: 8px; width: 30px; height: 30px; }
+    .searchInput {
+        font-size: 14px;
+        letter-spacing: 1.2px;
+        padding-left: 42px;
+        padding-right: 12px;
+    }
     .cardsRow { flex-direction: column; align-items: center; }
 }
