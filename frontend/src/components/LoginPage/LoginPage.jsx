@@ -42,7 +42,7 @@ const LoginPage = () => {
                         </button>
 
                         <p className={styles.registerLine}>
-                            <span className={styles.registerText}>New to Hacktober?&nbsp;</span>
+                            <span className={styles.registerText}>New to Hacktoberfest?&nbsp;</span>
                             <Link to="/profile" className={styles.registerLink}>
                                 Fill out your details to register
                             </Link>

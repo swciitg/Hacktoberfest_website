@@ -8,7 +8,7 @@ const Navbar = ({ isLoggedIn, username }) => (
     <nav className={styles.nav}>
       <Link to="/" className={styles.logo}>
         <img src={asset('invader.svg')} alt="" width={38} />
-        <span className={styles.brand}>HACKTOBER</span>
+        <span className={styles.brand}>HACKTOBERFEST</span>
       </Link>
 
       {isLoggedIn ? (

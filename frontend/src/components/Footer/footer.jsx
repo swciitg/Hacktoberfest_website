@@ -10,9 +10,9 @@ const Footer = () => {
                 {/* Branding col */}
                 <div className="flex flex-col gap-4 max-w-[200px] items-center lg:items-start text-center lg:text-left">
                     <div className="flex items-center gap-3">
-                        <img src={A('invader-footer.svg')} alt="Hacktober" className="w-9 h-7" />
+                        <img src={A('invader-footer.svg')} alt="Hacktoberfest" className="w-9 h-7" />
                         <span className="font-['Pixelify_Sans',monospace] font-semibold text-xl tracking-[1.32px]">
-                            HACKTOBER
+                            HACKTOBERFEST
                         </span>
                     </div>
                     <p className="text-sm leading-[22px] text-[#f8f8f8]">
