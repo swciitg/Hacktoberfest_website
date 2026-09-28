@@ -28,13 +28,13 @@ const CLOUDS = [
 ];
 
 const TEXT_FIELDS = [
-  { name: 'roll_no',       label: 'Roll number',   type: 'text',  placeholder: 'e.g. 220102035', minLength: 9, maxLength: 9 },
-  { name: 'outlook_email', label: 'Outlook Email', type: 'email', placeholder: 'yourname@iitg.ac.in' },
+  { name: 'roll_no',       label: 'Roll number',   type: 'text', placeholder: 'e.g. 220102035' },
+  { name: 'mobile_number', label: 'Mobile number', type: 'tel',  placeholder: 'e.g. 9876543210', inputMode: 'tel', maxLength: 15 },
 ];
 
 const WIDE_FIELDS = [
-  { name: 'department', label: 'Department', placeholder: 'e.g. Computer Science and Engineering' },
-  { name: 'hostel',     label: 'Hostel',     placeholder: 'e.g. Kameng' },
+  { name: 'email',   label: 'Email',   type: 'email', placeholder: 'you@example.com' },
+  { name: 'college', label: 'College', type: 'text',  placeholder: 'e.g. IIT Guwahati' },
 ];
 
 const SELECT_FIELDS = [
@@ -50,6 +50,8 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
   // Checked once on mount; reacting to later changes would hijack logout's redirect.
   const loggedInOnMount = useRef(isLoggedIn);
+  // Accounts registered before the schema change only have outlook_email.
+  const savedValues = { ...profile, email: profile?.email || profile?.outlook_email };
 
   useEffect(() => {
     if (!loggedInOnMount.current) loginWithGithub();
@@ -110,7 +112,7 @@ const RegistrationForm = () => {
               {TEXT_FIELDS.map(({ name, label, ...inputProps }) => (
                 <label key={name} className={styles.field}>
                   <span>{label}</span>
-                  <input name={name} defaultValue={profile?.[name] ?? ''} required {...inputProps} />
+                  <input name={name} defaultValue={savedValues[name] ?? ''} required {...inputProps} />
                 </label>
               ))}
 
@@ -118,7 +120,7 @@ const RegistrationForm = () => {
                 <label key={name} className={styles.field}>
                   <span>{label}</span>
                   <span className={styles.selectWrap}>
-                    <select name={name} defaultValue={profile?.[name] ?? ''} required>
+                    <select name={name} defaultValue={savedValues[name] ?? ''} required>
                       <option value="" disabled hidden>{placeholder}</option>
                       {options.map((opt) => (
                         <option key={opt} value={opt}>{opt}</option>
@@ -129,10 +131,10 @@ const RegistrationForm = () => {
                 </label>
               ))}
 
-              {WIDE_FIELDS.map(({ name, label, placeholder }) => (
+              {WIDE_FIELDS.map(({ name, label, ...inputProps }) => (
                 <label key={name} className={`${styles.field} ${styles.fieldWide}`}>
                   <span>{label}</span>
-                  <input name={name} type="text" defaultValue={profile?.[name] ?? ''} placeholder={placeholder} required />
+                  <input name={name} defaultValue={savedValues[name] ?? ''} required {...inputProps} />
                 </label>
               ))}
             </div>

@@ -13,8 +13,8 @@ import jwt from 'jsonwebtoken';
 import User from "../models/userModel.js"
 import UserTokenInfo from "../models/tokenModel.js";
 import getRepo from './repoInfo.js'
-import getUserInfo from './userInfo.js'
-import countPullRequestsForUserAndRepo from './mergedPR_Info.js'
+import getUserInfo, { getUserById } from './userInfo.js'
+import countPullRequestsForUserAndRepo, { fetchMergedPRsForRepo } from './mergedPR_Info.js'
 import HacktoberRepo from '../models/repoModel.js'
 import UserLeaderboard from '../models/leaderboardModel.js'
 import githubLabels from '../models/githubLabels.js'
@@ -131,6 +131,13 @@ passport.use(new GitHubStrategy({
       });
     }
     await tokenInfo.save();
+    const avatar_url = profile._json?.avatar_url || profile.photos?.[0]?.value;
+    if (profile.username) {
+      await User.updateOne(
+        { github_id: profile.id },
+        { $set: { github_username: profile.username, ...(avatar_url && { avatar_url }) } }
+      );
+    }
     return done(null, profile);
   }
 ));
@@ -200,89 +207,77 @@ mongoose.connect(process.env.MONGO_URL, {}).then(() => {
 
 
 async function updateLeaderboard() {
-  const tokens = await UserTokenInfo.find({}).exec();
-  const repoArray = [];
-  const repos = await HacktoberRepo.find({}).exec();
   try {
-    const tokenArray = tokens.map(token => token.access_token);
-    const randomIndex = Math.floor(Math.random() * tokenArray.length);
-    // console.log("this is token Array",tokenArray);
+    const repos = await HacktoberRepo.find({}).exec();
+    if (!repos || repos.length === 0) {
+      console.log("No repositories configured to update.");
+      return;
+    }
+
+    // Resolve token: prefer GITHUB_SERVER_TOKEN, fallback to any valid user token
+    const tokens = await UserTokenInfo.find({}).exec();
+    const tokenArray = tokens.map(token => token.access_token).filter(Boolean);
+    const serverToken = process.env.GITHUB_SERVER_TOKEN || (tokenArray.length > 0 ? tokenArray[0] : null);
+
+    if (!serverToken) {
+      console.warn("No GITHUB_SERVER_TOKEN configured and no user tokens available. Skipping leaderboard update.");
+      return;
+    }
+
+    // Phase 1: Update repository statistics (total PRs, merged PRs, tech stacks, avatar, stars)
+    console.log("Updating repository statistics...");
+    await getRepo.getPRCountsForMultipleRepos(repos, serverToken);
+
+    // Phase 2: Flipped Leaderboard Sync (1 query per repository)
+    console.log("Syncing leaderboard with merged pull requests...");
+    const labels = await githubLabels.find({}).exec();
+    // Keyed by numeric GitHub id so counts survive username changes.
+    const userPRCounts = {};
+    const authorProfiles = {};
+
     for (const repo of repos) {
-      // const repo_name_owner = await getRepo.getRepo_owner_name(repo.repo_id, tokenArray[randomIndex]);
-      const repoObject = {
-        name: repo.repo,
-        owner: repo.owner,
-      };
-      repoArray.push(repoObject);
-    }
-    await getRepo.getPRCountsForMultipleRepos(repos, tokenArray[randomIndex]);
-    for (const access_token of tokenArray) {
-      const userInfo = await UserTokenInfo.findOne({ access_token: access_token });
-      const userData = await getUserInfo(access_token);
-      if (userData === undefined) { // token invalid
+      const repoOwner = repo.owner;
+      const repoName = repo.repo;
+      console.log(`Fetching merged PRs for ${repoOwner}/${repoName}...`);
+      const prs = await fetchMergedPRsForRepo(repoOwner, repoName, serverToken, labels);
 
-        // cleanup invalid token from db
-        console.log("Deleting invalid token for github_id:", userInfo.github_id, " with access_token:", access_token);
-        await UserTokenInfo.deleteOne({ access_token: access_token });
-
-        continue;
+      for (const pr of prs) {
+        if (pr.user && pr.user.id != null) {
+          const authorId = String(pr.user.id);
+          userPRCounts[authorId] = (userPRCounts[authorId] || 0) + 1;
+          authorProfiles[authorId] = { login: pr.user.login, avatar_url: pr.user.avatar_url };
+        }
       }
-      //console.log(userData);
-      User.findOne({ github_id: userInfo.github_id })
-        .exec()
-        .then((existingUser) => {
-          if (existingUser) {
-            existingUser.github_username = userData.login;
-            existingUser.avatar_url = userData.avatar_url;
-            return existingUser.save();
-          }
-        });
-      const labels = await githubLabels.find({}).exec();
-      const username = userData.login;
-      let total_pr_merged = 0;
-      let points = 0;
-      for (const repo of repoArray) {
-        const [merged_pr_Data] = await countPullRequestsForUserAndRepo(username, repo, access_token, labels);
-        // console.log(merged_pr_Data);
-        repo.repo_mergedPR_counts = merged_pr_Data.count;
-        total_pr_merged += merged_pr_Data.total_count;
-        
-        // for (const pr of merged_pr_Data) {
-        //   for (const label of pr.labels) {
-        //     if (label.name === 'easy') {
-        //       points += 5;
-        //     } else if (label.name === 'medium') {
-        //       points += 10;
-        //     } else if (label.name === 'hard') {
-        //       points += 20;
-        //     }
-        //   }
-        // }
+    }
+
+    // Update all registered users in MongoDB without deleting inactive accounts
+    const registeredUsers = await User.find({}).exec();
+    for (const user of registeredUsers) {
+      const githubId = String(user.github_id);
+      const mergedCount = userPRCounts[githubId] || 0;
+
+      const githubProfile = authorProfiles[githubId] || await getUserById(githubId, serverToken);
+      if (githubProfile && githubProfile.login &&
+        (githubProfile.login !== user.github_username || githubProfile.avatar_url !== user.avatar_url)) {
+        await User.updateOne(
+          { _id: user._id },
+          { $set: { github_username: githubProfile.login, avatar_url: githubProfile.avatar_url } }
+        );
       }
 
-      UserLeaderboard.findOne({ github_id: userInfo.github_id })
-        .exec()
-        .then((existingLeaderboardData) => {
-          if (existingLeaderboardData) {
-            existingLeaderboardData.pull_requests_merged = total_pr_merged;
-            existingLeaderboardData.points = points;
-            return existingLeaderboardData.save();
-          } else {
-            const leaderboardData = new UserLeaderboard({
-              github_id: userInfo.github_id,
-              pull_requests_merged: total_pr_merged,
-              points: points
-            });
-            return leaderboardData.save();
+      await UserLeaderboard.updateOne(
+        { github_id: user.github_id },
+        {
+          $set: {
+            pull_requests_merged: mergedCount
           }
-        })
-        .then(() => {
-          console.log("Leaderboard data saved successfully");
-        });
+        },
+        { upsert: true }
+      );
     }
-  }
-  catch (err) {
-    //updateLeaderboard(); // again call -> with diff random index
+
+    console.log(`Leaderboard updated successfully for ${registeredUsers.length} registered users across ${repos.length} repositories.`);
+  } catch (err) {
     console.error("Error while saving leaderboard data:", err);
   }
 }
@@ -328,53 +323,54 @@ app.put(process.env.BASE_API_PATH + "/profile", async (req, res) => {
     res.redirect(process.env.HOME_PATH + '/auth/github');
     return;
   }
-  if (!body.roll_no || !body.outlook_email || !body.programme || !body.hostel || !body.department || !body.year_of_study) {
+  const email = body.email || body.outlook_email;
+  const mobile_number = body.mobile_number;
+  const college = body.college;
+  const year_of_study = body.year_of_study;
+  const roll_no = body.roll_no ? body.roll_no.toString().trim() : '';
+  const programme = body.programme;
 
-    let missingEntries = [];
-    if (!body.roll_no) missingEntries.push('roll_no');
-    if (!body.outlook_email) missingEntries.push('outlook_email');
-    if (!body.programme) missingEntries.push('programme');
-    if (!body.hostel) missingEntries.push('hostel');
-    if (!body.department) missingEntries.push('department');
-    if (!body.year_of_study) missingEntries.push('year_of_study');
+  const missingEntries = [];
+  if (!email) missingEntries.push('email');
+  if (!mobile_number) missingEntries.push('mobile_number');
+  if (!college) missingEntries.push('college');
+  if (!year_of_study) missingEntries.push('year_of_study');
+  if (!roll_no) missingEntries.push('roll_no');
+  if (!programme) missingEntries.push('programme');
 
+  if (missingEntries.length > 0) {
     const missingEntriesString = missingEntries.join(', ');
-
     return res.status(400).json({
       error: `Please fill all the missing entries: ${missingEntriesString}`
     });
   }
-  // check if roll_no is valid
-  body.roll_no = body.roll_no.toString();
-  if (body.roll_no.length !== 9 ) return res.status(400).json({
-      error: 'Invalid roll number. Please enter a valid roll number.'
-  });
-  // check if enum values are valid
-  const validProgrammes = ['B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des', 'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD'];
-  const validYears = ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'];
-  if (!validProgrammes.includes(body.programme)) return res.status(400).json({
-      error: 'Invalid programme. Please enter a valid programme from: ' + validProgrammes.join(', ') + '.'
-  });
-  if (!validYears.includes(body.year_of_study)) return res.status(400).json({
-      error: 'Invalid year of study. Please enter a valid year of study from: ' + validYears.join(', ') + '.'
-  });
 
   let user = await User.findOne({
     github_id: userInfo.id
   });
+
+  const profileData = {
+    roll_no,
+    email,
+    mobile_number,
+    college,
+    year_of_study,
+    programme,
+    outlook_email: email,
+    hostel: body.hostel || user?.hostel,
+    department: body.department || user?.department
+  };
+
   if (user !== null) {
-    // console.log(user.name)
-    user.roll_no = req.body.roll_no;
-    user.outlook_email = req.body.outlook_email;
-    user.programme = req.body.programme;
-    user.hostel = req.body.hostel;
-    user.department = req.body.department;
-    user.year_of_study = req.body.year_of_study;
+    Object.assign(user, profileData);
     await user.save();
   } else {
-    // console.log("USER NOT FOUND");
-    user = new User({ github_id: userInfo.id, avatar_url: userInfo.avatar_url, github_username: userInfo.login, ...body });
-    // console.log(user);
+    user = new User({
+      github_id: userInfo.id,
+      avatar_url: userInfo.avatar_url,
+      github_username: userInfo.login,
+      ...profileData
+    });
     await user.save();
   }
   await createOrUpdateTokenInfo(user.github_id, req.access_token);
@@ -412,9 +408,12 @@ app.post(process.env.BASE_API_PATH + '/repo', async (req, res) => {
         });
       }
       const tokens = await UserTokenInfo.find({}).exec();
-      const tokenArray = tokens.map(token => token.access_token);
-      const randomIndex = Math.floor(Math.random() * tokenArray.length);
-      const repo_info = await getRepo.getRepoInfo(owner, repo, tokenArray[randomIndex]);
+      const tokenArray = tokens.map(token => token.access_token).filter(Boolean);
+      const repoToken = process.env.GITHUB_SERVER_TOKEN || (tokenArray.length > 0 ? tokenArray[0] : null);
+      if (!repoToken) {
+        return res.status(503).json({ error: 'No GitHub token available. Please set GITHUB_SERVER_TOKEN or log in with GitHub first.' });
+      }
+      const repo_info = await getRepo.getRepoInfo(owner, repo, repoToken);
       // console.log(repo_info);
       const repo_id = repo_info.id;
       const existingRepo = await HacktoberRepo.findOne({
