@@ -74,12 +74,20 @@ const LandingPage = () => {
                         alt="satellite"
                         className={`${styles.satellite} ${satelliteClicked ? styles.satelliteClicked : ''}`}
                     />
-                    <img
-                        src={A('astronaut-rope.svg')}
-                        alt="astronaut on rope"
-                        className={`${styles.astronautRope} ${satelliteClicked ? styles.astronautReached : ''}`}
-                    />
-                    <img src={A('astronaut-btn.png')} alt="" className={styles.astronautBtn} aria-hidden="true" />
+                    <div className={`${styles.astronautTether} ${satelliteClicked ? styles.astronautReached : ''}`}>
+                        <img
+                            src={A('astronaut-rope.svg')}
+                            alt=""
+                            className={styles.astronautRope}
+                            aria-hidden="true"
+                        />
+                        <img
+                            src={A('astronaut-btn.png')}
+                            alt="astronaut"
+                            className={styles.astronautBtn}
+                            aria-hidden="true"
+                        />
+                    </div>
                 </div>
 
                 <div className={styles.heroContent}>
