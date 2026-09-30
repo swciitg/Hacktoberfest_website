@@ -25,7 +25,7 @@ const Navbar = ({ isLoggedIn, username }) => (
         </>
       ) : (
         <>
-          <div className={styles.links}>
+          <div className={`${styles.links} ${styles.linksLoggedOut}`}>
             <a href={`${process.env.PUBLIC_URL}#about`}>About</a>
             <a href={`${process.env.PUBLIC_URL}#projects`}>Projects</a>
           </div>

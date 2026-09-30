@@ -76,7 +76,7 @@
     color: #f8f8f8;
     line-height: 1.6;
     letter-spacing: 3.6px;
-    margin: 0 0 24px;
+    margin: 0 0 40px;
     max-width: 560px;
 }
 
@@ -227,7 +227,7 @@
     width: 100%;
     max-width: 1200px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     margin-top: 16px;
 }
 

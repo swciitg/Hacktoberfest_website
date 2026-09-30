@@ -88,12 +88,6 @@ const LandingPage = () => {
                     <p className={styles.heroDesc}>
                         Hacktoberfest is a month-long coding competition organised by the Students&rsquo; Web Committee, IIT Guwahati.
                     </p>
-                    <p className={styles.heroSubtitle}>
-                        <span>LEARN</span>
-                        <span>PRACTICE</span>
-                        <span>QUIZ</span>
-                        <span>PROGRESS</span>
-                    </p>
                     <a
                         href="#projects"
                         className={styles.btnExplore}

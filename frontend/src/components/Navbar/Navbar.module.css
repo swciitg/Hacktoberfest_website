@@ -36,6 +36,11 @@
     font-size: 20px;
 }
 
+.linksLoggedOut {
+    justify-content: flex-end;
+    margin-right: 56px;
+}
+
 .links a,
 .linkButton {
     color: #f8f8f8;
@@ -110,6 +115,10 @@
 @media (max-width: 1100px) {
     .nav { padding: 16px 48px; }
     .links { gap: 40px; }
+    .linksLoggedOut {
+        margin-left: 0;
+        margin-right: 16px;
+    }
 }
 
 @media (max-width: 860px) {

@@ -11,7 +11,7 @@ import { loginWithGithub } from '../../utils/auth';
 
 const YEAR_OPTIONS = ['Freshman', 'Sophomore', 'Pre-Final Yearite', 'Final Yearite'];
 const PROGRAMME_OPTIONS = [
-  'B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Des', 'M.Des',
+  'B.Tech', 'M.Tech', 'Ph.D', 'M.Sc', 'B.Sc', 'B.Des', 'M.Des',
   'M.S.(R)', 'M.A.', 'MBA', 'MTech+PhD', 'M.S. (Engineering) + PhD',
 ];
 
