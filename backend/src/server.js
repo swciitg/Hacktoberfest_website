@@ -240,6 +240,7 @@ async function updateLeaderboard() {
       const repoName = repo.repo;
       console.log(`Fetching merged PRs for ${repoOwner}/${repoName}...`);
       const prs = await fetchMergedPRsForRepo(repoOwner, repoName, serverToken, labels);
+      console.log(`Found ${prs.length} merged PRs for ${repoOwner}/${repoName}`);
 
       for (const pr of prs) {
         if (pr.user && pr.user.id != null) {
@@ -481,6 +482,27 @@ app.delete(process.env.BASE_API_PATH + '/repo', async (req, res) => {
       });
     } catch (error) {
       console.error('Error deleting the repo:', error);
+      return res.status(500).json({
+        error: `Internal server error: ${error.toString()}`
+      });
+    }
+  } else {
+    return res.status(403).json({
+      error: 'Invalid secret key.'
+    });
+  }
+});
+
+app.post(process.env.BASE_API_PATH + '/leaderboard/sync', async (req, res) => {
+  if (req.headers["moderator-key"] === process.env.MODERATOR_KEY) {
+    try {
+      console.log("Manual leaderboard update requested via API");
+      updateLeaderboard();
+      return res.status(200).json({
+        message: 'Leaderboard sync started successfully.'
+      });
+    } catch (error) {
+      console.error('Error triggering leaderboard update:', error);
       return res.status(500).json({
         error: `Internal server error: ${error.toString()}`
       });

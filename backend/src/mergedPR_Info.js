@@ -12,16 +12,22 @@ async function getHacktoberfestDates() {
     if (adminControl && adminControl.hacktoberFestStartDate && adminControl.hacktoberFestEndDate) {
       const startDate = moment(adminControl.hacktoberFestStartDate).tz('Asia/Kolkata').toDate();
       const endDate = moment(adminControl.hacktoberFestEndDate).tz('Asia/Kolkata').toDate();
+      
+      const currentYear = new Date().getFullYear();
+      if (startDate.getFullYear() < currentYear && endDate.getFullYear() < currentYear) {
+        console.warn(`[WARN] Configured Hacktoberfest dates in AdminControl are from a past year (${startDate.getFullYear()}). Please update AdminControl via the Admin Panel.`);
+      }
       return { startDate, endDate };
     }
   } catch (error) {
     console.error("Error retrieving Hacktoberfest dates from database:", error.message);
   }
 
-  // Fallback defaults (defaults to Hacktoberfest 2025 event dates)
+  // Fallback defaults to current year October dates
+  const currentYear = new Date().getFullYear();
   return {
-    startDate: new Date('2025-10-01T00:00:00Z'),
-    endDate: new Date('2025-10-31T23:59:59Z')
+    startDate: new Date(`${currentYear}-10-01T00:00:00Z`),
+    endDate: new Date(`${currentYear}-10-31T23:59:59Z`)
   };
 }
 
@@ -65,7 +71,7 @@ async function fetchMergedPRsForRepo(owner, repo, accessToken = null, labels = [
     const perPage = 100;
 
     while (true) {
-      const query = `is:pr is:merged repo:${owner}/${repo} created:${startIso}..${endIso}`;
+      const query = `is:pr is:merged repo:${owner}/${repo} merged:${startIso}..${endIso}`;
       const url = 'https://api.github.com/search/issues';
 
       const response = await axios.get(url, {
